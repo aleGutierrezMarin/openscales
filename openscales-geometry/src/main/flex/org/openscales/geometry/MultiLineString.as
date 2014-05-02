@@ -1,5 +1,6 @@
 package org.openscales.geometry
 {
+	import org.openscales.proj4as.ProjProjection;
 
 	/**
 	 * A MultiLineString is a geometry with multiple LineString components.
@@ -7,8 +8,12 @@ package org.openscales.geometry
 	public class MultiLineString extends Collection
 	{
 
-		public function MultiLineString(components:Vector.<Geometry> = null) {
-			super(components);
+		/**
+		 * @param components
+		 * @param projection The projection to use for this geometry, default is EPSG:4326
+		 */ 
+		public function MultiLineString(components:Vector.<Geometry> = null,projection:ProjProjection = null) {
+			super(components,projection);
 			this.componentTypes = new <String>["org.openscales.geometry::LineString"];
 		}
 		
@@ -42,16 +47,17 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the multilinestring (x/y) from a projection system to an other.
 		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * @param dest the destination projection, can be both a String or a ProjProjection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
+		override public function transform(dest:*):void {
 			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
+			var source:ProjProjection = this.projection;
+			this.projection = dest;
 			// Update the geometry
 			if(this.componentsLength > 0){
 				for(var i:int=0; i<this.componentsLength; ++i) {
-					(this._components[i] as LineString).transform(sourceSrs, destSrs);
+					(this._components[i] as LineString).projection = source;
+					(this._components[i] as LineString).transform(dest);
 				}
 			}
 		}
@@ -61,6 +67,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var MultiLineStringClone:MultiLineString=new MultiLineString();
 			var component:Vector.<Geometry>=this.getcomponentsClone();
+			MultiLineStringClone.projection = this.projection;
 			MultiLineStringClone.addComponents(component);
 			return MultiLineStringClone;
 		}

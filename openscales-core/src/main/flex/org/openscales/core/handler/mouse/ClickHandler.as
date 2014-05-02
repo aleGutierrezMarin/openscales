@@ -7,10 +7,9 @@ package org.openscales.core.handler.mouse
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.handler.Handler;
-	import org.openscales.core.layer.Layer;
-	import org.openscales.geometry.Geometry;
+
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -25,32 +24,12 @@ package org.openscales.core.handler.mouse
 	 */
 	public class ClickHandler extends Handler
 	{
-		/**
-		 * Callback function click(evt:MouseEvent):void
-		 * This function is called after a MouseUp event (in the case of a
-		 * simple click)
-		 */
 		private var _click:Function = null;
 		
-		/**
-		 * Callback function doubleClick(evt:MouseEvent):void
-		 * This function is called after a MouseUp event (in the case of a
-		 * double click)
-		 */
-		private var _doubleClick:Function = onDoubleClick;
+		private var _doubleClick:Function = null;
 		
-		/**
-		 * Callback function drag(evt:MouseEvent):void
-		 * This function is called during a MouseMove event (in the case of a
-		 * drag&drop click) ; the function is not called at the MouseDown time.
-		 */
 		private var _drag:Function = null;
 		
-		/**
-		 * Callback function drop(evt:MouseEvent):void
-		 * This function is called after a MouseUp event (in the case of a
-		 * drag&drop click)
-		 */
 		private var _drop:Function = null;
 				
 		/**
@@ -66,13 +45,23 @@ package org.openscales.core.handler.mouse
 		/**
 		 * Timer used to detect a double click without throwing a simple click
 		 */
-		private var _timer:Timer = new Timer(250,1);
+		private var _timer:Timer = new Timer(1000,1);
 		
 		/**
 		 * Number of click since the beginning of the timer.
 		 * It is used to decide if the user has done a simple or a double click.
 		 */
 		private var _clickNum:Number = 0;
+		
+		/**
+		 * The position of the mouse for the first click of a double click
+		 */
+		private var _firstPointClick:Pixel = new Pixel(0,0);
+		
+		/**
+		 * The position of the mouse for the second click of a double click 
+		 */
+		private var _secondPointClick:Pixel = new Pixel(Number.NEGATIVE_INFINITY,Number.NEGATIVE_INFINITY);
 		
 		/**
 		 * CTRL is pressed ?
@@ -96,47 +85,9 @@ package org.openscales.core.handler.mouse
 		 */
 		public function ClickHandler(map:Map=null, active:Boolean=false, doubleClickZoomOnMousePosition:Boolean = true) {
 			super(map, active);
+			this._doubleClickZoomOnMousePosition = doubleClickZoomOnMousePosition;
 		}
-		
-		/**
-		 * Click function getter and setter
-		 */
-		public function get click():Function {
-			return this._click;
-		}
-		public function set click(value:Function):void {
-			this._click = value;
-		}
-		
-		/**
-		 * Double click function getter and setter
-		 */
-		public function get doubleClick():Function {
-			return this._doubleClick;
-		}
-		public function set doubleClick(value:Function):void {
-			this._doubleClick = value;
-		}
-		
-		/**
-		 * Drag function getter and setter
-		 */
-		public function get drag():Function {
-			return this._drag;
-		}
-		public function set drag(value:Function):void {
-			this._drag = value;
-		}
-		
-		/**
-		 * Drop function getter and setter
-		 */
-		public function get drop():Function {
-			return this._drop;
-		}
-		public function set drop(value:Function):void {
-			this._drop = value;
-		}
+
 				
 		/**
 		 * Map coordinates (in its baselayer's SRS) of the point clicked (at the
@@ -184,11 +135,7 @@ package org.openscales.core.handler.mouse
 			}
 			var bottomLeft:Location = this.map.getLocationFromMapPx(new Pixel(rect.left, rect.bottom));
 			var topRight:Location = this.map.getLocationFromMapPx(new Pixel(rect.right, rect.top));
-			if (this.map.baseLayer) {
-				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, this.map.baseLayer.projSrsCode);
-			} else {
-				return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, Geometry.DEFAULT_SRS_CODE);
-			}
+			return new Bounds(bottomLeft.lon, bottomLeft.lat, topRight.lon, topRight.lat, this.map.projection);
 		}
 		
 		/**
@@ -198,7 +145,6 @@ package org.openscales.core.handler.mouse
 			// Listeners of the super class
 			super.registerListeners();
 			// Listeners of the internal timer
-			this._timer.addEventListener(TimerEvent.TIMER, useRightCallback);
 			// Listeners of the associated map
 			if (this.map) {
 				this.map.addEventListener(MouseEvent.MOUSE_DOWN,this.mouseDown);
@@ -222,9 +168,11 @@ package org.openscales.core.handler.mouse
 			this._shiftKey = false;
 			this._dragging = false;
 			// Listeners of the internal timer
-			this._timer.removeEventListener(TimerEvent.TIMER, useRightCallback);
 			this._timer.stop();
 			this._clickNum = 0;
+			_firstPointClick = new Pixel(0,0);
+			_secondPointClick = new Pixel(100,100);
+			
 			// Listeners of the super class
 			super.unregisterListeners();
 		}
@@ -260,66 +208,77 @@ package org.openscales.core.handler.mouse
  		 */
 		protected function mouseUp(evt:MouseEvent):void {
 			if (evt) {
-				
 				this.map.removeEventListener(MouseEvent.MOUSE_MOVE,this.mouseMove);
-				
 				if (this._downPixel != null) {
-					// It was not a drag, but was it a simple or a double click ?
-					// Just wait for a timer duration to know and call the right function.
+					this._timer.removeEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
+					
 					this._upPixel = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
 					this._ctrlKey = evt.ctrlKey;
 					this._shiftKey = evt.shiftKey;
+					
+					if(this._dragging) {
+						this._dragging = false;
+						if (this.drop != null) {
+							// Use the callback function for a drop click
+							this.drop(this._upPixel);
+						}	
+					}
+					// If it's a drag do nothing
+					if ((Math.abs(this._downPixel.x - this._upPixel.x) > 10) || (Math.abs(this._downPixel.y - this._upPixel.y) > 10))
+					{
+						return;
+					}
+					
+					// Register coordinates
+					if (_clickNum == 0)
+					{
+						this._firstPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
+					} else {
+						this._secondPointClick = new Pixel(evt.currentTarget.mouseX, evt.currentTarget.mouseY);
+					}
+					
+					// If the click is too far away from the previous click
+					if (this._clickNum != 0 && ((Math.abs(this._firstPointClick.x - this._secondPointClick.x) > 5) || (Math.abs(this._firstPointClick.y - this._secondPointClick.y) > 5)))
+					{
+						this._clickNum = 0;
+						this._firstPointClick = this._secondPointClick;
+					}
+					
 					this._clickNum++;
-					this._timer.start();
+					if (this._clickNum == 1) {
+						this._timer.reset();
+						this._timer.start();
+						this._timer.addEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
+						var clickEvent:MapEvent = new MapEvent(MapEvent.MOUSE_CLICK, this.map);
+						this.map.dispatchEvent(clickEvent);
+						if (this.click != null) 
+						{
+							this.click(this._downPixel);
+						}
+					}else {
+						this._clickNum = 0;
+						this._timer.stop();
+						if (this.doubleClick != null) 
+						{
+							this.doubleClick(this._downPixel);
+						}
+					}
 				}
 			}
 		}
-		
+	
 		/**
-		 * Define if there was a double click or a simple click (drag&drop is
-		 * managed before if needed).
-		 * @param evt the TimerEvent (not used)
+		 * reinit the 
 		 */
-		private function useRightCallback(evt:TimerEvent):void {
-			
-			if(this._dragging) {
-				this._dragging = false;
-				if (this.drop != null) {
-					// Use the callback function for a drop click
-					this.drop(this._upPixel);
-				}	
-			} else if (this._clickNum == 1) {
-				if (this.click != null) {
-					// Use the callback function for a simple click
-					this.click(this._upPixel);
-				}
-			} else if (this.doubleClick != null) {
-					// Use the callback function for a double click
-					this.doubleClick();
-			}
-			
+		public function onDoubleClickTimerTimeout(event:TimerEvent):void
+		{
 			this._timer.stop();
+			this._timer.removeEventListener(TimerEvent.TIMER, onDoubleClickTimerTimeout);
 			this._clickNum = 0;
-			this._downPixel = null;
-			this._upPixel = null;
-			this._ctrlKey = false;
-			this._shiftKey = false;
+			_firstPointClick = new Pixel(0,0);
+			_secondPointClick = new Pixel(Number.NEGATIVE_INFINITY,Number.NEGATIVE_INFINITY);
 		}
 		
-		/**
-		 * Call back method for doubleclick events
-		 */ 
-		private function onDoubleClick():void
-		{
-			// If the handler is configured to zoom on mouse position
-			if(this.doubleClickZoomOnMousePosition){
-				this.map.zoomToMousePosition(true);	
-			}else // Otherwise, zooming to current center
-			{
-				this.map.moveTo(map.center,map.zoom+1,false,true);
-			} 
-		}
-
 		/**
 		 * boolean specifying if zoom on double click should be made toward mouse position or not.
 		 * Default is true.
@@ -335,6 +294,78 @@ package org.openscales.core.handler.mouse
 		public function set doubleClickZoomOnMousePosition(value:Boolean):void
 		{
 			_doubleClickZoomOnMousePosition = value;
+		}
+
+		/**
+		 * Callback function click(evt:MouseEvent):void
+		 * This function is called after a MouseUp event (in the case of a
+		 * simple click)
+		 */
+		public function get click():Function
+		{
+			return _click;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set click(value:Function):void
+		{
+			_click = value;
+		}
+
+		/**
+		 * Callback function doubleClick(evt:MouseEvent):void
+		 * This function is called after a MouseUp event (in the case of a
+		 * double click)
+		 */
+		public function get doubleClick():Function
+		{
+			return _doubleClick;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set doubleClick(value:Function):void
+		{
+			_doubleClick = value;
+		}
+
+		/**
+		 * Callback (with one param of type MouseEvent)
+		 * This function is called during a MouseMove event (in the case of a
+		 * drag and drop click) the function is not called at the MouseDown time.
+		 */
+		public function get drag():Function
+		{
+			return _drag;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set drag(value:Function):void
+		{
+			_drag = value;
+		}
+
+		/**
+		 * Callback function drop(evt:MouseEvent):void
+		 * This function is called after a MouseUp event (in the case of a
+		 * drag and drop click)
+		 */
+		public function get drop():Function
+		{
+			return _drop;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set drop(value:Function):void
+		{
+			_drop = value;
 		}
 
 		

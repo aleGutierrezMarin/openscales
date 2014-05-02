@@ -1,16 +1,12 @@
 package org.openscales.core.handler.mouse
 {
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.events.ZoomBoxEvent;
 	import org.openscales.core.handler.Handler;
-	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
@@ -42,11 +38,6 @@ package org.openscales.core.handler.mouse
 		 */
 		private var _startCoordinates:Location = null;
 		
-		/**
-		 * @private 
-		 * 
-		 * Color of the rectangle
-		 */
 		private var _fillColor:uint = 0xFF0000;
 		
 		/**
@@ -67,24 +58,26 @@ package org.openscales.core.handler.mouse
 		 */ 
 		public function ZoomBoxHandler(shiftMode:Boolean=true, map:Map=null, active:Boolean=true):void{
 			super(map, active);
+			this.shiftMode = shiftMode;
 		}
 		
 		/**
 		 * @inheritDoc
 		 */ 
 		override protected function registerListeners():void{
-			if (this.map) {
-				this.map.addEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				if (this.map.stage)
-				{
+			if (this.map){
+				this.map.addEventListener(MouseEvent.MOUSE_DOWN, startBox);
+				if (this.map.stage){
 					this.registerMouseUp();
 				}
 				this.map.addEventListener(MapEvent.DRAG_START, dragStart);
 				this.map.addEventListener(MapEvent.DRAG_END, dragEnd);
-				
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		private function registerMouseUp():void{
 			this.map.stage.addEventListener(MouseEvent.MOUSE_UP,endBox);
 		}
@@ -93,16 +86,16 @@ package org.openscales.core.handler.mouse
 		 * @inheritDoc
 		 */ 
 		override protected function unregisterListeners():void{
-			if (this.map) {
-				this.map.removeEventListener(MouseEvent.MOUSE_DOWN,startBox);
-				if(this.map.stage)
-				{
-					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP,endBox);
-					this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE,expandArea);
+			if (this.map){
+				this.map.removeEventListener(MouseEvent.MOUSE_DOWN, startBox);
+				if(this.map.stage){
+					this.map.stage.removeEventListener(MouseEvent.MOUSE_UP, endBox);
+					this.map.stage.removeEventListener(MouseEvent.MOUSE_MOVE, expandArea);
 				}
-				this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
-				this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
-				//this.map.removeEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
+				if (shiftMode) {
+					this.map.removeEventListener(MapEvent.DRAG_START, dragStart);
+					this.map.removeEventListener(MapEvent.DRAG_END, dragEnd);
+				}
 			}
 		}
 		
@@ -118,12 +111,12 @@ package org.openscales.core.handler.mouse
 		 * @private
 		 * 
 		 * Method called on MOUSE_DOWN event
-		 *  It create a selectio nrecantgle and add MOUSE_MOVE event handling to the map
+		 *  It create a selection recantgle and add MOUSE_MOVE event handling to the map
 		 */ 
 		private function startBox(e:MouseEvent) : void {
 			
-			
-			if(!_shiftMode || !e.shiftKey || _dragging) return;
+			if ((_shiftMode && !e.shiftKey) || _dragging || !this.map.mouseNavigationEnabled) 
+				return; 
 			
 			//this.map.addEventListener(MouseEvent.MOUSE_OUT, this.onMouseOut);
 			this.registerMouseUp();
@@ -158,7 +151,7 @@ package org.openscales.core.handler.mouse
 							Math.min(endCoordinates.lat,_startCoordinates.lat),
 							Math.max(_startCoordinates.lon,endCoordinates.lon),
 							Math.max(endCoordinates.lat,_startCoordinates.lat),
-							endCoordinates.projSrsCode));
+							endCoordinates.projection));
 					}
 				}
 				this._startCoordinates = null;
@@ -216,11 +209,22 @@ package org.openscales.core.handler.mouse
 		private function dragEnd(event:MapEvent):void{
 			this._dragging = false;
 		}
-		
-		private function  onMouseOut(event:MouseEvent):void{
-			if(event.target!=this.map)
-				return;
-			this.endBox(null);
+
+		/**
+		 * Color of the rectangle
+		 * @default 0xFF0000
+		 */
+		public function get fillColor():uint
+		{
+			return _fillColor;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set fillColor(value:uint):void
+		{
+			_fillColor = value;
 		}
 
 

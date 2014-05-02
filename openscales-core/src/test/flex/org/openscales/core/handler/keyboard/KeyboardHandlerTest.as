@@ -27,14 +27,16 @@ package org.openscales.core.handler.keyboard
 		private var _event:KeyboardEvent;
 		private var _oldZoom:Number;
 		
+		public function KeyboardHandlerTest() {}
+		
 		[Before]
 		public function prepareResource():void
 		{
 			_map= new Map(600,400);
-			_map.addHandler(new KeyboardHandler(_map,true));
+			_map.addControl(new KeyboardHandler(_map,true));
 			_layer = new Layer("sampleLayer");
-			_layer.projSrsCode="EPSG:900913";
-			_map.addLayer(_layer, true, true);
+			_layer.setProjection("EPSG:900913");
+			_map.addLayer(_layer, true);
 			_oldX = _map.center.x;
 			_oldY = _map.center.y;
 		}

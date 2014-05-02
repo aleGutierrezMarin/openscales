@@ -5,6 +5,7 @@ package org.openscales.geometry
 	
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.proj4as.ProjProjection;
 
 
 	/**
@@ -38,9 +39,10 @@ package org.openscales.geometry
      	 * Creates a Geometry Collection
      	 *
      	 * @param components
+		 * @param projection The projection to use for this Collection, default is EPSG:4326
      	 */
-		public function Collection(components:Vector.<Geometry>) {
-			super();
+		public function Collection(components:Vector.<Geometry>, projection:ProjProjection = null) {
+			super(projection);
 			this._components = new Vector.<Geometry>();
             if (components != null) {
 				this.addComponents(components);
@@ -95,7 +97,7 @@ package org.openscales.geometry
 			if(componentslength<=0) return null;
 			else componentsClone=new Vector.<Geometry>(componentslength);
 			for(var i:int=0;i<componentslength;++i)	{
-				componentsClone.push((this._components[i]).clone());
+				componentsClone[i]=(this._components[i]).clone();
 			}
 			return componentsClone;
 		}
@@ -107,6 +109,7 @@ package org.openscales.geometry
 			//All collection
 			var Collectionclone:Collection=new Collection(null);
 			var component:Vector.<Geometry>=this.getcomponentsClone();
+			Collectionclone.projection = this.projection;
 			Collectionclone.addComponents(component);
 			return Collectionclone;		
 		}
@@ -172,7 +175,15 @@ package org.openscales.geometry
 			if (this._bounds == null) {
 				this._bounds = newBounds;
 			} else {
-				this._bounds.extendFromBounds(newBounds);
+				var tmpBounds:Bounds = this._bounds.extendFromBounds(newBounds);
+				if (this._bounds.projection != tmpBounds.projection)
+				{
+					this._bounds = tmpBounds.reprojectTo(this._bounds.projection);
+				}
+				else
+				{
+					this._bounds = tmpBounds;
+				}
 			}
 		}
 		
@@ -297,15 +308,15 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * @param dest the destination projection, can be both a String or a ProjProjection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
+		override public function transform(dest:*):void {
 			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
+			var source:ProjProjection = this.projection;
+			this.projection = dest;
 			// Update the geometry
 			for(var i:int=0; i<this.componentsLength; ++i) {
-				this._components[i].transform(sourceSrs, destSrs);
+				this._components[i].transform(dest);
 			}
 		}
 		/**

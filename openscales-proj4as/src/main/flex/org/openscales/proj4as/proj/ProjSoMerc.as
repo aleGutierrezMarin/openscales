@@ -31,8 +31,8 @@ package org.openscales.proj4as.proj {
 
 
 		override public function init():void {
-			var phy0:Number=this.lat0;
-			this.lambda0=this.long0;
+			var phy0:Number=this.latZero;
+			this.lambda0=this.longZero;
 			var sinPhy0:Number=Math.sin(phy0);
 			var semiMajorAxis:Number=this.a;
 			var invF:Number=this.rf;
@@ -62,14 +62,14 @@ package org.openscales.proj4as.proj {
 
 			var rotB:Number=Math.asin(Math.cos(this.b0) * Math.sin(b) - Math.sin(this.b0) * Math.cos(b) * Math.cos(I));
 
-			p.y=this.R / 2.0 * Math.log((1 + Math.sin(rotB)) / (1 - Math.sin(rotB))) + this.y0;
-			p.x=this.R * rotI + this.x0;
+			p.y=this.R / 2.0 * Math.log((1 + Math.sin(rotB)) / (1 - Math.sin(rotB))) + this.yZero;
+			p.x=this.R * rotI + this.xZero;
 			return p;
 		}
 
 		override public function inverse(p:ProjPoint):ProjPoint {
-			var Y:Number=p.x - this.x0;
-			var X:Number=p.y - this.y0;
+			var Y:Number=p.x - this.xZero;
+			var X:Number=p.y - this.yZero;
 
 			var rotI:Number=Y / this.R;
 			var rotB:Number=2 * (Math.atan(Math.exp(X / this.R)) - Math.PI / 4.0);

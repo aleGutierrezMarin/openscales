@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 			  xmlns:s="library://ns.adobe.com/flex/spark" 
 			  xmlns:mx="library://ns.adobe.com/flex/mx"
 			  xmlns="org.openscales.fx.control.layer.*"
@@ -7,10 +7,9 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import assets.fxg.ButtonOpacity;
-			
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
+			import org.openscales.core.layer.Layer;
 			
 			[Bindable]
 			[Embed(source="/assets/images/layer/legend.png")]
@@ -22,20 +21,30 @@
 			[Bindable]
 			public var tooltipLegend:String = Catalog.getLocalizationForKey('layercontrol.legend')
 				
+			private var _layer:Layer;	
 				
+			public function get layer():Layer{
+				return _layer;
+			}
+			
 			/**
-			 * Center the map on the layer
-			 * @param event Click event
-			 */
-			private function displayLegend(event:MouseEvent):void
+			 * Configure the first display for this component when the layer is set
+			 * Set one or two arrows depending of the position of the current layer
+			 */ 
+			public function set layer(value:Layer):void
 			{
-				trace("display Legend");
+				this._layer = value;
+				
+				if(this._layer.map != null)
+				{					
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
+				}
 			}
 			
 			/**
 			 * @inherit
 			 */
-			override public function onMapLanguageChange(event:I18NEvent):void 
+			public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				this.tooltipLegend = Catalog.getLocalizationForKey('layercontrol.legend');	
 			}
@@ -45,8 +54,7 @@
 	<os:IconButton id="layerControlLegendIcon"
 				width="16"
 				height="16"
-				click="displayLegend(event)"
 				toolTip="{this.tooltipLegend}"
 				icon="{_btnLegend}" />
 	
-</LayerControl>
+</s:Group>

@@ -8,21 +8,24 @@ For example, to present the list of layers available in an application.
 					  xmlns:mx="library://ns.adobe.com/flex/mx"
 					  xmlns:os="org.openscales.fx.control.*"
 					  width="400" height="300">
-	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
-	</fx:Declarations>
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.collections.ArrayCollection;
 			import mx.collections.IList;
 			
+			import org.openscales.core.events.I18NEvent;
+			import org.openscales.core.events.MapEvent;
+			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			
 			private var _layers:Vector.<Layer>;
 						
 			[Bindable]
 			protected var _filteredLayers:ArrayCollection = new ArrayCollection();
+			
+			private var _iconify:String = Catalog.getLocalizationForKey('component.iconify');
+			private var _toggle:String = Catalog.getLocalizationForKey('component.toggle');
 			
 			/**
 			 * The list of layers to be displayed in the catalog
@@ -39,6 +42,7 @@ For example, to present the list of layers available in an application.
 				for each(var layer:Layer in this._layers){
 					this._filteredLayers.addItem(layer);
 				}
+				
 			}
 			
 			/**
@@ -51,7 +55,7 @@ For example, to present the list of layers available in an application.
 			
 			/**
 			 * The function that will be used to filter the layers.
-			 * This function must take a layer as parameter and return a Boolean
+			 * This function must take a <code>Layer</code> as parameter and return a <code>Boolean</code>
 			 */
 			public function get filter():Function{
 				
@@ -63,10 +67,30 @@ For example, to present the list of layers available in an application.
 				this._filteredLayers.filterFunction = value;
 				this._filteredLayers.refresh();
 			}
+			
+			/**
+			 * 
+			 */
+			override public function toggleDisplay(event:Event=null):void
+			{				
+				super.toggleDisplay();
+				var newEvent:MapEvent = new MapEvent(MapEvent.COMPONENT_CHANGED, this._map);
+				newEvent.componentName = "LayerCatalog";
+				newEvent.componentIconified = this._isReduced;
+				this._map.dispatchEvent(newEvent);
+			}
+			
+			/**
+			 * @inherit
+			 */
+			override public function onMapLanguageChange(event:I18NEvent):void 
+			{
+				_iconify = Catalog.getLocalizationForKey('component.iconify');
+				_toggle = Catalog.getLocalizationForKey('component.toggle');
+			}
 		]]>
 	</fx:Script>
 	
-	<s:List id="layerList" dataProvider="{this._filteredLayers}">
-		
-	</s:List>
+	<s:List id="layerList" dataProvider="{this._filteredLayers}" />
+	
 </os:Control>

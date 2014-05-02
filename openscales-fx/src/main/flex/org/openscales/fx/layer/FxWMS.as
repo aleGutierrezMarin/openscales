@@ -26,7 +26,7 @@ package org.openscales.fx.layer
 		public function set styles(value:String):void {
 			if(this._layer != null)
 				//((this.layer as WMS).params as WMSParams).styles = value;
-				(this._layer as WMS).style=value;
+				(this._layer as WMS).styles=value;
 		}
 
 		public function set format(value:String):void {
@@ -35,11 +35,11 @@ package org.openscales.fx.layer
 				(this._layer as WMS).format=value;
 		}
 
-		override public function set projection(value:String):void {
+		override public function set projection(value:*):void {
 			super.projection = value;
 			if(this._layer != null) {
 				//((this.layer as WMS).params as WMSParams).srs = value;
-				(this._layer as WMS).projection=value;
+				(this._layer as WMS).setProjection(this.projection);
 			}
 		}
 
@@ -55,7 +55,7 @@ package org.openscales.fx.layer
 				(this._layer as WMS).bgcolor=value;
 		}
 
-		public function set tiled(value:Boolean):void {
+		override public function set tiled(value:Boolean):void {
 			if(this._layer != null)
 				//((this.layer as WMS).params as WMSParams).tiled = value;
 				(this._layer as WMS).tiled=value;
@@ -78,23 +78,37 @@ package org.openscales.fx.layer
 				(this._layer as WMS).url=value;
 		}
 		
+		/**
+		 * The height of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tHeight 
+		 * is the height of the map or NaN if the layer is not in a map
+		 */
 		public function set tHeight(value:Number):void{
 			if(this._layer != null){
 				(this._layer as WMS).tileHeight=value;
 			}
 		}
-		
+		/**
+		 * @private
+		 */
 		public function get tHeight():Number{
 			return (this._layer as WMS).tileHeight;
 		}
 		
-		
+		/**
+		 * The width of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tWidth 
+		 * is the width of the map or NaN if the layer is not in a map
+		 */
 		public function set tWidth(value:Number):void{
 			if(this._layer != null){
 				(this._layer as WMS).tileWidth = value;
 			}
 		}
 		
+		/**
+		 * @private
+		 */
 		public function get tWidth():Number{
 			return (this._layer as WMS).tileHeight;
 		}

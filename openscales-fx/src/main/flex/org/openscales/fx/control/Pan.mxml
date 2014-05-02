@@ -100,10 +100,13 @@
 			 */
 			public function onPanNorth(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
-				this.map.pan(0, -this.DELTA_PX, true);
+				if(!this._map.panNavigationEnabled)
+					return;
+				
+				this.map.pan(0, -this.DELTA_PX);
 			}
 			
 			/**
@@ -114,10 +117,13 @@
 			 */
 			public function onPanSouth(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
-				this.map.pan(0, this.DELTA_PX, true);
+				if(!this._map.panNavigationEnabled)
+					return;
+				
+				this.map.pan(0, this.DELTA_PX);
 			}
 			
 			/**
@@ -128,10 +134,13 @@
 			 */
 			public function onPanEast(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
-				this.map.pan(this.DELTA_PX, 0, true);
+				if(!this._map.panNavigationEnabled)
+					return;
+				
+				this.map.pan(this.DELTA_PX, 0);
 			}
 			
 			/**
@@ -142,10 +151,13 @@
 			 */
 			public function onPanWest(event:MouseEvent):void
 			{
-				if(!this._map || !this._map.baseLayer)
+				if(!this._map)
 					return;
 				
-				this.map.pan(-this.DELTA_PX, 0, true);
+				if(!this._map.panNavigationEnabled)
+					return;
+				
+				this.map.pan(-this.DELTA_PX, 0);
 			}			
 			
 			override public function destroy():void {
@@ -164,7 +176,7 @@
 	
 	<s:Button id="panNorth" name="north" label="{this.labelPanNorth}" 
 			  click="onPanNorth(event)" toolTip="{this.toolTipPanNorth}"
-			  width="35" x="20" y="0" useHandCursor="true" buttonMode="true"/>
+			  width="35" x="20" y="0" useHandCursor="true" buttonMode="true" />
 	<s:Button id="panSouth" name="south" label="{this.labelPanSouth}" 
 			  click="onPanSouth(event)" toolTip="{this.toolTipPanSouth}"
 			  width="35" x="20" y="40" useHandCursor="true" buttonMode="true" />

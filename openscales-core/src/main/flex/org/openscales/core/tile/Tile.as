@@ -17,7 +17,6 @@ package org.openscales.core.tile
 	 */
 	public class Tile extends Sprite
 	{
-		
 		private var _layer:Layer = null;
 		private var _url:String = null;
 		private var _bounds:Bounds = null;
@@ -35,13 +34,12 @@ package org.openscales.core.tile
 			this.url = url;
 			this.size = size;       
 		}
-		
+	
 		public function destroy():void {
 			this.layer = null;
 			this.bounds = null;
 			this.size = null;
 			this.position = null;
-			
 		}
 		
 		
@@ -65,14 +63,11 @@ package org.openscales.core.tile
 			if(!this.bounds.intersectsBounds(this.layer.map.maxExtent, false))
 				return false;
 			if((this.layer as Grid).buffer == 0
+				//&& !this.bounds.intersectsBounds(this.layer.map.getExtentForResolution((this.layer as Grid).requestedResolution), false))
 				&& !this.bounds.intersectsBounds(this.layer.map.extent, false))
 				return false;
-			
+
 			return true;
-			/*return (((this.layer.maxExtent
-			&& this.bounds.intersectsBounds(this.layer.maxExtent, false)))
-			&& !((this.layer as Grid != null) && ((this.layer as Grid).buffer == 0)
-			&& !this.bounds.intersectsBounds(this.layer.map.extent, false)));*/
 		}
 		
 		public function moveTo(bounds:Bounds, position:Pixel, redraw:Boolean = true):void 
@@ -121,22 +116,23 @@ package org.openscales.core.tile
 		 *
 		 * @return bounds
 		 */
-		public function getBoundsFromBaseLayer(position:Pixel):Bounds {
+		public function getBoundsFromMap(position:Pixel):Bounds {
 			if(this.size == null)
 				return new Bounds(0,0,0,0);
-			var topLeft:Location = this.layer.map.getLocationFromLayerPx(position); 
+			position =  this.layer.getMapPxFromLayerPx(position);
+			var topLeft:Location = this.layer.map.getLocationFromMapPx(position, (this.layer as Grid).requestedResolution) //this.layer.map.getLocationFromLayerPx(position); 
 			var bottomRightPx:Pixel = position.clone();
-			bottomRightPx.x += this.size.w;
-			bottomRightPx.y += this.size.h;
-			var bottomRight:Location = this.layer.map.getLocationFromLayerPx(bottomRightPx); 
+			bottomRightPx.x += this.size.w//*this.layer.transform.matrix.a;
+			bottomRightPx.y += this.size.h//*this.layer.transform.matrix.d;
+			var bottomRight:Location = this.layer.map.getLocationFromMapPx(bottomRightPx, (this.layer as Grid).requestedResolution)// this.layer.map.getLocationFromLayerPx(bottomRightPx); 
 			if (topLeft.lon > bottomRight.lon) {
 				if (topLeft.lon < 0) {
-					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x, topLeft.projSrsCode);
+					topLeft = new Location(-180 - (topLeft.lon+180), topLeft.x, topLeft.projection);
 				} else {
-					bottomRight = new Location(180+bottomRight.lon+180, bottomRight.y, bottomRight.projSrsCode);
+					bottomRight = new Location(180+bottomRight.lon+180, bottomRight.y, bottomRight.projection);
 				}        
 			}
-			bounds = new Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat, null);  
+			bounds = new Bounds(topLeft.lon, bottomRight.lat, bottomRight.lon, topLeft.lat, this.layer.map.projection);  
 			return bounds;
 		}
 		

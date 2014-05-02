@@ -22,16 +22,14 @@ package org.openscales.fx.control
 		protected var _map:Map = null;
 		protected var _fxMap:FxMap = null;
 		protected var _active:Boolean = false;
+		[Bindable]
+		protected var _isReduced:Boolean = false;
 		
 		/**
 		 * Store if this control have been initialized (Event.COMPLETE has been thrown)  
 		 */
 		protected var _isInitialized:Boolean = false;
 		
-		/**
-		 * Store if the control has been added to the fxMap control list
-		 */
-		private var _isAddedToFxMapControlList:Boolean = false;
 		
 		public function Control()
 		{
@@ -50,6 +48,7 @@ package org.openscales.fx.control
 			}
 		}    
 		
+		[Bindable]
 		public function get fxMap():FxMap
 		{
 			return this._fxMap;
@@ -58,22 +57,6 @@ package org.openscales.fx.control
 		public function set fxMap(value:FxMap):void
 		{
 			this._fxMap = value;
-			
-			if(!this._isAddedToFxMapControlList){
-				if(value){
-					this._fxMap.addControlToFxMapControlsList(this);
-					this._isAddedToFxMapControlList = true;
-				}
-			}
-			
-			this.fxMap.addEventListener(FlexEvent.CREATION_COMPLETE, onFxMapCreationComplete);
-		}
-		
-		/**
-		 * Flex Map wrapper initialization
-		 */
-		protected function onFxMapCreationComplete(event:Event):void {
-			this.map = this._fxMap.map;
 		}
 		
 		/**
@@ -98,13 +81,6 @@ package org.openscales.fx.control
 			{
 				// Activate the control 
 				this.active = true;
-			}
-			
-			if(!this._isAddedToFxMapControlList){
-				if(this.fxMap){
-					this.fxMap.addControlToFxMapControlsList(this);
-					this._isAddedToFxMapControlList = true;
-				}
 			}
 		}
 		
@@ -164,7 +140,6 @@ package org.openscales.fx.control
 			var i:int = this.numElements;
 			var elt:IVisualElement;
 			for(i;i>0;--i) {
-				elt = this.removeElementAt(0);
 				if(elt is IControl)
 					(elt as IControl).destroy();
 			}
@@ -187,6 +162,26 @@ package org.openscales.fx.control
 		 */
 		public function onMapLanguageChange(event:I18NEvent):void {
 			
+		}
+		
+		/**
+		 * Indicates if the control display is normal or reduced
+		 * @default false : normal display
+		 */
+		[Bindable]
+		public function get isReduced():Boolean
+		{
+			return this._isReduced;
+		}
+		
+		public function set isReduced(value:Boolean):void
+		{
+			this._isReduced = value;
+		}
+		
+		public function toggleDisplay(event:Event = null):void
+		{	
+			this.isReduced = !this._isReduced;
 		}
 	}
 }

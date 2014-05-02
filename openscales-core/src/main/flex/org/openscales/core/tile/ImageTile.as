@@ -1,21 +1,23 @@
 package org.openscales.core.tile
 {
-	import com.gskinner.motion.GTween;
 	
 	import flash.display.Bitmap;
-	import flash.display.DisplayObject;
+	import flash.display.BitmapData;
 	import flash.display.Loader;
 	import flash.display.LoaderInfo;
+	import flash.display.PixelSnapping;
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
-	import org.openscales.core.Trace;
-	import org.openscales.core.basetypes.linkedlist.LinkedListBitmapNode;
-	import org.openscales.core.layer.Grid;
+	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.DataRequest;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
@@ -27,25 +29,52 @@ package org.openscales.core.tile
 	public class ImageTile extends Tile
 	{
 		private var _attempt:Number = 0;
+		
+		private var _digUpAttempts:Number = 0;
 
 		private var _queued:Boolean = false;
 
 		private var _request:DataRequest = null;
 		
 		private var _method:String = null;
+		
+		private var _useNoDataTile:Boolean = true;
+		
+		public var dx:Number = -1;
+		
+		public var dy:Number = -1;
+		
+		/**
+		 * No Data tile
+		 */
+		[Embed(source="/assets/images/noData.png")]
+		private var _noData:Class;
+		
+		/**
+		 * No Data transparent tile
+		 */
+		[Embed(source="/assets/images/noDataTransp.png")]
+		private var _noDataTransp:Class;
 
+		/**
+		 * Totally transparent tile
+		 */ 
+		[Embed(source="/assets/images/fullTransparentImage.png")]
+		private var _fullTransparentImage:Class;
+		
 		public function ImageTile(layer:Layer, position:Pixel, bounds:Bounds, url:String, size:Size) {
 			super(layer, position, bounds, url, size);
 			// otherwise you'll get seams between tiles :(
-			this.cacheAsBitmap = false;
+			//this.cacheAsBitmap = true;
 
 		}
 
 		override public function destroy():void {
 			this.clear();
 			
-			if(this.layer.contains(this))
-				this.layer.removeChild(this);
+			if(this.layer)
+				if(this.layer.contains(this))
+					this.layer.removeChild(this);
 			if(_request)
 				_request.destroy();	
 
@@ -58,52 +87,81 @@ package org.openscales.core.tile
 		 * @return Always returns true.
 		 */
 		override public function draw():Boolean {
-
-			if (this.layer != this.layer.map.baseLayer) {
-				if(_drawPosition != null) {
-					this.bounds = this.getBoundsFromBaseLayer(_drawPosition);
-				} else {
-					this.bounds = this.getBoundsFromBaseLayer(position);
-				}
-			}
-
-			if(! withinMapBounds()) {
+			if(!super.draw()) {
+				if(_request)_request.destroy();
 				return false;    
 			}
+			return this.generateAndSendRequest();
+		}
+		
+		
+		/**
+		 * takes all tile parameters to build request and send it
+		 *
+		 * @return Always returns true.
+		 */
+		public function generateAndSendRequest():Boolean {
 			if (this.url == null) {
 				this.url = this.layer.getURL(this.bounds);
+				if(this.layer.security)
+					this.url = this.layer.security.getFinalUrl(this.url);
 			}
-
-			var cachedBitmap:Bitmap;
-			if ((this.layer is Grid) && ((cachedBitmap=(this.layer as Grid).getTileCache(this.url)) != null)) {
-				this.loading = true;
-				drawLoader(this.url,cachedBitmap,true);
-			}else {
+			if(this.url==null) {
 				if (_request) {
 					_request.destroy();
+					_request = null;
 				}
-				this.loading = true;		     
-				_request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError,method);
-				if(_request.method == URLRequestMethod.POST){
-					_request.postContent = new URLVariables(this.url);
-				}
-				
-				_request.security = this.layer.security;
-				_request.proxy = this.layer.proxy;
-				if(this.layer.security==null) {
-					_request.send();
-				} else {
-					this.layer.security.addWaitingRequest(_request);
-				}
+				return false;
+			}
+			if (_request) {
+				_request.destroy();
+			}
+			this.loading = true;		     
+			_request = new DataRequest(this.url, onTileLoadEnd, onTileLoadError,method);
+			if(_request.method == URLRequestMethod.POST){
+				_request.postContent = new URLVariables(this.url);
+			}
+			
+			_request.security = this.layer.security;
+			_request.proxy = this.layer.proxy;
+			if(this.layer.security==null) {
+				_request.send();
+			} else {
+				this.layer.security.addWaitingRequest(_request);
 			}
 			return true;
 		}
-
+		
+		/**
+		 * On request success, when bitmap is loaded
+		 * If needed, cuts and stretches the bitmap
+		 *
+		 * @param event on load complete
+		 */
 		public function onTileLoadEnd(event:Event):void {
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
-			var bitmap:Bitmap = Bitmap(loader.content);
-			drawLoader(loader.name, bitmap, false);
+			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
+			if (this._digUpAttempts > 0 && this.dx < 1 && this.dy < 1)  {
+				var bitmapData:BitmapData = bitmap.bitmapData;
+				var newWidth:Number=bitmapData.width / Math.pow(2, this._digUpAttempts);
+				var newHeight:Number=bitmapData.height / Math.pow(2, this._digUpAttempts);
+				
+				var xOffset:Number = bitmapData.width * dx;
+				var yOffset:Number = bitmapData.height * dy;
+				
+				var region:Rectangle= new Rectangle(xOffset , yOffset , xOffset + newWidth, yOffset + newHeight);
+				var bmd:BitmapData = new BitmapData(newWidth,newHeight);
+				bmd.copyPixels(bitmapData,region,new Point());
+				this.clear();
+				this._digUpAttempts = 0;
+
+				drawLoader(loader.name, new Bitmap(bmd,PixelSnapping.NEVER,true));
+			} else {
+				this._digUpAttempts = 0;
+				this.clear();
+				drawLoader(loader.name, bitmap);
+			}
 		}
 
 		/**
@@ -113,7 +171,7 @@ package org.openscales.core.tile
 		 * @param bitmap The bitmap to draw
 		 * @param cached Cached loader or not
 		 */
-		private function drawLoader(url:String, bitmap:Bitmap, cached:Boolean):void {
+		private function drawLoader(url:String, bitmap:Bitmap):void {
 			if (this.layer) {		
 				if (_drawPosition != null) {
 					this.position = _drawPosition;					
@@ -132,30 +190,40 @@ package org.openscales.core.tile
 				if (! this.layer.contains(this)) {
 					this.layer.addChild(this);
 				}
-				if(this.layer.tweenOnLoad)
-					var tw:GTween = new GTween(this, 0.3, {alpha:1});
-
+				
 				this.drawn = true;
 				this.loading = false;
-				
-				// We put the loader into the cache if it's a recently loaded
-				if ((this.layer is Grid) && (! cached)) {
-					var node:LinkedListBitmapNode = new LinkedListBitmapNode(bitmap,url);
-					(this.layer as Grid).addTileCache(node);
-				}
 			}
 		}
 		
 		public function onTileLoadError(event:IOErrorEvent):void {
-			if ((! this.layer) || (! this.layer.map) || (++this._attempt <= this.layer.map.IMAGE_RELOAD_ATTEMPTS)) {
+			if (this.layer && this.layer.map && ++this._attempt <= this.layer.map.IMAGE_RELOAD_ATTEMPTS) {
 				// Retry loading
-				Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
+				//Trace.log("ImageTile - onTileLoadError: Error while loading tile " + this.url+" ; retry #" + this._attempt);
 				this.draw();
+			} else if (this.layer && this.layer.map && ++this._digUpAttempts <= this.layer.map.DIG_BACK_MAX_DEPTH) {
+//				this._attempt = 0;
+				this.layer.dispatchEvent(new TileEvent(TileEvent.TILE_LOAD_ERROR,this));
 			} else {
 				// Maximum number of tries reached
-				Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
+				//Trace.error("ImageTile - onTileLoadError: Error while loading tile " + this.url);
+				this.clear();
 				this.loading = false;
 				
+				// Display the no data Tile
+				var bmdata:BitmapData = new BitmapData(256,256);
+				if(_useNoDataTile){
+					if (this.url.match("TRANSPARENT=TRUE")){
+						this.drawLoader("", new _noDataTransp());
+						bmdata.draw(new _noDataTransp());
+					}else{
+						this.drawLoader("", new _noData());
+						bmdata.draw(new _noData());
+					}
+				}else{
+					this.drawLoader("",new _fullTransparentImage());
+					bmdata.draw(new _fullTransparentImage());
+				}				
 			}
 		}
 
@@ -165,9 +233,6 @@ package org.openscales.core.tile
 		override public function clear():void {
 			super.clear();
 			
-			if(this.layer.tweenOnLoad)
-				this.alpha = 0;
-
 			if(this._request) {
 				_request.destroy();
 			}
@@ -197,7 +262,45 @@ package org.openscales.core.tile
 			
 		}
 
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get useNoDataTile():Boolean
+		{
+			return _useNoDataTile;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_useNoDataTile = value;
+		}
 		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get digUpAttempt():Number
+		{
+			return _digUpAttempts;
+		}
+		
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function set digUpAttempt(value:Number):void
+		{
+			this._digUpAttempts = value;
+		}
+
+
 	}
 }
 

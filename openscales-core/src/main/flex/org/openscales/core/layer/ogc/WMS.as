@@ -1,12 +1,16 @@
 package org.openscales.core.layer.ogc
 {
 
+	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.layer.Grid;
+	import org.openscales.core.layer.capabilities.GetCapabilities;
 	import org.openscales.core.layer.ogc.provider.WMSTileProvider;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.tile.ImageTile;
 	import org.openscales.core.tile.Tile;
 	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
 
@@ -25,8 +29,19 @@ package org.openscales.core.layer.ogc
 		
 		/**
 		 * @private
+		 * An HashMap containing the capabilities of the layer.
+		 */
+		private var _capabilities:HashMap = null;
+		/**
+		 * @private
+		 * Do we use get capabilities?
+		 */
+		private var _useCapabilities:Boolean = false;
+		
+		/**
+		 * @private
 		 * Version of wms protocol used to request the server
-		 * Default version is 1.3.0
+		 * Default version is 1.1.1
 		 */
 		protected var _version:String="1.1.1";
 		
@@ -40,13 +55,13 @@ package org.openscales.core.layer.ogc
 		 * @private
 		 * Style of the layers to display
 		 */
-		protected var _style:String="";
+		protected var _styles:String="";
 		
 		/**
 		 * @private
 		 * MIME type for the requested layer
 		 */
-		protected var _format:String ="image/jpeg";
+		protected var _format:String ="image/png";
 		
 		/**
 		 * @private 
@@ -72,49 +87,58 @@ package org.openscales.core.layer.ogc
 		 */
 		protected var _layers:String;
 		
-		
-		
 		/**
 		 * @private
 		 * Indicate if the map is reprojected
 		 */
 		private var _reproject:Boolean = true;
+		
+		/**
+		 * @private
+		 * INFO_FORMAT parameter for GetFeatureInfo request.
+		 */
+		private var _getFeatureInfoFormat:String;
+		
+		/**
+		 * @private
+		 * EXCEPTIONS optional parameter for GetFeatureInfo request
+		 */
+		private var _getFeatureInfoExceptionFormat:String;
+		
+		/**
+		 * @private
+		 * FEATURE_COUNT optional parameter for GetFeatureInfo request
+		 */
+		private var _getFeatureInfoFeatureCount:int = 0;
 
 		/**
 		 * Constructor of the class
 		 * 
 		 * @param name Name of the layers to display
 		 * @param url URL of the service to request
-		 * @param style Styles of the layers to display
+		 * @param styles Styles of the layers to display
 		 * 
 		 */
-		public function WMS(name:String = "",
+		public function WMS(identifier:String = "",
 							url:String = "",
 							layers:String = "",
-							style:String="") {
-
-			super(name, url);
+							styles:String = "",
+							format:String = "image/png"){
 			
-			//in WMS we must be in single tile mode
-			this.tiled = true;
-			CACHE_SIZE = 32;
+			super(identifier, url);
 			
-			//Call the tile provider to generate the request and get the tile requested 
-			this._tileProvider = new WMSTileProvider(url,this._version, layers,this.projSrsCode);
-			this._tileProvider.style=style;
-
-		}
-	    override public function get maxExtent():Bounds {
-			if (! super.maxExtent) {
-				return null;
-			}
-
-			var maxExtent:Bounds =  super.maxExtent.clone();
-			// fix me
-			if (this.isBaseLayer != true && this.reproject == true && this.map.baseLayer && this.projSrsCode != this.map.baseLayer.projSrsCode) {
-				maxExtent = maxExtent.reprojectTo(this.map.baseLayer.projSrsCode);
-			}
-			return maxExtent;
+			// Properties initialization
+			this._layerName = name;
+			super.url = url;
+			this._layers = layers;
+			this._styles = styles;
+			this._format = format;
+			
+			// In WMS we must be in single tile mode
+			this.tiled = false;
+			
+			// Call the tile provider to generate the request and get the tile requested
+			this._tileProvider = new WMSTileProvider(url, this._version, layers, this.projection, styles, format);
 		}
 		
 		/**
@@ -136,18 +160,36 @@ package org.openscales.core.layer.ogc
 		}
 		
 		public function get exception():String {
+			if(!params)return null;
 			return (this.params as WMSParams).exceptions;
 		}
 		
 		public function set exception(value:String):void {
+			if(!params)return;
 			(this.params as WMSParams).exceptions = value;
+		}
+		
+		/**
+		 * @inheritDoc
+		 */
+		override public function set map(map:Map):void {
+			super.map = map;
+			// GetCapabilities request made here in order to have the proxy set 
+			if (url != null && url != "" && this.capabilities == null && useCapabilities == true) {
+				var getCap:GetCapabilities = new GetCapabilities("wms", url, this.capabilitiesGetter,
+					version, this.proxy, this.security);
+			}
 		}
 		
 		/**
 		 * Override method used to update the wms tile displayed when using the zoom control
 		 * 
 		 */
-		override public function redraw(fullRedraw:Boolean = true):void {
+		override public function redraw(fullRedraw:Boolean = false):void {
+			if (this.map == null)
+				return;
+			if(this._useCapabilities && !this._capabilities)
+				return;
 			(_tileProvider as WMSTileProvider).width = this.tileWidth;
 			(_tileProvider as WMSTileProvider).height = this.tileHeight;
 			super.redraw(fullRedraw);
@@ -160,8 +202,10 @@ package org.openscales.core.layer.ogc
 		override public function getURL(bounds:Bounds):String {
 			return this._tileProvider.getTileUrl(bounds);
 		}
+		
 		/**
-		 * Get and set the version of the wms protocol
+		 * Get and set the version of the WMS protocol
+		 * Default version is 1.1.1
 		 */
 		public function get version():String
 		{
@@ -174,51 +218,59 @@ package org.openscales.core.layer.ogc
 		{
 			this._version = value;
 			
-			//update the tileprovider version of the protocol at the same time
-			if (this._tileProvider != null){
+			// Update the tileProvider version at the same time
+			if(this._tileProvider != null){
 				this._tileProvider.version = value;
 			}
 		}
-
-		public function get style():String
+		
+		/**
+		 * Get and set the styles of the WMS protocol
+		 */
+		public function get styles():String
 		{
-			return _style;
+			return _styles;
 		}
-
-		public function set style(value:String):void
+		/**
+		 * @private
+		 */
+		public function set styles(value:String):void
 		{
-			_style = value;
+			_styles = value;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider style at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.style=value;
+				this._tileProvider.style = value;
 			}
 		}
 		
 		/**
 		 * Way to display errors for the requested tile
 		 */ 
-		public function get exceptions():String {
+		public function get exceptions():String
+		{
 			return this._exceptions;
 		}
 		/**
 		 * @private
 		 */
-		public function set exceptions(exceptions:String):void {
+		public function set exceptions(exceptions:String):void
+		{
 			this._exceptions = exceptions;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider exceptions at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.exceptions=exceptions;
+				this._tileProvider.exceptions = exceptions;
 			}
 		}
 		
+		
 		override public function get tiled():Boolean {
-			return super._tiled;
+			return this._tiled;
 		}
 		
 		override public function set tiled(value:Boolean):void {
-			super._tiled = value;
+			this._tiled = value;
 			
 			//update the tileprovider of the wmslayer at once
 			if(this._tileProvider != null){
@@ -242,6 +294,7 @@ package org.openscales.core.layer.ogc
 			if(this._tileProvider != null){
 				this._tileProvider.transparent=transparent;
 			}
+			this.redraw(true);
 		}
 		
 		/**
@@ -263,8 +316,7 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * 
-		 * MIME type for the requested layer (default : image/jpeg) 
+		 * MIME type for the requested layer (default : image/png)
 		 */
 		public function get format():String
 		{
@@ -277,9 +329,9 @@ package org.openscales.core.layer.ogc
 		{
 			this._format = value;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider format at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.format=format;
+				this._tileProvider.format = format;
 			}
 		}
 		
@@ -297,12 +349,11 @@ package org.openscales.core.layer.ogc
 		{
 			super.url = value;
 			
-			//update the tileprovider of the wmslayer at once
+			// Update the tileProvider version of the protocol at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.url=value;
+				this._tileProvider.url = value;
 			}
 		}
-		
 		
 		/**
 		 * Set the layers that the tileprovider is going to request
@@ -321,31 +372,22 @@ package org.openscales.core.layer.ogc
 		{
 			this._layers = value;
 			
+			// Update the tileProvider layer at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.layer=value;
+				this._tileProvider.layer = value;
 			}
 		}
-		
-		public function get projection():String
-		{
-			return _projSrsCode;
-		}
+
 		/**
 		 * @private
 		 */
-		public function set projection (value:String):void
+		override public function setProjection(value:Object):void
 		{
-			this.projSrsCode = value;
-		}
-		
-		/**
-		 * @Private
-		 */
-		override public function set projSrsCode(value:String):void {
-			super.projSrsCode=value;
+			super.setProjection(value);
 			
+			// Update the tileProvider projection at the same time
 			if(this._tileProvider != null){
-				this._tileProvider.projection = _projSrsCode;
+				this._tileProvider.projection = value;
 			}
 		}
 		
@@ -367,8 +409,9 @@ package org.openscales.core.layer.ogc
 		
 		
 		/**
-		 * Set the width of the tile returned by the request
-		 *
+		 * The width of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tileWidth 
+		 * is the width of the map or NaN if the layer is not in a map
 		 * @param value width of the tile
 		 */
 		override public function set tileWidth(value:Number):void {
@@ -379,8 +422,9 @@ package org.openscales.core.layer.ogc
 		}
 		
 		/**
-		 * Set the height of the tile returned by the request
-		 *
+		 * The height of the tiles requested.
+		 * If the layer is not in tiled mode, the value of tileHeight
+		 * is the height of the map or NaN if the layer is not in a map
 		 * @param value height of the tile
 		 */
 		override public function set tileHeight(value:Number):void {
@@ -389,6 +433,136 @@ package org.openscales.core.layer.ogc
 				this._tileProvider.height=value;
 			}
 		}
+		
+		/**
+		 * @inherit
+		 */
+		override public function get tileOrigin():Location
+		{
+			return super.tileOrigin;
+		}	
+		
+		/**
+		 * @private
+		 */
+		override public function set tileOrigin(value:Location):void
+		{
+			super.tileOrigin = value;
+		}
+		
+		/**
+		 * Indicates the capabilities result
+		 */
+		public function get capabilities():HashMap {
+			return this._capabilities;
+		}
+		/**
+		 * @private
+		 */
+		public function set capabilities(value:HashMap):void {
+			this._capabilities = value;
+		}
+		
+		/**
+		 * Indicates if capabilities should be used.
+		 * Default false
+		 */
+		public function get useCapabilities():Boolean {
+			return this._useCapabilities;
+		}
+		/**
+		 * @private
+		 */
+		public function set useCapabilities(value:Boolean):void {
+			this._useCapabilities = value;
+			this.available = this.checkAvailability();
+		}
+		
+		/**
+		 * Callback method called by the capabilities retriever.
+		 *
+		 * @param the GetCapabilities instance which call it.
+		 */
+		public function capabilitiesGetter(caller:GetCapabilities):void {
+			this._capabilities = caller.getLayerCapabilities(this.layers);
+			if ((this._capabilities != null) && (this.projection == null || this.useCapabilities)) {
+				var projs:String = this._capabilities.getValue("SRS");
+				var aProj:Vector.<String> = new Vector.<String>();
+				if(projs) {
+					var projsArray:Array = projs.split(",");
+					for each(var oSrs:String in projsArray) {
+						if(oSrs && oSrs.length>0)
+							aProj.push(oSrs);
+					}
+				}
+				//this.projection = this._capabilities.getValue("SRS");
+				//Setting availableProjections
+				
+				/*aProj.push(this._capabilities.getValue("SRS"));
+				var otherSRS:Vector.<String> = (this._capabilities.getValue("OtherSRS") as Vector.<String>);
+				for each(var oSrs:String in otherSRS) {
+					if(aProj.indexOf(oSrs) < 0) {
+						aProj.push(oSrs);
+					}
+				}*/
+				this.setAvailableProjections(aProj);
+				
+				if(this.map)
+					this.redraw(true);
+			}
+		}
+
+		/**
+		 * If true, when tile loading fails, a pictogram will replace the tile.
+		 * 
+		 * @default true
+		 */
+		public function get useNoDataTile():Boolean
+		{
+			return _tileProvider.useNoDataTile;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set useNoDataTile(value:Boolean):void
+		{
+			_tileProvider.useNoDataTile = value;
+		}
+		
+		/**
+		 * Get INFO_FORMAT parameter.
+		 */
+		public function get getFeatureInfoFormat():String
+		{
+			return _getFeatureInfoFormat;
+		}
+		
+		public function set getFeatureInfoFormat(value:String):void
+		{
+			this._getFeatureInfoFormat = value;
+		}
+		
+		public function get getFeatureInfoExceptionFormat():String
+		{
+			return _getFeatureInfoExceptionFormat;
+		}
+		
+		public function set getFeatureInfoExceptionFormat(value:String):void
+		{
+			this._getFeatureInfoExceptionFormat = value;
+		}
+		
+		public function get getFeatureInfoFeatureCount():int
+		{
+			return _getFeatureInfoFeatureCount;
+		}
+		
+		public function set getFeatureInfoFeatureCount(value:int):void
+		{
+			this._getFeatureInfoFeatureCount = value;
+		}
+
 	}
 }
 

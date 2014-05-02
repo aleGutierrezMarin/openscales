@@ -38,7 +38,7 @@ package org.openscales.fx.basetypes
 		}
 		
 		public function set projection(value:String):void {
-			this._bounds.projSrsCode = value;
+			this._bounds.projection = value;
 		}
 
 		public function get bounds():Bounds {

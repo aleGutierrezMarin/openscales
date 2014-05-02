@@ -1,6 +1,9 @@
 package org.openscales.geometry
 {
 	import flash.utils.getQualifiedClassName;
+	
+	import org.openscales.proj4as.ProjProjection;
+
 	/**
 	 * A Polygon is a collection of Geometry LinearRings defining a Mathematical
 	 * Polygon (the first LinearRing) with holes (the potential others LinearRings).
@@ -13,8 +16,9 @@ package org.openscales.geometry
      	 * all subsequent rings (component[1..n]) are internal holes.
      	 *
      	 * @param rings the polygon and its holes
+		 * @param projection, the projection to use for this Polygon, default is EPSG:4326
      	*/
-    	public function Polygon(rings:Vector.<Geometry>) {
+    	public function Polygon(rings:Vector.<Geometry>, projection:ProjProjection = null) {
 			// Check if all the components to add are LinearRing
 			var validRings:Boolean = true;
 			if (rings) {
@@ -26,14 +30,14 @@ package org.openscales.geometry
 					}
 				}
 			}
-			// Check if almost one ring is defined.
+			// Check if at least one ring is defined.
 			// If one (or more) ring is invalid, this condition is not tested
 			if (validRings) {
 				if (rings && (rings.length < 1)) {
 				}
 			}
 			// Initialize the object
-			super(rings);
+			super(rings,projection);
     		this.componentTypes = new <String>["org.openscales.geometry::LinearRing"];
 		}
 		
@@ -171,7 +175,7 @@ package org.openscales.geometry
 				return this.containsPoint((geom as LineString).componentByIndex(0) as Point)
 					|| ((geom is LinearRing) && (geom as LinearRing).containsPoint((this._components[0] as LinearRing).componentByIndex(0) as Point));
 			}
-			else if (getQualifiedClassName(geom) == "org.openscales.geometry::Polygon") {
+			else if (geom is Polygon) {
 				// Two holed polygons intersect if and only if one of them
 				//  intersects with the outer LinearRing of the other polygon
 				//  without being fully included in one of its holes.
@@ -245,10 +249,12 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			var PolygonClone:Polygon=new Polygon(null);
+			var returnedPolygon:Polygon=new Polygon(null);
 			var component:Vector.<Geometry>=this.getcomponentsClone();
-			PolygonClone.addComponents(component);
-			return PolygonClone;
+			returnedPolygon.projection = this.projection;
+			returnedPolygon.addComponents(component);
+			returnedPolygon._bounds = this._bounds;
+			return returnedPolygon;
 		}
 	}
 }

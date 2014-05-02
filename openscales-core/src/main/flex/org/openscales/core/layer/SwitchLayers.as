@@ -1,8 +1,11 @@
 package org.openscales.core.layer
 {
 	import org.openscales.core.Map;
-	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.geometry.basetypes.Bounds;
+	import org.openscales.proj4as.ProjProjection;
+
     /**
      *this class allow to have a layer with two layer inside , one layer is displayed according to scale 
      */
@@ -14,10 +17,10 @@ package org.openscales.core.layer
 		
 		private var _isFirstLayer:Boolean;
 		
-		override public function set maxExtent(value:Bounds):void {
-			super.maxExtent = value;
-			this._firstLayer.maxExtent = value;
-			this._lastLayer.maxExtent = value;
+		override public function setMaxExtent(value:Object):void {
+			super.setMaxExtent(value);
+			this._firstLayer.setMaxExtent(value);
+			this._lastLayer.setMaxExtent(value);
 		}
 		
 		override public function set map(map:Map):void {
@@ -27,7 +30,7 @@ package org.openscales.core.layer
 			  this._lastLayer.map  = map;
 			  this._lastLayer.removeEventListenerFromMap();
 			  super.map = map;
-			  if(this.map.zoom > this._zoomToSwitch )
+			  if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch)
 			  {
 			  	_isFirstLayer = true;
 			    this.addChild(this._firstLayer);
@@ -42,13 +45,13 @@ package org.openscales.core.layer
 		
 		public function changeLayer():void{
 		
-			 if(_isFirstLayer== false && this.map.zoom > this._zoomToSwitch )
+			 if(_isFirstLayer== false && this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch )
 			  {
 			  	this.removeChild(this._lastLayer);
 			  	_isFirstLayer = true;
 			    this.addChild(this._firstLayer);
 			  }
-			  if(_isFirstLayer== true && this.map.zoom <= this._zoomToSwitch ){
+			  if(_isFirstLayer== true && this.map.resolution.reprojectTo(this.projection).value <= this._resolutionToSwitch ){
 			  	this.removeChild(this._firstLayer);
 			  	_isFirstLayer = false;
 			    this.addChild(this._lastLayer);
@@ -74,19 +77,19 @@ package org.openscales.core.layer
 		}
 		
 		
-		override public function get projSrsCode():String {
+		override public function get projection():ProjProjection {
 			if (this.map == null) {
-				  return this._firstLayer.projSrsCode;
+				  return this._firstLayer.projection;
 			}
-			if(this.map.zoom > this._zoomToSwitch ) {
-			  return this._firstLayer.projSrsCode;
+			if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
+			  return this._firstLayer.projection;
 			} else {
-			  return this._lastLayer.projSrsCode;
+			  return this._lastLayer.projection;
 			}
 		}
 		
-		override public function get minResolution():Number {
-			if (this.map.zoom > this._zoomToSwitch ) {
+		override public function get minResolution():Resolution {
+			if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
 			  return this._firstLayer.minResolution;
 			} else {
 			  return this._lastLayer.minResolution;
@@ -94,8 +97,8 @@ package org.openscales.core.layer
 			
 		}
 		
-		override public function get maxResolution():Number {
-			if (this.map.zoom > this._zoomToSwitch ) {
+		override public function get maxResolution():Resolution {
+			if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
 			  return this._firstLayer.maxResolution;
 			} else {
 			  return this._lastLayer.maxResolution;
@@ -105,25 +108,25 @@ package org.openscales.core.layer
 		  after this zoom the lastlayer will be visible
 		  */
 		  
-		private var _zoomToSwitch:Number;
+		private var _resolutionToSwitch:Number;
 		
-		public function SwitchLayers(name:String,
+		public function SwitchLayers(identifer:String,
 								   firstLayer:Layer,
 								   lastLayer:Layer,
-								   zoomToSwitch:Number)
+								   resolutionToSwitch:Number)
 		{
 			
             this._firstLayer = firstLayer;
             this._lastLayer = lastLayer;	
-            this._zoomToSwitch = zoomToSwitch;		
-			super(name);
+            this._resolutionToSwitch = resolutionToSwitch;		
+			super(identifer);
 		}
 		
 		override protected function onMapResize(e:MapEvent):void {
 			
 			if(this.visible)
 			{
-			  if(this.map.zoom > this._zoomToSwitch ) {
+			  if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
 				this._firstLayer.redraw();
 			  }
 			  else{
@@ -138,7 +141,7 @@ package org.openscales.core.layer
 		 */
 		override public function clear():void {
 			
-			if(this.map.zoom > this._zoomToSwitch ) {
+			if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
 				this._firstLayer.clear();
 			  }
 			  else{
@@ -151,7 +154,7 @@ package org.openscales.core.layer
 		 * Reset layer data
 		 */
 		override public function reset():void {
-			if(this.map.zoom > this._zoomToSwitch ) {
+			if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
 				this._firstLayer.reset();
 			  }
 			  else{
@@ -164,7 +167,7 @@ package org.openscales.core.layer
 		 * @return true if the layer was redrawn, false if not
 		 */
 		override public function redraw(fullRedraw:Boolean = true):void {
-			if(this.map.zoom > this._zoomToSwitch ) {
+			if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
 				this._firstLayer.redraw();
 			  }
 			  else{
@@ -176,7 +179,7 @@ package org.openscales.core.layer
 		 */ 
 		public function getDisplayLayer():Layer{
 			
-			if(this.map.zoom > this._zoomToSwitch ) {
+			if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
 				return this._firstLayer;
 			  }
 			  else{
@@ -189,21 +192,21 @@ package org.openscales.core.layer
 		 * return null if there are no vector layer
 		 * this function is usefull , for legend(for example).
 		 */
-		public function getFeatureLayer():FeatureLayer{
-			if(this._firstLayer is FeatureLayer && this._lastLayer is FeatureLayer){
-			  if(this.map.zoom > this._zoomToSwitch ) {
-				 return this._firstLayer as FeatureLayer;
+		public function getFeatureLayer():VectorLayer{
+			if(this._firstLayer is VectorLayer && this._lastLayer is VectorLayer){
+				if(this.map.resolution.reprojectTo(this.projection).value > this._resolutionToSwitch) {
+				 return this._firstLayer as VectorLayer;
 			  }
 			  else{
-			  	return this._lastLayer as FeatureLayer;
+			  	return this._lastLayer as VectorLayer;
 			  }
 			}
 			else{
-				if(this._firstLayer is FeatureLayer){
-					return this._firstLayer as FeatureLayer;
+				if(this._firstLayer is VectorLayer){
+					return this._firstLayer as VectorLayer;
 				}
-				if(this._lastLayer is FeatureLayer){
-					return this._lastLayer as FeatureLayer;
+				if(this._lastLayer is VectorLayer){
+					return this._lastLayer as VectorLayer;
 				}
 				return null;
 			}
@@ -212,15 +215,15 @@ package org.openscales.core.layer
 		/**
 		 * Get a polyLayers zoomToSwitch
 		 */
-		public function get zoomToSwitch():Number{
-			return this._zoomToSwitch;
+		public function get resolutionToSwitch():Number{
+			return this._resolutionToSwitch;
 		}
 
 		/**
 		 * Set a polyLayers zoomToSwitch
 		 */
-		public function set zoomToSwitch(value:Number):void {
-			this._zoomToSwitch = value;
+		public function set resolutionToSwitch(value:Number):void {
+			this._resolutionToSwitch = value;
 		}
 	}
 }

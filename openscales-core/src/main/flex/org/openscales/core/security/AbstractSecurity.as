@@ -1,5 +1,7 @@
 package org.openscales.core.security
 {
+	import flash.net.URLRequest;
+	
 	import org.openscales.core.Map;
 	import org.openscales.core.request.AbstractRequest;
 	import org.openscales.core.security.events.SecurityEvent;
@@ -26,9 +28,7 @@ package org.openscales.core.security
 
 		public function AbstractSecurity(map:Map)
 		{
-			this._map = map;
-			this._map.addSecurity(this);
-			this.initialize();
+			this.map = map;
 		}
 
 		public function destroy():void {
@@ -72,6 +72,10 @@ package org.openscales.core.security
 
 		public function set map(value:Map):void {
 			this._map = value;
+			if(this._map) {
+				this._map.addSecurity(this);
+				this.initialize();
+			}
 		}
 		
 		/**
@@ -83,10 +87,9 @@ package org.openscales.core.security
 		 *  - proxy is null => use the proxy of the map
 		 */
 		public function get proxy():String {
-			var p:String = this._proxy;
-			if(!p && map && map.proxy)
-				p = map.proxy;
-			return p;
+			if(!this._proxy && map && map.proxy)
+				return this.map.proxy;
+			return this._proxy;
 		}
 		
 		public function set proxy(value:String):void {
@@ -119,6 +122,21 @@ package org.openscales.core.security
 				return;
 			request.proxy=null;
 			this._waitingRequests.splice(i,1);
+		}
+		
+		public function getFinalUrl(baseUrl:String):String {
+			var _finalUrl:String = baseUrl;
+			if (_finalUrl)
+			{
+				_finalUrl += (_finalUrl.indexOf("?") == -1) ? "?" : "&"; // If there is no "?" in the url, we will have to add it, else we will have to add "&"
+				if(this.securityParameter!=null)
+					_finalUrl += this.securityParameter;
+			}
+			return _finalUrl;
+		}
+		
+		public function addCustomHeaders(urlRequest:URLRequest):URLRequest {
+			return urlRequest;
 		}
 	}
 }

@@ -16,7 +16,7 @@ package org.openscales.core.ns
 	 * 		
 	 * 		public class MyClass 
 	 *		{
-	 * 			os_internal function myFunction():void { trace("foo"); };  			
+	 * 			os_internal function myFunction():void { Trace.info("foo"); };  			
 	 * 		}
 	 * }	
 	 * </code>

@@ -1,6 +1,108 @@
 Changelog
 =========
 
+Changes between 2.2 and 3.0.0
+-----------------------------
+
+* API break in Map (projection is now read-only, use setProjection instead)
+* API break in Layer (maxExtent is now read-only, use setMaxExtent instead)
+* API break in Layer (projection is now read-only, use setProjection instead)
+* Support of TileMatrixSetLimits in WMTS GetCapabilities. No more tiles will be request outside those limits
+* Adding a nodata Tile that will be displayed instead of the tile when the server is not responding.
+* Fixing an issue in the numeric scale component due to DPI problem.
+* Add map context save using WMC standard (See WMC110Format.write)
+* Add possibility to draw circles with a given radius (in meters)
+* Graticule layer is more customizable
+* Using mockolate/hamcrest for unit test
+
+
+Changes between 2.1.1 and 2.2
+-------------------------------
+* Javascript API to control swf from your HTML pages
+* defaults.css includes components default skins (only new component for now)
+* Bug fix from Shane StClair (FxMap.zoomToExtent)
+* Support of OGC's TileMAtrixSetLimits on WMTS layers (automatic when using getCapabilities, use WMTS.tileMatrixSetsLimits property in other cases).
+* Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
+* Adding a blinkMarker parameter to activate a blink animation on the marker of OpenLSSearch component.
+* Add abstract property to Layer
+* Add IIPImage client (cf IIPImageViewer)
+* Add navigation history logging (see the core class NavigationHistoryLogger and the control NavigationHistoryBrowser)
+* New control: AddExternalLayer (and its default skin AddExternalLayerDefaultSkin) which allows to add OGC WxS using a GetCap query on any valide server. Add of KML/GPX & GeoRSS layers is also supported (from local file system or URL)
+* Refactor i18n: Catalog now dispatches event when active locale changes .This allows to listen for locale changes without having access to the Map. For backward compatibility, Map instances still dispatche LOCALE_CHANGED events.
+* Issue fix: 435 https://bitbucket.org/gis/openscales/issue/458/static-cont-string-is-spelled-wrong
+* Issue fix: 467 https://bitbucket.org/gis/openscales/issue/467/solid-backgrid-for-transparent-tiles-on
+* Issue fix: 438 https://bitbucket.org/gis/openscales/issue/438/multipoint-componentsstring-function
+* Issue fix: 461 https://bitbucket.org/gis/openscales/issue/461/scale-line-when-zoomed-in-shows-incorrect
+
+Changes between 2.1.0 and 2.1.1
+-------------------------------
+* Allowing Pan and Zoom while drawin features
+* improving overall performances while requesting tiles
+* improving center changed performances
+* add FxOSM
+* fix OSM layers shift
+* Adding CSW request sender, CSW Format with GMD and DC format for metadata reading
+* Changing the way of editing path and polygon. Now add a virtual vertice inbetween two real vertice instead of a vertice under the mouse
+* Changing default styles for points, lines and polygones.
+* Changing style when a feature is overed.
+
+Changes between 2.0.0 and 2.1.0
+-------------------------------
+
+* BingMaps support
+* WMTS default value is image/jpeg
+* "name" attribute is separated in "identifier" and "displayedName" in Layer class
+* Improved label style for drawing tools
+* Renamed genLocale method to addLocale in Locale
+* Fix axis order management for openLS search
+* Features now holds 2 Geometry: one in original projection, another in map projection.
+
+
+changes between 1.2.1 and 2.0.0
+-------------------------------
+* No more baselayer
+* Freezoom
+* Begining of tile stretching to use different projections for raster layers
+* Better rendering
+* Replacement of zoom level with resolutions
+* Usage of ProProjection instead of String
+* i18n
+* Restricted extents on layers
+* Support multi projection on layer
+* Layer legend support
+* Remove gteween dependency
+
+* WFS 2.0 support
+* WMS 1.3 support
+* WMTS 1.0.0 support
+* Basic WFTS support
+* GML 3.2.1 support
+* GPX 1.0 and 1.1 support
+* GeoRSS
+* better KML support
+* Add graticule layers
+* WMC parser
+
+
+* New capabilities component allowing easy import of WFS,WMS,WMTS,KML,GPX,GeoRss layers
+* New overviewmapratio (zooming the same way the map change)
+* New dataoriginator control to display logos related to layers originator
+* Numeric scale control
+* Language switcher control
+* Several minor components: Copyright, Term of services, permanent logo
+* Some controls can be iconified
+* Layer catalog control
+* New edition tools
+* Export feature layers (only KML for now)
+
+* Keyboard handler for keyboard navigation
+* Double click handler
+* Mouse handler
+
+* Fix lot of bugs
+
+* Xml configuration, no more maintained. You should use WMC parser now.
+
 Changes between 1.1.x and 1.2
 -----------------------------
 

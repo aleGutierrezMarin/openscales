@@ -5,11 +5,12 @@ package org.openscales.core.control
 	import flash.text.TextFormat;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
 	import org.openscales.core.events.MapEvent;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Control displaying the coordinates (Lon, Lat) of the current mouse position.
@@ -20,42 +21,42 @@ package org.openscales.core.control
 		/**
 		 * Texfield wich displays coordinates
 		 */
-		private var _label:TextField = null;
+		protected var _label:TextField = null;
 		
 		/**
 		 * Text before coordinates in the label, which doesn't change.
 		 */
-		private var _prefix:String = "";
+		protected var _prefix:String = "";
 		
 		/**
 		 * the caracter between the lon and the lat
 		 */
-		private var _separator:String = ", ";
+		protected var _separator:String = ", ";
 		
 		/**
 		 * Text after coordinates in the label, which doesn't change.
 		 */
-		private var _suffix:String = "";
+		protected var _suffix:String = "";
 		
-		private var _numdigits:Number = 5;
+		protected var _numdigits:Number = 5;
 		
-		private var _granularity:int = 10;
+		protected var _granularity:int = 10;
 		
-		private var _lastXy:Pixel = null;
+		protected var _lastXy:Pixel = null;
 		
-		private var _useDMS:Boolean = true;
-		private var _localNSEW:String = "NSEW";
+		protected var _useDMS:Boolean = true;
+		protected var _localNSEW:String = "NSEW";
 		
 		/**
 		 * The projection display in the label
 		 */
 		[Bindable]
-		private var _displayProjSrsCode:String = "EPSG:4326";
+		protected var _displayProjection:ProjProjection = ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE);
 		
 		/**
-		 * MousePosition Constructor
+		 * MousePosition constructor
 		 * 
-		 * @param position
+		 * @param position. If null, position will be (0,0)
 		 */
 		public function MousePosition(position:Pixel = null) {
 			super(position);
@@ -96,15 +97,15 @@ package org.openscales.core.control
 			}
 			
 			if (lonLat == null) {
-				lonLat = new Location(0,0,(this.map.baseLayer)?this.map.baseLayer.projSrsCode:Geometry.DEFAULT_SRS_CODE);
+				lonLat = new Location(0,0,this.map.projection);
 			}
 			
-			if (this._displayProjSrsCode) {
-				lonLat = lonLat.reprojectTo(this._displayProjSrsCode);
+			if (this._displayProjection) {
+				lonLat = lonLat.reprojectTo(this._displayProjection);
 			}
 			
 			var coord1:String, coord2:String;
-			if (this.useDMS && (lonLat.projSrsCode == "EPSG:4326")) {
+			if (this.useDMS && (lonLat.projection == ProjProjection.getProjProjection(Geometry.DEFAULT_SRS_CODE))) {
 				coord1 = (lonLat.lon < 0) ? (Util.degToDMS(-lonLat.lon)+" "+this.localNSEW.charAt(3)) : (Util.degToDMS(lonLat.lon)+" "+this.localNSEW.charAt(2));
 				coord2 = (lonLat.lat < 0) ? (Util.degToDMS(-lonLat.lat)+" "+this.localNSEW.charAt(1)) : (Util.degToDMS(lonLat.lat)+" "+this.localNSEW.charAt(0));
 			} else {
@@ -223,13 +224,13 @@ package org.openscales.core.control
 		
 		/**
 		 * If null, the display projection used is the projection of the base layer.
-		 * By default, the display projection is "EPSG:4326" 
+		 * By default, the display projection is Geometry.DEFAULT_SRS_CODE
 		 */
-		public function get displayProjSrsCode():String {
-			return this._displayProjSrsCode;
+		public function get displayProjection():ProjProjection {
+			return this._displayProjection;
 		}
-		public function set displayProjSrsCode(value:String):void {
-			this._displayProjSrsCode = value;
+		public function set displayProjection(value:*):void {
+			this._displayProjection = ProjProjection.getProjProjection(value);
 		}
 		
 		public function get label():TextField {

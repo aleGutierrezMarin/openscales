@@ -5,7 +5,11 @@ package org.openscales.fx.map{
 	import org.openscales.fx.FxMap;
 	
 	public class ControlManagementTest{		
-
+		
+		private var control:Control;
+		
+		public function ControlManagementTest() {}
+		
 		[Test]
 		public function shouldContainControlAfterItIsAdded():void{
 			
@@ -14,14 +18,11 @@ package org.openscales.fx.map{
 			var initialControlCount:uint = map.controls.length;
 			
 			// When a control is added to the map
-			var control:Control = new Control();
-			map.addControlToFxMapControlsList(control);
+			control = new Control();
+			map.addControl(control);
 			
 			// Then the map contains the control
-			assertTrue("Map does not contain the control",map.controls.some(function(item:Control,index:uint,controls:Vector.<IControl>):Boolean{
-				return item === control;
-			}));
+			assertTrue("Map does not contain the control", map.controls[initialControlCount] === this.control);
 		}
-		
 	}
 }

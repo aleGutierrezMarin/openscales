@@ -2,7 +2,7 @@ package {
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
@@ -33,31 +33,14 @@ package {
 			
 			_map.proxy="http://openscales.org/proxy.php?url=";
 			var layerWMS111:WMS = new WMS("Germany","http://wms.wheregroup.com/cgi-bin/mapserv?map=/data/umn/germany/germany.map","Germany","default");
-			layerWMS111.maxExtent = new Bounds(5.60075,47.2441,15.425,55.0317,"EPSG:4326");
+			layerWMS111.setMaxExtent(new Bounds(5.60075,47.2441,15.425,55.0317,"EPSG:4326"));
 			layerWMS111.version="1.1.1";
+			layerWMS111.tiled = true;
 			
 			this._map.addLayer(layerWMS111);
-			
-			
-			// Add Controls to map
-			_map.addControl(new MousePosition());
-			_map.addControl(new LayerManager());
-			_map.addControl(new PanZoomBar());
-			
-			
-			var selectHandler: SelectFeaturesHandler = new SelectFeaturesHandler();
-			selectHandler.enableClickSelection = false;
-			selectHandler.enableBoxSelection = false;
-			selectHandler.enableOverSelection = true;
-			selectHandler.active = true;
-			
-			_map.addHandler(selectHandler);
-			_map.addHandler(new WheelHandler());
-			_map.addHandler(new DragHandler());
-			
-			// Set the map center
-			//_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			//_map.zoom=5;
+
+			_map.addControl(new WheelHandler());
+			_map.addControl(new DragHandler());
 			
 			this.addChild(_map);
 		}

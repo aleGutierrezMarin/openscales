@@ -30,14 +30,14 @@ package org.openscales.proj4as.proj {
 
 
 		override public function init():void {
-			if (!this.x0)
-				this.x0=0;
-			if (!this.y0)
-				this.y0=0;
-			if (!this.lat0)
-				this.lat0=0;
-			if (!this.long0)
-				this.long0=0;
+			if (!this.xZero)
+				this.xZero=0;
+			if (!this.yZero)
+				this.yZero=0;
+			if (!this.latZero)
+				this.latZero=0;
+			if (!this.longZero)
+				this.longZero=0;
 			///this.t2;
 		}
 
@@ -50,12 +50,12 @@ package org.openscales.proj4as.proj {
 			var lon:Number=p.x;
 			var lat:Number=p.y;
 
-			var dlon:Number=ProjConstants.adjust_lon(lon - this.long0);
-			var x:Number=this.x0 + this.a * dlon * Math.cos(this.lat0);
-			var y:Number=this.y0 + this.a * lat;
+			var dlon:Number=ProjConstants.adjust_lon(lon - this.longZero);
+			var x:Number=this.xZero + this.a * dlon * Math.cos(this.latZero);
+			var y:Number=this.yZero + this.a * lat;
 
-			this.t1=x;
-			this.t2=Math.cos(this.lat0);
+			this.tOne=x;
+			this.tTwo=Math.cos(this.latZero);
 			p.x=x;
 			p.y=y;
 			return p;
@@ -67,14 +67,14 @@ package org.openscales.proj4as.proj {
 		 ---------------------------------------------------------*/
 		override public function inverse(p:ProjPoint):ProjPoint {
 
-			p.x-=this.x0;
-			p.y-=this.y0;
+			p.x-=this.xZero;
+			p.y-=this.yZero;
 			var lat:Number=p.y / this.a;
 
 			if (Math.abs(lat) > ProjConstants.HALF_PI) {
 				trace("equi:Inv:DataError");
 			}
-			var lon:Number=ProjConstants.adjust_lon(this.long0 + p.x / (this.a * Math.cos(this.lat0)));
+			var lon:Number=ProjConstants.adjust_lon(this.longZero + p.x / (this.a * Math.cos(this.latZero)));
 			p.x=lon;
 			p.y=lat;
 

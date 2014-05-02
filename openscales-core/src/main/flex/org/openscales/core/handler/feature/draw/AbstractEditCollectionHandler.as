@@ -10,17 +10,26 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
+	import org.openscales.core.feature.LabelFeature;
+	import org.openscales.core.feature.LineStringFeature;
+	import org.openscales.core.feature.MultiLineStringFeature;
+	import org.openscales.core.feature.MultiPointFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.feature.State;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
+	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 
-
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_EDITION_MODE_START
+	 */ 
+	[Event(name="openscales.layerEditionModeStart", type="org.openscales.core.events.LayerEvent")]
+	
 	/**
 	 * This class is a handler used for Collection(Linestring Polygon MultiPolygon etc..) modification
 	 * don't use it use EditPathHandler if you want to edit a LineString or a MultiLineString
@@ -37,7 +46,12 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * This singleton represents the point under the mouse during the dragging operation
 		 * */
-		public static var _pointUnderTheMouse:PointFeature=null;
+		public static var _inBetweenFeature:PointFeature=null;
+		
+		/**
+		 * The point that is created under the mouse in edition mode.
+		 */
+		private var _dummyPointOnTheMouse:Feature;
 		/**
 		 * This tolerance is used to manage the point on the segments
 		 * */
@@ -49,7 +63,7 @@ package org.openscales.core.handler.feature.draw
 		/**
 		 * We use a timer to manage the mouse out of a feature
 		 */
-		private var _timer:Timer = new Timer(1000,1);
+		private var _timer:Timer = new Timer(500,1);
 		/**
 		 * To know if we displayed the virtual vertices of collection feature or not
 		 **/
@@ -59,7 +73,7 @@ package org.openscales.core.handler.feature.draw
 	 	* don't use it use EditPathHandler if you want to edit a LineString or a MultiLineString
 	 	* or EditPolygon 
 	 	* */
-		public function AbstractEditCollectionHandler(map:Map=null, active:Boolean=false, layerToEdit:FeatureLayer=null, featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function AbstractEditCollectionHandler(map:Map=null, active:Boolean=false, layerToEdit:VectorLayer=null, featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
 		{
 			super(map, active, layerToEdit, featureClickHandler,drawContainer,isUsedAlone);
 			this.featureClickHandler=featureClickHandler;
@@ -69,19 +83,25 @@ package org.openscales.core.handler.feature.draw
 		 * This function is used for Polygons edition mode starting
 		 * 
 		 * */
-		override public function editionModeStart():Boolean{
-		 	for each(var vectorFeature:Feature in this._layerToEdit.features){	
-					if(vectorFeature.isEditable && vectorFeature.geometry is ICollection){			
-						//Clone or not
-						if(displayedVirtualVertices)displayVisibleVirtualVertice(vectorFeature);
-					}
+		override public function editionModeStart():Boolean
+		{
+		 	/*for each(var vectorFeature:Feature in this._layerToEdit.features)
+			{	
+				if(vectorFeature.isEditable && vectorFeature.geometry is ICollection)
+				{			
+					//Clone or not
+					if(displayedVirtualVertices)displayVisibleVirtualVertice(vectorFeature);
 				}
-					if(_isUsedAlone){
-						this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_EDITION_MODE_START,this._layerToEdit));	
-						this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-					}			
-		 	return true;
-		 }
+			}
+			if(_isUsedAlone)
+			{
+				this.map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_EDITION_MODE_START,this._layerToEdit));	
+				//this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+			}*/
+			this.map.addEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+			this.map.addEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
+ 			return true;
+		}
 		
 		 /**
 		 * @inheritDoc 
@@ -89,11 +109,64 @@ package org.openscales.core.handler.feature.draw
 		  override public function editionModeStop():Boolean{
 		  	//if the handler is used alone we remove the listener
 		  	if(_isUsedAlone)
-		 	this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
+		 	//this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 		 	this._timer.removeEventListener(TimerEvent.TIMER, deletepointUnderTheMouse);		 	
 		 	super.editionModeStop();
+			this.map.removeEventListener(FeatureEvent.FEATURE_OVER, onFeatureOver);
+			this.map.removeEventListener(FeatureEvent.FEATURE_OUT, onFeatureOut);
 		 	return true;
 		 } 
+		  
+		  private function onFeatureOver(evt:FeatureEvent):void
+		  {
+			  
+			  if(!(evt.feature == _featureCurrentlyDrag) && (evt.feature is PointFeature) &&(this.isVirtualVertice(evt.feature as PointFeature) != -1))
+			  {
+				  evt.feature.originalStyle = evt.feature.style;
+				  
+				  if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+					  evt.feature.style = Style.getDefaultSelectedPointStyle();
+				  } else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+					  evt.feature.style = Style.getDefaultSelectedLineStyle();
+				  } else if (evt.feature is LabelFeature) {
+					  //evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+					  //	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+				  } else {
+					  evt.feature.style = Style.getDefaultSelectedPolygonStyle();
+				  }
+				  
+				  //set feature style as a selected style
+				  evt.feature.style.isSelectedStyle = true;
+				  
+				  evt.feature.draw();
+			  }
+		  }
+		  
+		  private function onFeatureOut(evt:FeatureEvent):void
+		  {
+			  if(!(evt.feature == _featureCurrentlyDrag) && (evt.feature is PointFeature) &&(this.isVirtualVertice(evt.feature as PointFeature) != -1))
+			  {	
+				  if(evt.feature.originalStyle != null) {
+					  evt.feature.style = evt.feature.originalStyle;
+				  } else {
+					  if(evt.feature is PointFeature || evt.feature is MultiPointFeature) {
+						  evt.feature.style = Style.getDefaultPointStyle();
+					  } else if (evt.feature is LineStringFeature || evt.feature is MultiLineStringFeature) {
+						  evt.feature.style = Style.getDefaultLineStyle();
+					  } else if (evt.feature is LabelFeature) {
+						  //evt.feature.style = Style.getDefinedLabelStyle(evt.feature.style.textFormat.font,(evt.feature.style.textFormat.size as Number),
+						  //	0x0000FF,evt.feature.style.textFormat.bold,evt.feature.style.textFormat.italic);
+					  } else {
+						  evt.feature.style = Style.getDefaultPolygonStyle();
+					  }
+				  }
+				  
+				  //set feature style as a normal style
+				  evt.feature.style.isSelectedStyle = false;
+				  
+				  evt.feature.draw();
+			  }
+		  }
 		 
 		 /**
 		 * @inheritDoc 
@@ -106,15 +179,17 @@ package org.openscales.core.handler.feature.draw
 						vectorfeature.startDrag();
 						//We see if the feature already belongs to the edited vector feature
 						indexOfFeatureCurrentlyDrag=findIndexOfFeatureCurrentlyDrag(vectorfeature);
-						if(vectorfeature!=AbstractEditCollectionHandler._pointUnderTheMouse)
+						if(vectorfeature!=AbstractEditCollectionHandler._inBetweenFeature)
 							this._featureCurrentlyDrag=vectorfeature;
 						else
 							this._featureCurrentlyDrag=null;
 						//we add the new mouseEvent move and remove the previous
 						_timer.stop();
+						this.map.mouseNavigationEnabled = false;
+						this.map.panNavigationEnabled = false;
+						this.map.zoomNavigationEnabled = false;
+						this.map.keyboardNavigationEnabled = false;
 						this.map.addEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
-					 	if(_isUsedAlone)
-							this.map.removeEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
 		 			}
 			}
 			
@@ -126,7 +201,6 @@ package org.openscales.core.handler.feature.draw
 		 	if(vectorfeature!=null){
 		 		//We stop the drag 
 		 		vectorfeature.stopDrag();
-		 		//var parentGeometry:Collection=vectorfeature.editionFeatureParentGeometry as Collection;
 		 		var parentFeature:Feature=findVirtualVerticeParent(vectorfeature);
 		 		if(parentFeature && parentFeature.geometry is ICollection){
 		 			var parentGeometry:ICollection=editionFeatureParentGeometry(vectorfeature,parentFeature.geometry as ICollection);
@@ -134,35 +208,37 @@ package org.openscales.core.handler.feature.draw
 					this._layerToEdit.removeFeature(vectorfeature);
 					this._featureClickHandler.removeControledFeature(vectorfeature);
 		 			if(parentGeometry!=null){
-		 				var lonlat:Location=this.map.getLocationFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
-		 				var newVertice:Point=new Point(lonlat.lon,lonlat.lat);
+		 				var lonlat:Location=this.map.getLocationFromMapPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY)); //this.map.getLocationFromLayerPx(new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY));			
+		 				var newVertice:Point=new Point(lonlat.lon,lonlat.lat,lonlat.projection);
 		 				//if it's a real vertice of the feature
-		 				if(vectorfeature!=AbstractEditCollectionHandler._pointUnderTheMouse)
-							parentGeometry.replaceComponent(indexOfFeatureCurrentlyDrag,newVertice);
+		 				if(vectorfeature!=AbstractEditCollectionHandler._inBetweenFeature)
+							parentGeometry.replaceComponent(indexOfFeatureCurrentlyDrag/2,newVertice);
 		 				else
-							parentGeometry.addComponent(newVertice,indexOfFeatureCurrentlyDrag);
+							parentGeometry.addComponent(newVertice,(indexOfFeatureCurrentlyDrag+1)/2);
 		 				if(displayedVirtualVertices)
-							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	
-						    
+							displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));	 
 		 			} 	
 		 		}
+				parentFeature.draw();
 		 	}
 		 	//we add the new mouseEvent move and remove the MouseEvent on the draw Temporary feature
-		 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);	
-		 	if(_isUsedAlone)this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-		 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+		 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);	
+			this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+			this.map.mouseNavigationEnabled = true;
+			this.map.panNavigationEnabled = true;
+			this.map.zoomNavigationEnabled = true;
+			this.map.keyboardNavigationEnabled = true;
 		 	this._featureCurrentlyDrag=null;
-		 	//We remove the point under the mouse if it was dragged
-		 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-		 		this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-		 		this._featureClickHandler.removeControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-		 		AbstractEditCollectionHandler._pointUnderTheMouse=null;
+		 	if(AbstractEditCollectionHandler._inBetweenFeature!=null){
+		 		this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);
+		 		this._featureClickHandler.removeControledFeature(AbstractEditCollectionHandler._inBetweenFeature);
+		 		AbstractEditCollectionHandler._inBetweenFeature=null;
 		 	}
 		 	this._drawContainer.graphics.clear();
+			vectorfeature.draw();
 		 	vectorfeature=null;
 		   _timer.stop();
-		   //vectorfeature.editionFeatureParent.draw();
-		 	this._layerToEdit.redraw();
+		 	this._layerToEdit.redraw(true);
 		 }
 		 
 		 /**
@@ -170,23 +246,26 @@ package org.openscales.core.handler.feature.draw
 		 * */
 		 override public function featureClick(event:FeatureEvent):void{
 		 	var vectorfeature:PointFeature=event.feature as PointFeature;
+			
+			if (this.isVirtualVertice(vectorfeature))
+				return;
 		 	//We remove listeners and tempoorary point
 		 	//This is a bug we redraw the layer with new vertices for the impacted feature
 		 	//The click is considered as a bug for the moment	 	
 		 	if(displayedVirtualVertices)
 				displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));
-		 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
+		 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);
 		 	this._layerToEdit.removeFeature(vectorfeature);
 		 	this._featureClickHandler.removeControledFeature(vectorfeature);
+			vectorfeature.draw();
 		 	vectorfeature=null;
 			if(_isUsedAlone)
-				this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-		 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+		 		this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
 		 	this._featureCurrentlyDrag=null;
 		 	//we remove it
-		 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-		 		this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-		 		AbstractEditCollectionHandler._pointUnderTheMouse=null;
+		 	if(AbstractEditCollectionHandler._inBetweenFeature!=null){
+		 		this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);
+		 		AbstractEditCollectionHandler._inBetweenFeature=null;
 		 	}
 		 	this._drawContainer.graphics.clear();
 		 	_timer.stop();
@@ -199,6 +278,11 @@ package org.openscales.core.handler.feature.draw
 		 	
 		 	var vectorfeature:PointFeature=event.feature as PointFeature;
 		 	
+			//Avoid removing inbetween features
+			if (this.isInbetweenVertice(vectorfeature) != -1)
+			{
+				return;
+			}
 		 	var parentFeature:Feature=findVirtualVerticeParent(vectorfeature);
 		 	if(parentFeature && parentFeature.geometry is ICollection){
 			 	var parentGeometry:ICollection=editionFeatureParentGeometry(vectorfeature,parentFeature.geometry as ICollection);
@@ -206,108 +290,63 @@ package org.openscales.core.handler.feature.draw
 
 			 	if(index!=-1){	 		
 			 		 parentGeometry.removeComponent(parentGeometry.componentByIndex(index));
+					 
+					 //add
+					 if(parentGeometry.componentsLength == 1){
+						 parentGeometry.removeComponent(parentGeometry.componentByIndex(0));
+						 this._layerToEdit.removeFeature(parentFeature);
+					 }
+					 
 			 		 if(displayedVirtualVertices)
 						 displayVisibleVirtualVertice(findVirtualVerticeParent(vectorfeature as PointFeature));
 		 		}
 			 	//we delete the point under the mouse 
-			 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
+			 	this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);
 			 	if(_isUsedAlone)
-					this.map.addEventListener(FeatureEvent.FEATURE_MOUSEMOVE,createPointUndertheMouse);
-			 	this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
+			 		this.map.removeEventListener(MouseEvent.MOUSE_MOVE,drawTemporaryFeature);
 			 	this._featureCurrentlyDrag=null;
-			 	if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-		 			this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-		 			AbstractEditCollectionHandler._pointUnderTheMouse=null;
+			 	if(AbstractEditCollectionHandler._inBetweenFeature!=null){
+		 			this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);
+		 			AbstractEditCollectionHandler._inBetweenFeature=null;
 			 	}
 			 	this._drawContainer.graphics.clear();
 			 	_timer.stop();
-		 		this._layerToEdit.redraw();
+				vectorfeature.draw();
+		 		this._layerToEdit.redraw(true);
+				this.map.mouseNavigationEnabled = true;
+				this.map.panNavigationEnabled = true;
+				this.map.zoomNavigationEnabled = true;
+				this.map.keyboardNavigationEnabled = true;
 		 	}
 		 }
 		 
-		 /**
-		 * This function is used to manage the mouse when the mouse is out of the feature
-		 * */
-		 public function onFeatureOut(evt:FeatureEvent):void{	 	
-		 	_timer.start();
-		 }
+
 		 private function deletepointUnderTheMouse(evt:TimerEvent):void{
 		 	//we hide the point under the mouse
 		 
-		   if(AbstractEditCollectionHandler._pointUnderTheMouse!=null)	AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
+		   if(AbstractEditCollectionHandler._inBetweenFeature!=null)	AbstractEditCollectionHandler._inBetweenFeature.visible=false;
 		 	_timer.stop();
 		 }
-		 /**
-		 * Create a virtual vertice under the mouse 
-		 * */
-		 public function createPointUndertheMouse(evt:FeatureEvent):void{
-		 	var vectorfeature:Feature=evt.feature as Feature;		 	
-		 	if(vectorfeature!=null && vectorfeature.layer==_layerToEdit && vectorfeature.geometry is ICollection){
-		 		_timer.stop();
-		 		vectorfeature.buttonMode=false; 
-		 		var px:Pixel=new Pixel(this._layerToEdit.mouseX,this._layerToEdit.mouseY);
-				//drawing equals false if the mouse is too close from Virtual vertice
-				var drawing:Boolean=true;
-					for(var i:int=0;i<_editionFeatureArray.length;i++){
-						var feature:Feature=_editionFeatureArray[i][0] as Feature;
-						if(feature!=null && feature!=AbstractEditCollectionHandler._pointUnderTheMouse &&  vectorfeature==_editionFeatureArray[i][1]){
-							var tmpPx:Pixel=this.map.getLayerPxFromLocation(new Location((feature.geometry as Point).x,(feature.geometry as Point).y));
-							if(Math.abs(tmpPx.x-px.x)<this._ToleranceVirtualReal && Math.abs(tmpPx.y-px.y)<this._ToleranceVirtualReal)
-							{
-								drawing=false;
-								break;
-							}
-						}
-					}
-					if(drawing){
-						layerToEdit.map.buttonMode=true;
-						var lonlat:Location=this.map.getLocationFromLayerPx(px);
-						var PointGeomUnderTheMouse:Point=new Point(lonlat.lon,lonlat.lat);	
-						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null){
-							AbstractEditCollectionHandler._pointUnderTheMouse.geometry=PointGeomUnderTheMouse;
-						}
-						else {
-							AbstractEditCollectionHandler._pointUnderTheMouse=new PointFeature(PointGeomUnderTheMouse,null,Style.getDefaultCircleStyle());
-							this._featureClickHandler.addControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-						}
-						if(AbstractEditCollectionHandler._pointUnderTheMouse.layer==null) {
-							layerToEdit.addFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-							var v:Vector.<Feature> = new Vector.<Feature>();
-							v[0] = AbstractEditCollectionHandler._pointUnderTheMouse;
-							v[1] = vectorfeature;
-							 _editionFeatureArray.push(v);
-						}
-						
-					 	if(findIndexOfFeatureCurrentlyDrag(AbstractEditCollectionHandler._pointUnderTheMouse)!=-1){ 
-							AbstractEditCollectionHandler._pointUnderTheMouse.visible=true;
-						 } 
-						else AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
-							layerToEdit.redraw();	
-					}
-					else {
-						if(AbstractEditCollectionHandler._pointUnderTheMouse!=null)
-						{
-							AbstractEditCollectionHandler._pointUnderTheMouse.visible=false;
-							layerToEdit.redraw();
-							layerToEdit.map.buttonMode=false;		
-						}		
-					}
-		 	}
+		 
+		 private function filterCallbackOnPointUnderTheMouse(item:Vector.<Feature>, index:int, vector:Vector.<Vector.<Feature>>):Boolean {
+			 if (item[0] == this._dummyPointOnTheMouse)
+				 return false
+			return true;
 		 }
+		 
 		 /**
-		 * To draw the temporaries feature during drag Operation
+		  * To draw the temporaries feature during drag Operation
 		 * */
 		 protected function drawTemporaryFeature(event:MouseEvent):void{
 		 	
 		 }
 	
 		 override public function refreshEditedfeatures(event:MapEvent=null):void{
-		 	if(AbstractEditCollectionHandler._pointUnderTheMouse){
-		 		this._layerToEdit.removeFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-		 		this._featureClickHandler.removeControledFeature(AbstractEditCollectionHandler._pointUnderTheMouse);
-		 		AbstractEditCollectionHandler._pointUnderTheMouse=null;
+		 	if(AbstractEditCollectionHandler._inBetweenFeature){
+		 		this._layerToEdit.removeFeature(AbstractEditCollectionHandler._inBetweenFeature);
+		 		this._featureClickHandler.removeControledFeature(AbstractEditCollectionHandler._inBetweenFeature);
+		 		AbstractEditCollectionHandler._inBetweenFeature=null;
 		 	}
-		 	_layerToEdit.redraw();
 		 }
 		
 		/**
@@ -315,14 +354,13 @@ package org.openscales.core.handler.feature.draw
 		 * @param vectorfeature:PointFeature the dragged feature
 		 */
 		public function findIndexOfFeatureCurrentlyDrag(vectorfeature:PointFeature):Number {
-			var parentFeature:Feature = findVirtualVerticeParent(vectorfeature);
-			if (parentFeature && parentFeature.geometry && parentFeature.geometry is ICollection) {
-				var parentgeometry:ICollection = editionFeatureParentGeometry(vectorfeature, parentFeature.geometry as ICollection);
-				if (vectorfeature == AbstractEditCollectionHandler._pointUnderTheMouse) {
-					return vectorfeature.getSegmentsIntersection(parentgeometry);
-				} else {
-					return IsRealVertice(vectorfeature, parentgeometry);
-				}
+			
+			var virtualVLength:Number = this._editionFeatureArray.length;
+			for (var i:int=0; i < virtualVLength; ++i)
+			{
+				var editionfeaturegeom:Point=_editionFeatureArray[i][0].geometry as Point;
+				if((vectorfeature.geometry as Point).x==editionfeaturegeom.x && (vectorfeature.geometry as Point).y==editionfeaturegeom.y)
+					return i;
 			}
 			return -1;
 		}
@@ -347,6 +385,41 @@ package org.openscales.core.handler.feature.draw
 						}
 		 			return -1;
 		 }
+		 
+		 /**
+		 * Return the index of the feature in the _inbetweenEditionFeatureArray Array or -1 otherwise
+		 */
+		public function isInbetweenVertice(vectorfeature:PointFeature):Number
+		 {
+			 var index:Number=0;		
+			 var geom:Point=vectorfeature.geometry as Point;
+			 //for each components of the geometry we see if the point belong to it
+			 for(index=0;index<this._inbetweenEditionFeatureArray.length;index++){		
+				 var editionfeaturegeom:Point=this._inbetweenEditionFeatureArray[index][0].geometry as Point;
+				 if((vectorfeature.geometry as Point).x==editionfeaturegeom.x && (vectorfeature.geometry as Point).y==editionfeaturegeom.y)
+					 break;
+			 }
+			 if(index<this._inbetweenEditionFeatureArray.length) return index;
+			 return -1;
+		 }
+		
+		/**
+		 *  Return the index of the feature in the _editionFeatureArray Array or -1 otherwise
+		 */
+		public function isVirtualVertice(vectorfeature:PointFeature):Number
+		{
+			var index:Number=0;		
+			var geom:Point=vectorfeature.geometry as Point;
+			//for each components of the geometry we see if the point belong to it
+			for(index=0;index<this._editionFeatureArray.length;index++){		
+				var editionfeaturegeom:Point=this._editionFeatureArray[index][0].geometry as Point;
+				if((vectorfeature.geometry as Point).x==editionfeaturegeom.x && (vectorfeature.geometry as Point).y==editionfeaturegeom.y)
+					break;
+			}
+			if(index<this._editionFeatureArray.length) return index;
+			return -1;
+		}
+		
 		 /**
 		 * This function find a parent Geometry of an edition feature
 		 * @param point

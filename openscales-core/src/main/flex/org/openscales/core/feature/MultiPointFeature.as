@@ -1,14 +1,15 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.MultiPoint;
 	import org.openscales.geometry.Point;
-	import org.openscales.core.style.Style;
-	import org.openscales.core.style.marker.WellKnownMarker;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Feature used to draw a MultiPoint geometry on FeatureLayer
@@ -22,16 +23,28 @@ package org.openscales.core.feature {
 			return this.geometry as MultiPoint;
 		}
 
+		/**
+		 * @inheritdoc
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is PointSymbolizer || symbolizer is TextSymbolizer)
+				return true;
+			else
+				return false;
+		}
+		
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			
 			// Variable declaration before for loop to improve performances
 			var p:Point = null;
 			var x:Number; 
 			var y:Number;
-			var resolution:Number = this.layer.map.resolution 
-			var dX:int = -int(this.layer.map.layerContainer.x) + this.left; 
-			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
-			
+			this.x = 0;
+			this.y = 0;
 			var point:Point = null;
 			var i:int;
 			var j:int = this.points.componentsLength;
@@ -40,10 +53,11 @@ package org.openscales.core.feature {
 				point = this.points.componentByIndex(i) as Point;
 				
 				if (symbolizer is PointSymbolizer) {
-					
-					x = dX + point.x / resolution;
-					y = dY - point.y / resolution;
+					var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(point.x, point.y, this.projection));
+					x = px.x;
+					y = px.y;
 					this.graphics.drawRect(x, y, 5, 5);
+					this.graphics.endFill();
 					
 					var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
 					if (pointSymbolizer.graphic) {
@@ -65,6 +79,8 @@ package org.openscales.core.feature {
 		override public function clone():Feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var MultiPointFeatureClone:MultiPointFeature = new MultiPointFeature(geometryClone as MultiPoint, null, this.style, this.isEditable);
+			MultiPointFeatureClone._originGeometry = this._originGeometry;
+			MultiPointFeatureClone.layer = this.layer;
 			return MultiPointFeatureClone;
 
 		}

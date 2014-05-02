@@ -2,9 +2,9 @@ package org.openscales.core.handler.feature.draw
 {
 	import flash.display.Sprite;
 	import flash.events.MouseEvent;
+	import flash.sampler.NewObjectSample;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.MapEvent;
 	import org.openscales.core.feature.Feature;
@@ -12,7 +12,9 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.MultiLineStringFeature;
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
+	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Collection;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
@@ -27,53 +29,60 @@ package org.openscales.core.handler.feature.draw
 	 * */
 	public class EditPathHandler extends AbstractEditCollectionHandler
 	{
-		public function EditPathHandler(map:Map = null, active:Boolean = false,layerToEdit:FeatureLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function EditPathHandler(map:Map = null,active:Boolean = false,layerToEdit:VectorLayer = null,featureClickHandler:FeatureClickHandler = null,drawContainer:Sprite = null,isUsedAlone:Boolean = true,featuresToEdit:Vector.<Feature> = null,virtualStyle:Style = null)
 		{
-			this.featureClickHandler=featureClickHandler;
-			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);			
+			this.featureClickHandler = featureClickHandler;
+			super(map,active,layerToEdit,featureClickHandler,drawContainer,isUsedAlone);
+			this.featuresToEdit = featuresToEdit;
+			if(virtualStyle == null)
+				this.virtualStyle = Style.getDefaultPointStyle();
+			else
+				this.virtualStyle = virtualStyle;
 		}
-
+		
 		 /**
 		 * @inheritDoc 
 		 * */
-		  override public function dragVerticeStart(vectorfeature:PointFeature):void{
-		  	//The feature edited  is the parent of the virtual vertice
-		  	var featureEdited:Feature=findVirtualVerticeParent(vectorfeature as PointFeature);
-		 	if(featureEdited!=null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
+		 override public function dragVerticeStart(vectorfeature:PointFeature):void{
+		  	// The feature edited is the parent of the virtual vertice
+		  	var featureEdited:Feature = findVirtualVerticeParent(vectorfeature as PointFeature);
+		 	if(featureEdited != null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
 		 		super.dragVerticeStart(vectorfeature);
 		 	}
-		 	
 		 }
+		 
 		 /**
 		 * @inheritDoc 
 		 * */
-		 override  public function dragVerticeStop(vectorfeature:PointFeature):void{
-		 	//The feature edited  is the parent of the virtual vertice
-		  	var featureEdited:Feature=findVirtualVerticeParent(vectorfeature as PointFeature);
-		 	if(featureEdited!=null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
-				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,featureEdited));	
+		 override public function dragVerticeStop(vectorfeature:PointFeature):void{
+		 	// The feature edited is the parent of the virtual vertice
+		  	var featureEdited:Feature = findVirtualVerticeParent(vectorfeature as PointFeature);
+		 	if(featureEdited != null && (featureEdited is LineStringFeature || featureEdited is MultiLineStringFeature)){
+				this.map.dispatchEvent(new FeatureEvent(FeatureEvent.FEATURE_EDITED_END,featureEdited));
 		 		return super.dragVerticeStop(vectorfeature);
 		 	}
 		 }
+		 
 		 /**
 		 * @inheritDoc 
 		 * */
-		override public function refreshEditedfeatures(event:MapEvent=null):void{
-
-		 	if(_layerToEdit!=null && !_isUsedAlone){
-		 		for each(var feature:Feature in this._layerToEdit.features){	
-					if(feature.isEditable && (feature.geometry is LineString || feature.geometry is MultiLineString)){			
-						//We display on the layer concerned by the operation the virtual vertices used for edition
-						//if the virtual vertices have to be displayed we displayed them
-						if(displayedVirtualVertices)displayVisibleVirtualVertice(feature);
+		 override public function refreshEditedfeatures(event:MapEvent = null):void{
+			
+		 	if(_layerToEdit != null && !_isUsedAlone){
+				for each(var feature:Feature in this.featuresToEdit){
+					if((feature.geometry is LineString || feature.geometry is MultiLineString)){
+						// We display on the layer concerned by the operation the virtual vertices used for edition
+						// If the virtual vertices have to be displayed we displayed them
+						if(displayedVirtualVertices)
+							displayVisibleVirtualVertice(feature);
 					}
-					//Virtual vertices treatment
-					else if(feature is Point /*&&  Util.indexOf(this._editionFeatureArray,feature)!=-1 */)
+					// Virtual vertices treatment ?
+					else if(feature is Point)
 					{
 						var j:int;
 						var i:int = this._editionFeatureArray.length - 1;
-						for(i;i>-1;--i){
-							if(this._editionFeatureArray[i][0]==feature){
+						for(i; i>-1; --i){
+							if(this._editionFeatureArray[i][0] == feature){
 								//We remove the edition feature to create another 						
 								//TODO Damien nda only delete the feature concerned by the operation
 								layerToEdit.removeFeature(feature);
@@ -93,21 +102,25 @@ package org.openscales.core.handler.feature.draw
 		 * @inheritDoc 
 		 * */
 		 override protected function drawTemporaryFeature(event:MouseEvent):void{
-		 	var pointUnderTheMouse:Boolean=false;
+		 	var inBetweenFeature:Boolean=false;
 		 	var parentgeom:ICollection=null;
 		 	var parentFeature:Feature;
+			if (! _featureCurrentlyDrag)
+				return;
 		 	//the feature currently dragged is a real vertice
-		 	if(this._featureCurrentlyDrag!=null){
+		 	if(this._featureCurrentlyDrag!=null && this.isInbetweenVertice(_featureCurrentlyDrag as PointFeature) == -1){
 		 		parentFeature=findVirtualVerticeParent(this._featureCurrentlyDrag as PointFeature)
+				if (!parentFeature)
+					return;
 		 		parentgeom=editionFeatureParentGeometry(this._featureCurrentlyDrag as PointFeature,parentFeature.geometry as ICollection);
 		 	}
 		 	//the feature currently dragged is a point under the mouse 	
 		 	else{
-		 		// parentgeom=AbstractEditCollectionHandler._pointUnderTheMouse.editionFeatureParentGeometry;
-		 		parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._pointUnderTheMouse)
-		 		parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._pointUnderTheMouse,parentFeature.geometry as ICollection);
-		 		pointUnderTheMouse=true;
-		 	}
+				AbstractEditCollectionHandler._inBetweenFeature = _featureCurrentlyDrag as PointFeature;
+		 		parentFeature=findVirtualVerticeParent(AbstractEditCollectionHandler._inBetweenFeature)
+		 		parentgeom=editionFeatureParentGeometry(AbstractEditCollectionHandler._inBetweenFeature,parentFeature.geometry as ICollection);
+				inBetweenFeature=true;
+		 	}		
 		 	
 		 	//The  Mouse button is down
 		 	if(event.buttonDown){
@@ -116,31 +129,33 @@ package org.openscales.core.handler.feature.draw
 			var point1Px:Pixel=null;
 			var point2Px:Pixel=null;
 			//We take 2 points in the collection depends on the index of the feature currently dragged
+			
+		
 		 	if(indexOfFeatureCurrentlyDrag==0){
-		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(0) as Point;
-		 			point2=parentgeom.componentByIndex(1) as Point;
+		 		if(inBetweenFeature){
+					point1=this._editionFeatureArray[0][0].geometry as Point;
+					point2=this._editionFeatureArray[2][0].geometry as Point;
 		 		}
-		 		else point1=parentgeom.componentByIndex(1) as Point;
+		 		else point1=this._editionFeatureArray[2][0].geometry as Point;
 		 	}
 
-		 	else if(indexOfFeatureCurrentlyDrag==parentgeom.componentsLength-1){
-		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 			point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
+		 	else if(indexOfFeatureCurrentlyDrag==(parentgeom.componentsLength + this._inbetweenEditionFeatureArray.length)-1){
+		 		if(inBetweenFeature){
+					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;
+					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag][0].geometry as Point;
 		 		}
-		 		else point1=parentgeom.componentByIndex(parentgeom.componentsLength-2) as Point;	 	
+		 		else point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;	
 		 	}	 	
 		 	else{
-		 		if(pointUnderTheMouse){
-		 			point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 			point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag) as Point;
+		 		if(inBetweenFeature){
+					point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-1][0].geometry as Point;
+					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag+1][0].geometry as Point;
 		 		}
-		 		else{ point1=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag+1) as Point;
-		 		 point2=parentgeom.componentByIndex(indexOfFeatureCurrentlyDrag-1) as Point;
-		 		}
+				else{ point1=this._editionFeatureArray[indexOfFeatureCurrentlyDrag+2][0].geometry as Point;
+					point2=this._editionFeatureArray[indexOfFeatureCurrentlyDrag-2][0].geometry as Point;
+				}
 		 	}
-		 	if(point1!=null)point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y));
+		 	if(point1!=null)point1Px=this.map.getMapPxFromLocation(new Location(point1.x,point1.y,point1.projection));
 		 	
 		 	//We draw the temporaries lines
 		 	if(point2==null && point1!=null){
@@ -151,7 +166,7 @@ package org.openscales.core.handler.feature.draw
 		 		_drawContainer.graphics.endFill();
 		 	}
 		 	else if (point2!=null && point1!=null){
-		 		point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y));
+		 		point2Px=this.map.getMapPxFromLocation(new Location(point2.x,point2.y,point2.projection));
 		 		_drawContainer.graphics.clear();
 		 		_drawContainer.graphics.lineStyle(1, 0xFF00BB);	 
 		 		_drawContainer.graphics.moveTo(point1Px.x,point1Px.y);

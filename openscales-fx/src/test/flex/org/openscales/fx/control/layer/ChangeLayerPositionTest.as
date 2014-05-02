@@ -3,9 +3,12 @@ package org.openscales.fx.control.layer
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	
+	import mx.events.FlexEvent;
+	
 	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
+	import org.flexunit.async.Async;
 	import org.openscales.core.Map;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.fx.control.layer.ChangeLayerPosition;
@@ -16,55 +19,89 @@ package org.openscales.fx.control.layer
 		/**
 		 * Basic controls for testing
 		 */
-		private var _map:Map = null;
-		private var _layer1:Layer = null;
-		private var _layer2:Layer = null;
-		private var _layer3:Layer = null;
-		private var _position:ChangeLayerPosition = null;
+		private var _map:Map;
+		private var _layer1:Layer;
+		private var _layer2:Layer;
+		private var _layer3:Layer;
+		private var _position:ChangeLayerPosition;
 		
-		[Before]
+		public function ChangeLayerPositionTest() {}
+		
+		[Before(ui)]
 		override public function setUp():void
 		{
 			super.setUp();
 			
-			_map = new Map();
+			this._map = new Map();
 			
-			_layer1 = new Layer("layer 1");
-			_layer2 = new Layer("layer 2");
-			_layer3 = new Layer("layer 3");
+			this._layer1 = new Layer("layer 1");
+			this._layer2 = new Layer("layer 2");
+			this._layer3 = new Layer("layer 3");
 			
 			// add kayers to the current map
-			_map.addLayer(_layer1);
-			_map.addLayer(_layer2);
-			_map.addLayer(_layer3);
+			this._map.addLayer(this._layer1);
+			this._map.addLayer(this._layer2);
+			this._map.addLayer(this._layer3);
 			
-			// change position control
-			_position = new ChangeLayerPosition();
-			_position.layer = _layer2;
+			//change position control
+			this._position = new ChangeLayerPosition();
 			
-			this._container.addElement(_position);
+			this._position.layer = this._layer2;
+			this._container.addElement(this._position);
+		}
+		
+		[After]
+		override public function tearDown():void {
+			super.tearDown();
+			if(this._position) {
+				if(this._container.contains(this._position)) {
+					this._container.removeElement(this._position);
+				}
+				this._position.layer = null;
+				this._position = null;
+			}
+			
+			if(this._map) {
+				this._map.removeAllLayers();
+				this._map = null;
+			}
+			
+			if(this._layer1) {
+				this._layer1.destroy();
+				this._layer1 = null;
+			}
+			
+			if(this._layer2) {
+				this._layer2.destroy();
+				this._layer2 = null;
+			}
+			
+			if(this._layer3) {
+				this._layer3.destroy();
+				this._layer3 = null;
+			}
 		}
 		
 		/**
 		 * Test if the index of the layer in the containerChild of map change when the layer is moveUp
 		 */
-		[Test]
+		[Test(ui)]
 		public function moveLayerUp():void
 		{
-			var current:uint = _map.layerContainer.getChildIndex(_layer2);
-			_position.upLayer(new MouseEvent(MouseEvent.MOUSE_DOWN));			
-			Assert.assertEquals(current+1, _map.layerContainer.getChildIndex(_layer2));
+			var current:uint = this._map.layers.indexOf(this._layer2);
+			this._position.upLayer(new MouseEvent(MouseEvent.MOUSE_DOWN));			
+			Assert.assertEquals(current+1, this._map.layers.indexOf(this._layer2));
 		}
 		
 		/**
 		 * Test if the index of the layer in the containerChild of map change when the layer is moveDown
 		 */
-		[Test]
+		[Test(ui)]
 		public function moveLayerDown():void
 		{
-			var current:uint = _map.layerContainer.getChildIndex(_layer2);		
-			_position.downLayer(new MouseEvent(MouseEvent.MOUSE_DOWN));	
-			Assert.assertEquals(current-1, _map.layerContainer.getChildIndex(_layer2));
+			var current:uint = this._map.layers.indexOf(this._layer2);		
+			this._position.downLayer(new MouseEvent(MouseEvent.MOUSE_DOWN));	
+			Assert.assertEquals(current-1, this._map.layers.indexOf(this._layer2));
 		}
 	}
 }

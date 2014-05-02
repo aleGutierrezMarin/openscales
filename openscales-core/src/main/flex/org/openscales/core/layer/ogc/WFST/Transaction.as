@@ -1,6 +1,6 @@
 package org.openscales.core.layer.ogc.WFST
 {
-	import org.openscales.core.UID;
+	import org.openscales.core.utils.UID;
 	import org.openscales.core.feature.Feature;
 
 	public class Transaction
@@ -15,8 +15,6 @@ package org.openscales.core.layer.ogc.WFST
 		private var _state:String;
 		
 		private var _feature:Feature;
-		
-		private var _message:String;
 		
 		public static var SUCCESS:String = "sucess";
 		public static var FAIL:String = "fail";

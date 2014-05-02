@@ -8,11 +8,11 @@ package org.openscales.core.security.ign
 	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.security.AbstractSecurity;
 	import org.openscales.core.security.events.SecurityEvent;
+	import org.openscales.core.utils.Trace;
 
 	/**
 	 * IGN GeoRM security implementation.
@@ -114,7 +114,6 @@ package org.openscales.core.security.ign
 		override public function initialize():void {
 			if(this._requestPending)
 				return;
-			Trace.log("Request a new token");
 			this._requestPending = true;
 			requestToken(this.authUrl,this.authParams, authenticationResponse);
 		}
@@ -139,7 +138,6 @@ package org.openscales.core.security.ign
 				var doc:XML = new XML(loader.data);
 				this.token = doc.toString();
 				this._initialized = true;
-				Trace.log("Valid token received : " + this.token);
 				super.initialize();
 				map.dispatchEvent(new SecurityEvent(SecurityEvent.SECURITY_INITIALIZED, this));
 				this.reset();
@@ -158,19 +156,6 @@ package org.openscales.core.security.ign
 			this._timer.start();
 		}
 
-		/**
-		 * Config asynchronous response
-		 */
-		private function configResponse(e:Event):void {
-			var loader:URLLoader = e.target as URLLoader;
-			try {
-				var doc:XML =  new XML(loader.data);
-				Trace.log(doc.toString());
-			} catch (err:Error) {
-				 Trace.error("Error during parsing XML response : " + loader.data)
-			}
-		}
-
 		/** Return authentication URL, use random parameter to avoid caching **/
 		private function get authUrl():String {
 			return this.host + "/getToken?random=" + Math.random().toString() + "&";
@@ -178,16 +163,6 @@ package org.openscales.core.security.ign
 
 		/** Return parameters string for authentication URL **/
 		private function get authParams():String {
-			return "key=" + this.key + "&output=xml";
-		}
-
-		/** Return config URL, use random parameter to avoid caching  **/
-		private function get configUrl():String {
-			return this.host + "/getConfig?";
-		}
-
-		/** Return parameters string for config URL **/
-		private function get configParams():String {
 			return "key=" + this.key + "&output=xml";
 		}
 
@@ -213,12 +188,10 @@ package org.openscales.core.security.ign
 
 		/** Will use the same mechanism than at layer startup to update datas when the token will be retreived **/
 		private function tokenExpiredHandler(e:TimerEvent):void {
-			Trace.log("Token expired");
 			this._initialized = false;
 		}
 
 		override public function update():void {
-			Trace.log("Update token");
 			this._requestPending = true;
 			requestToken(this.updateUrl,this.updateParams, authenticationUpdateResponse);
 			
@@ -240,7 +213,6 @@ package org.openscales.core.security.ign
 			try {
 				var doc:XML = new XML(loader.data);
 				this.token = doc.toString();
-				Trace.log("Valid token received : " + this.token);
 				map.dispatchEvent(new SecurityEvent(SecurityEvent.SECURITY_UPDATED, this));
 				this.reset();
 			} catch (err:Error) {
@@ -265,7 +237,6 @@ package org.openscales.core.security.ign
 		private function authenticationLogoutResponse(e:Event):void {
 			map.dispatchEvent(new SecurityEvent(SecurityEvent.SECURITY_LOGOUT, this));
 			this._initialized = false;
-			Trace.log("token " + this._key + " released");
 		}
 
 		public function get host():String {

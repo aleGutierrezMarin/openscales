@@ -5,6 +5,7 @@ package org.openscales.geometry
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * A MultiPoint is a geometry with multiple Point components
@@ -37,9 +38,10 @@ package org.openscales.geometry
 		 * . 
 		 * 
 		 * @param components
+		 * @param projection The projection to use for this MultiPoint, default is EPSG:4326
 		 */
-		public function MultiPoint(points:Vector.<Number> = null) {
-			super();
+		public function MultiPoint(points:Vector.<Number> = null, projection:ProjProjection = null) {
+			super(projection);
 			if (points != null) {
 				this._components = points;
 			}
@@ -60,7 +62,15 @@ package org.openscales.geometry
 		
 		public function componentByIndex(i:int):Geometry {
 			var j:uint = i * 2;
-			return ((j<0)||(j>=this._components.length)) ? null : new Point(this._components[j],this._components[j+1]);
+			if ((j<0)||(j>=this._components.length))
+			{
+				return null
+			}else
+			{
+				var pt:Point = new Point(this._components[j],this._components[j+1]);
+				pt.projection = this.projection;
+				return pt;
+			}
 		}
 		
 		/**
@@ -114,6 +124,7 @@ package org.openscales.geometry
 		override public function clone():Geometry{		
 			var clone:MultiPoint=new MultiPoint(null);
 			var component:Vector.<Number>=this.getcomponentsClone();
+			clone.projection = this.projection;
 			clone.addPoints(component);
 			return clone;		
 		}
@@ -127,7 +138,7 @@ package org.openscales.geometry
 			var strings:Vector.<String> = new Vector.<String>(this.componentsLength);
 			var length:uint = this.componentsLength;
 			var realIndex:uint;
-			for(var i:int = 0; i < this.length; ++i) {
+			for(var i:int = 0; i < length; ++i) {
 				realIndex= i*2;
 				strings[i]= this._components[realIndex] + ", " + this._components[realIndex+1];
 			}
@@ -178,7 +189,7 @@ package org.openscales.geometry
 					bottom = (bottom < tempNumber) ? bottom : tempNumber;
 					top = (top > tempNumber) ?top : tempNumber;
 				}
-				this._bounds = new Bounds(left,bottom,right,top,this.projSrsCode);
+				this._bounds = new Bounds(left,bottom,right,top,this.projection);
 			}
 		}
 		
@@ -303,7 +314,7 @@ package org.openscales.geometry
 				}
 			}
 			
-			if (indice > 0) {
+			if (indice >= 0) {
 				this._components.splice(indice, 2);
 				this.clearBounds();
 				return true;
@@ -352,17 +363,17 @@ package org.openscales.geometry
 		/**
 		 * Method to convert the collection from a projection system to an other.
 		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * @param dest the destination projection, can be both a String or a ProjProjection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
+		override public function transform(dest:*):void {
 			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
+			var source:ProjProjection = this.projection;
+			this.projection = dest;
 			// Update the geometry
 			var p:ProjPoint;
 			for(var i:int=0; i<this._components.length; i+=2) {
 				p = new ProjPoint(this._components[i], this._components[i+1]);
-				Proj4as.transform(sourceSrs, destSrs, p);
+				Proj4as.transform(source, this.projection, p);
 				this._components[i] = p.x;
 				this._components[i+1] = p.y;
 			}

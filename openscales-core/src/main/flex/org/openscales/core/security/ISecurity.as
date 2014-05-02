@@ -1,5 +1,7 @@
 package org.openscales.core.security
 {
+	import flash.net.URLRequest;
+	
 	import org.openscales.core.request.AbstractRequest;
 
 	/**
@@ -43,6 +45,17 @@ package org.openscales.core.security
 		 * destroy the security
 		 */
 		function destroy():void;
+		
+		/**
+		 * Computes finalURL for a request 
+		 */
+		function getFinalUrl(baseUrl:String):String;
+		
+		
+		/**
+		 * This method allows to set special headers for a request
+		 */
+		function addCustomHeaders(urlRequest:URLRequest):URLRequest;
 	}
 }
 

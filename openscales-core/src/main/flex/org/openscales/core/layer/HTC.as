@@ -60,6 +60,7 @@ package org.openscales.core.layer
 		 */
 		public function HTC(name:String,
 							url:String,
+							displayedName:String=null,
 							maxResolution:Number=DEFAULT_MAX_RESOLUTION,
 							numZoomLevel:uint=DEFAULT_NUM_ZOOM_LEVELS,
 							zoom_max:uint=DEFAULT_ZOOM_MAX) {
@@ -67,8 +68,8 @@ package org.openscales.core.layer
 			// prevent malformed urls due to lack of slash sign
 			if(url.length>0 && url.substr(-1,1)!="/")
 				url+="/";
-			super(name,url);
-			this.projSrsCode = "EPSG:900913";
+			super(name,url,displayedName);
+			this.setProjection("EPSG:900913");
 			this._zoom_max = zoom_max;
 			this.generateResolutions(numZoomLevel, maxResolution);
 		}
@@ -80,10 +81,12 @@ package org.openscales.core.layer
 		 */
 		override public function getURL(bounds:Bounds):String
 		{
-			var resolution:Number = this.map.resolution;
+			var resolution:Number = this.map.resolution.value;
+			
+			// TODO : Refactor zoom
 			// htc has reverse zoom 
-			var zoom:int = _zoom_max - this.map.zoom ;
-			var zoomString:String = String(zoom);
+			var zoom:int = 0 // _zoom_max - this.map.zoom ;
+			var zoomString:String = "" //String(zoom);
 
 			// compute the number of the tile
 			var numX:Number = Math.floor(bounds.center.x / (this.tileWidth * resolution));

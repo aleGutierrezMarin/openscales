@@ -2,6 +2,7 @@ package org.openscales.core.control
 {
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.utils.getQualifiedClassName;
 	
 	import org.openscales.core.Map;
@@ -17,6 +18,8 @@ package org.openscales.core.control
 
 		protected var _map:Map = null;
 		protected var _active:Boolean = false;
+		[Bindable]
+		protected var _isReduced:Boolean = false;
 
 		public function Control(position:Pixel = null) {
 
@@ -88,6 +91,26 @@ package org.openscales.core.control
 		 */
 		public function onMapLanguageChange(event:I18NEvent):void {
 			
+		}
+		
+		/**
+		 * Indicates if the control display is normal or reduced
+		 * @default false : normal display
+		 */
+		[Bindable]
+		public function get isReduced():Boolean
+		{
+			return this._isReduced;
+		}
+		
+		public function set isReduced(value:Boolean):void
+		{
+			this._isReduced = value;
+		}
+		
+		public function toggleDisplay(event:Event = null):void
+		{	
+			this.isReduced = !this._isReduced;
 		}
 	}
 }

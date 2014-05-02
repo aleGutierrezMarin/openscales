@@ -12,11 +12,11 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import org.openscales.fx.popup.renderer.IFxPopupRenderer;
 			import mx.events.FlexEvent;
 			
 			import org.openscales.core.feature.Feature;
 			import org.openscales.fx.FxMap;
+			import org.openscales.fx.popup.renderer.IFxPopupRenderer;
 			import org.openscales.geometry.basetypes.Bounds;
 			import org.openscales.geometry.basetypes.Location;
 			import org.openscales.geometry.basetypes.Pixel;
@@ -154,13 +154,25 @@
 				}
 			}
 			
-			public function set position(px:Pixel):void {
-				var newPx:Pixel = this.calculateNewPx(px);
-				if (newPx != null) {
-					x = newPx.x;
-					y = newPx.y;
+			/**
+			 * The position of the popup. You can either give a pixel to set the position
+			 * or a Location.
+			 * If you set a location, the position pixel is automaticaly computed
+			 */
+			public function set position(value:*):void {
+				if (value is Location)
+				{
+					value = fxmap.map.getMapPxFromLocation(value);
+					this.relativePosition = this.calculateRelativePosition(value);
 				}
-				
+				if (value is Pixel)
+				{
+					var newPx:Pixel = this.calculateNewPx(value as Pixel);
+					if (newPx != null) {
+						x = newPx.x;
+						y = newPx.y;
+					}
+				}
 			}
 			
 			public function get position():Pixel {

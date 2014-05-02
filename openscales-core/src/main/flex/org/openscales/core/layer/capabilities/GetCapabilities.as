@@ -3,11 +3,12 @@ package org.openscales.core.layer.capabilities
 
 	import flash.events.Event;
 	import flash.net.URLLoader;
-	import flash.net.URLRequestMethod;
 	
-	import org.openscales.core.Trace;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Layer;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.security.ISecurity;
+	import org.openscales.core.utils.Trace;
 
 	/**
 	 * Class to request Capabilities to a given server.
@@ -21,8 +22,9 @@ package org.openscales.core.layer.capabilities
 		private var _request:String = null;
 		private var _url:String = null;
 		private var _proxy:String = null;
-
+		private var _security:ISecurity = null;
 		private var _parser:CapabilitiesParser = null;
+		private var _req:XMLRequest;
 		
 		private var _capabilities:HashMap = null;
 
@@ -32,21 +34,30 @@ package org.openscales.core.layer.capabilities
 
 		/**
 		 * Class contructor
+		 * 
+		 * cbkFunc must have this signature :
+		 * public function cbkFunc(getCap:GetCapabilities):void {
+		 * }
+		 * 
+		 * It takes the GetCapabilites object as parameter in order to access the variables set by the Getcapabilities request.
 		 */
-		public function GetCapabilities(service:String, url:String, cbkFunc:Function=null, version:String="1.1.0", proxy:String = null)
+		public function GetCapabilities(service:String, url:String, cbkFunc:Function=null, version:String=null, proxy:String = null, security:ISecurity=null)
 		{			
 			this._service = service.toUpperCase();
 			this._url = url;
 			this._request = "GetCapabilities";
 			this._capabilities = new HashMap(false)
 			this._parsers = new HashMap();
-
-			_parsers.put("WFS 1.0.0",WFS100);
-		    _parsers.put("WFS 1.1.0",WFS110);
-		    _parsers.put("WMS 1.0.0",WMS100);
-		    _parsers.put("WMS 1.1.0",WMS110);
-		    _parsers.put("WMS 1.1.1",WMS111);
-			_parsers.put("WMTS 1.0.0",WMTS100)
+			this._security = security;
+			
+			_parsers.put("WFS 1.0.0",WFS100Capabilities);
+		    _parsers.put("WFS 1.1.0",WFS110Capabilities);
+			_parsers.put("WFS 2.0.0",WFS200Capabilities);
+		    _parsers.put("WMS 1.0.0",WMS100Capabilities);
+		    _parsers.put("WMS 1.1.0",WMS110Capabilities);
+		    _parsers.put("WMS 1.1.1",WMS111Capabilities);
+			_parsers.put("WMS 1.3.0",WMS130Capabilities);
+			_parsers.put("WMTS 1.0.0",WMTS100Capabilities);
 				
 			this._proxy = proxy;
 
@@ -59,6 +70,13 @@ package org.openscales.core.layer.capabilities
 		}
 
 		/**
+		 * If a get cap query is running, calling this method will abort it.
+		 */ 
+		public function abort():void{
+			_req.destroy();
+		}
+		
+		/**
 		 * Method which will request the capabilities
 		 *
 		 * @param failedVersion The last WFS version protocol requested unsuported by the server
@@ -67,27 +85,17 @@ package org.openscales.core.layer.capabilities
 		private function requestCapabilities(failedVersion:String = null):Boolean{
 
 			if (this._service != "WFS" && this._service != "WMS" && this._service != "WMTS"){
-				Trace.error("Bad service for GetCapabilities: " + this._service);
 				return false;
 			}
 
 			if (this._url == null) {
-				Trace.error("GetCapabilities: URL must not be null");
-				return false;
-			}
-			
-			var parser:Class = _parsers.getValue(this._service + " " + version);
-            this._parser = new parser;
-
-			if (this._parser == null) 
-			{
-				Trace.error("GetCapabilities: Not found server compatible version");
 				return false;
 			}
 			
 			var urlRequest:String = this.buildRequestUrl(); 
 
-			var _req:XMLRequest = new XMLRequest(urlRequest, this.parseResult, this.onFailure);
+			_req = new XMLRequest(urlRequest, this.parseResult, this.onFailure);
+			_req.security = this._security;
 			_req.proxy = this._proxy;
 			//_req.security = null; //FixMe: should the security be managed here ?
 			_req.send();
@@ -103,12 +111,15 @@ package org.openscales.core.layer.capabilities
 		private function buildRequestUrl():String {
 			var url:String = this._url;
 
-			if(url.charAt(url.length - 1) != "?") {
+			if(url.indexOf("?")==-1) {
 				url += "?";
+			} else {
+				url += "&";
 			}
 
 			url += "REQUEST=" + this._request;
-			url += "&VERSION=" + this._version;
+			if(this._version)
+				url += "&VERSION=" + this._version;
 			url += "&SERVICE=" + this._service;
 
 			return url;
@@ -126,7 +137,7 @@ package org.openscales.core.layer.capabilities
 			}
 			catch (error:Error) 
 			{
-			     trace("XML parse error");
+
 			     onFailure(event);
 			     return;
 			}
@@ -135,8 +146,32 @@ package org.openscales.core.layer.capabilities
 			//if (doc.@version != this._version) {
 			//	this.requestCapabilities(doc.@version);
 			//}
+			
+			if(!this._version)
+				this._version = doc.@version;
 
+			if(!this._version)
+				this._version = "1.0.0";
+			
+			
+			var parser:Class = _parsers.getValue(this._service + " " + this._version);
+			this._parser = new parser;
+			
+			if (this._parser == null) 
+			{
+				Trace.error("GetCapabilities: Not found server compatible version");
+			}
+			
 			this._capabilities = this._parser.read(doc);
+			
+			// add auto version in result
+			var map:Array = this._capabilities.getKeys();
+			
+			for each(var item:Object in map)
+			{
+				this._capabilities.getValue(item).put("auto-version", this._version);
+			}
+
 			this._requested = true;
 
 			if (this._cbkFunc != null) {
@@ -158,7 +193,16 @@ package org.openscales.core.layer.capabilities
 				this._cbkFunc.call(this,this);
 			}
 		}
-
+		
+		/**
+		 * Call the <code>instanciate</code> method of current parser and set the <code>url</code> property of the instanciated layer
+		 */ 
+		public function instanciateLayer(layerName:String):Layer{
+			var layer:Layer = _parser.instanciate(layerName);
+			if(layer) layer.url = this._url;
+			return layer;
+		}
+		
 		/**
 		 * Returns the capabilities HashMap representation of the specified layer name
 		 *

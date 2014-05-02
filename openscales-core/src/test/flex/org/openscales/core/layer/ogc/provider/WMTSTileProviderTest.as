@@ -1,22 +1,14 @@
 package org.openscales.core.layer.ogc.provider
 {
-	import flashx.textLayout.debug.assert;
 	
-	import flexunit.framework.Assert;
-	
+	import org.flexunit.Assert;
 	import org.flexunit.asserts.assertEquals;
-	import org.flexunit.asserts.assertFalse;
-	import org.flexunit.asserts.assertNotNull;
 	import org.flexunit.asserts.assertTrue;
 	import org.openscales.core.basetypes.maps.HashMap;
-	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.core.ns.os_internal;
-	import org.openscales.core.tile.ImageTile;
-	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Unit;
 	import org.openscales.proj4as.ProjProjection;
 	
@@ -39,6 +31,8 @@ package org.openscales.core.layer.ogc.provider
 				"TILEROW":"10",
 				"TILECOL":"20"     
 			};
+		
+		public function WMTSTileProviderTest() {}
 		
 		/**
 		 * This method test the exactitude of tile index calculation
@@ -176,11 +170,8 @@ package org.openscales.core.layer.ogc.provider
 			
 			var resolutions:Array = tp.generateResolutions(0);
 			
-			assertEquals(0,resolutions.length);
-			
-			resolutions = tp.generateResolutions(1);
-			assertEquals(1,resolutions.length);
-			
+			assertEquals(null,resolutions);
+
 			resolutions = tp.generateResolutions(22);
 			assertEquals(22,resolutions.length);
 			

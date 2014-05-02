@@ -8,24 +8,17 @@
 	
 	<fx:Script>
 		<![CDATA[
-			import flash.display.Loader;
-			import flash.net.URLRequest;
-			import flash.utils.Timer;
-			
 			import mx.collections.ArrayList;
-			import mx.events.FlexEvent;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
 			import org.openscales.core.control.DataOriginators;
 			import org.openscales.core.events.OriginatorEvent;
-			import org.openscales.core.layer.originator.DataOriginator;
 			
 			
 			/**
 			 * The default value of time between two changes.
 			 */
-			public static var DEFAULT_TIME_CYCLE:uint=10000;
+			public static var DEFAULT_TIME_CYCLE:uint=1000;
 			
 			/**
 			 * The default logo displayed number.
@@ -110,6 +103,8 @@
 				{
 					this._dataOriginators = new DataOriginators();
 				}
+				
+				logoNumber = _dataOriginators.originators.length;
 			}
 			
 			/**
@@ -240,6 +235,7 @@
 			 */
 			private function changeDisplay(event:Event):void
 			{
+				logoNumber = _dataOriginators.originators.length;
 				var listSize:Number = this._dataOriginators.originators.length;
 				// remove current logo from the scene
 				this._originator.removeAll();
@@ -270,8 +266,11 @@
 						i = 0;		
 						for (; i<j; ++i) 
 						{
-							this._originator.addItem(this._dataOriginators.originators[this._currentOriginator]);
-							this._currentOriginator = getFollowing(this._currentOriginator);
+							if(this._dataOriginators.originators.length > this._currentOriginator)
+							{
+								this._originator.addItem(this._dataOriginators.originators[this._currentOriginator]);
+								this._currentOriginator = getFollowing(this._currentOriginator);
+							}
 						}
 					}	
 				}
@@ -288,6 +287,8 @@
 			 */
 			private function onOriginatorRemoved(event:OriginatorEvent):void
 			{
+				logoNumber = _dataOriginators.originators.length;
+				
 				// the position of the originator removed in the previous list :
 				var id:Number = event.position;
 				
@@ -301,6 +302,7 @@
 					this._currentOriginator = 0; // back to the begining
 				}
 				this.changeDisplay(null);
+				
 			}
 			
 			// getter / setter :
@@ -449,11 +451,12 @@
 				horizontalCenter="0" verticalCenter="0" dataProvider="{_originator}"
 				itemRenderer="{new ClassFactory(this.itemRenderer)}"
 				contentBackgroundAlpha="0"
+				minWidth="50"
 				borderVisible="false" >
 			<s:layout>
 				<s:HorizontalLayout 
 					id="originatorsHorizontalLayout" 
-					requestedColumnCount="{this.logoNumber}" 
+					requestedColumnCount="{this.logoNumber}"
 					gap="{this._spacing}"
 					paddingLeft="{this._spacing}"
 					paddingRight="{this._spacing}"

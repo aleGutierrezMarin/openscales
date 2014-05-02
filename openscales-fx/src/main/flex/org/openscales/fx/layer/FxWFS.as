@@ -12,19 +12,17 @@ package org.openscales.fx.layer
 	 * <p>WFS Flex wrapper.</p>
 	 * <p>To use it, declare a &lt;WFS /&gt; MXML component using xmlns="http://openscales.org"</p>
 	 */
-	public class FxWFS extends FxFeatureLayer
+	public class FxWFS extends FxVectorLayer
 	{
 		private var _url:String;
 		
 		private var _typename:String;
 		
-		private var _version:String;
+		private var _version:String = "2.0.0";
 		
 		private var _useCapabilities:Boolean = true;
 		
-		private var _capabilitiesVersion:String = "1.1.0";
-		
-		
+		// Constructor
 		public function FxWFS() {
 			super();
 		}
@@ -33,7 +31,7 @@ package org.openscales.fx.layer
 			this._layer = new WFS("", "", "");
 			this._layer.visible=true
 			if(this._projection != null)
-				this._layer.projSrsCode = this._projection;
+				this._layer.setProjection(this._projection);
 			(this._layer as WFS).useCapabilities=_useCapabilities;
 		}
 		
@@ -47,11 +45,11 @@ package org.openscales.fx.layer
 			}
 		}
 		
-		public function get layer():Layer{
-			
+		public function get layer():Layer
+		{
 			return this.nativeLayer;
 		}
-		//ici override
+		
 		override public function get nativeLayer():Layer {
 			if (this.style != null) {
 				(this._layer as WFS).style = this.style;
@@ -60,7 +58,7 @@ package org.openscales.fx.layer
 			(this._layer as WFS).url = this._url;
 			(this._layer as WFS).typename = this._typename;
 			(this._layer as WFS).useCapabilities = this._useCapabilities;
-			(this._layer as WFS).capabilitiesVersion = this._capabilitiesVersion;
+			(this._layer as WFS).version = this._version;
 			
 			return this._layer;
 		}
@@ -85,11 +83,12 @@ package org.openscales.fx.layer
 		
 		public function set version(value:String):void {
 			this._version = value;
+			if(this.nativeLayer)
+				(this._layer as WFS).version = value;
 		}
-		
 		public function get version():String{
 			return this._version;
-		}	
+		}
 		
 		public function set useCapabilities(value:Boolean):void {
 			this._useCapabilities = value;
@@ -99,18 +98,9 @@ package org.openscales.fx.layer
 			return this._useCapabilities;
 		}
 		
-		public function set capabilitiesVersion(value:String):void {
-			this._capabilitiesVersion = value;
-		}
-		
-		public function get capabilitiesVersion():String {
-			return this.capabilitiesVersion;
-		}
-		
-		public override function set projection(value:String):void
+		public override function set projection(value:*):void
 		{
 			super.projection = value;
-			//super.maxExtent = super.maxExtent;
 			super.configureLayer();
 		}
 		

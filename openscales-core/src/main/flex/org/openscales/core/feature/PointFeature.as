@@ -1,16 +1,23 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
+	import flash.events.MouseEvent;
+	import flash.text.TextField;
+	import flash.text.TextFormat;
 	
-	import org.openscales.geometry.basetypes.Location;
-	import org.openscales.geometry.basetypes.Pixel;
+	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
-	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.fill.SolidFill;
+	import org.openscales.core.style.font.Font;
+	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Feature used to draw a Point geometry on FeatureLayer
@@ -29,13 +36,15 @@ package org.openscales.core.feature {
 		}
 
 		public static function createPointFeature(loc:Location, data:Object=null, style:Style=null ):PointFeature {
-			return new PointFeature(new Point(loc.lon,loc.lat), data, style);
+			var pt:Point = new Point(loc.lon,loc.lat);
+			pt.projection = loc.projection;
+			return new PointFeature(pt, data, style);
 		}
 		
 		override public function get lonlat():Location {
 			var value:Location = null;
 			if (this.point != null) {
-				value = new Location(this.point.x, this.point.y);
+				value = new Location(this.point.x, this.point.y, this.point.projection);
 			}
 			return value;
 		}
@@ -44,7 +53,7 @@ package org.openscales.core.feature {
 			this._editionFeatureParentGeometry = null;
 			super.destroy();
 		}
-
+		
 		public function get point():Point {
 			return this.geometry as Point;
 		}
@@ -56,16 +65,34 @@ package org.openscales.core.feature {
 			}
 			super.draw();
 		}
+		
+		/**
+		 * @inheritdoc
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is PointSymbolizer || symbolizer is TextSymbolizer)
+				return true;
+			else
+				return false;
+		}
 
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 			var x:Number;
 			var y:Number;
-			var resolution:Number = this.layer.map.resolution
-			var dX:int = -int(this.layer.map.layerContainer.x) + this.left;
-			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
-			x = dX + point.x / resolution;
-			y = dY - point.y / resolution;
+			if(!this.layer || !this.layer.map)
+				return;
+			var resolution:Number = this.layer.map.resolution.value;
+			this.x = 0;
+			this.y = 0;
+			var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(this.point.x, this.point.y, this.projection));
+			x = px.x;
+			y = px.y;
 			this.graphics.drawRect(x, y, 5, 5);
+			this.graphics.endFill();
 
 			if (symbolizer is PointSymbolizer) {
 				var pointSymbolizer:PointSymbolizer = (symbolizer as PointSymbolizer);
@@ -75,6 +102,8 @@ package org.openscales.core.feature {
 					render.y += y;
 					this.addChild(render);
 				}
+			} else if (symbolizer is TextSymbolizer) {
+				(symbolizer as TextSymbolizer).drawTextField(this);
 			}
 		}
 
@@ -84,6 +113,8 @@ package org.openscales.core.feature {
 		override public function clone():Feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var PointFeatureClone:PointFeature = new PointFeature(geometryClone as Point, null, this.style);
+			PointFeatureClone._originGeometry = this._originGeometry;
+			PointFeatureClone.layer = this.layer;
 			return PointFeatureClone;
 		}
 
@@ -148,17 +179,11 @@ package org.openscales.core.feature {
 				var pointA:Point = (arrayResult[i][0] as LineString).componentByIndex(0) as Point;
 				var pointB:Point = (arrayResult[i][0] as LineString).componentByIndex(1) as Point;
 
-				var pointPx:Pixel = this.layer.map.getLayerPxFromLocation(new Location(point.x, point.y));
+				var pointPx:Pixel = this.layer.map.getMapPxFromLocation(new Location(point.x, point.y));
 
-				var pointPxA:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointA.x, pointA.y));
+				var pointPxA:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointA.x, pointA.y));
 
-				var pointPxB:Pixel = this.layer.map.getLayerPxFromLocation(new Location(pointB.x, pointB.y));
-
-				pointPx = this.layer.map.getMapPxFromLayerPx(pointPx);
-				pointPxA = this.layer.map.getMapPxFromLayerPx(pointPxA);
-				pointPxB = this.layer.map.getMapPxFromLayerPx(pointPxB);
-
-
+				var pointPxB:Pixel = this.layer.map.getMapPxFromLocation(new Location(pointB.x, pointB.y));
 
 				var scalarPointAPointBPower:Number = Math.pow((pointPxA.x - pointPxB.x), 2) + Math.pow((pointPxA.y - pointPxB.y), 2);
 

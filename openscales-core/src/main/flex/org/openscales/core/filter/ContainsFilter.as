@@ -1,12 +1,11 @@
 package org.openscales.core.filter {
-	import org.openscales.core.Trace;
 	import org.openscales.core.feature.Feature;
 	import org.openscales.geometry.Geometry;
 
 	public class ContainsFilter extends IntersectsFilter
 	{
-		public function ContainsFilter(geom:Geometry, srsCode:String/*=Layer.DEFAULT_SRS_CODE*/) {
-			super(geom, srsCode);
+		public function ContainsFilter(geom:Geometry, projection:String) {
+			super(geom, projection);
 		}
 		
 		override public function matches(feature:Feature):Boolean {

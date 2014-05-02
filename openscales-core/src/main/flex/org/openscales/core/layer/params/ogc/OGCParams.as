@@ -43,8 +43,13 @@ package org.openscales.core.layer.params.ogc
 			if (this._request != null)
 				str += "REQUEST=" + this._request + "&";
 
-			if (this._srs != null)
-				str += "SRS=" + this._srs + "&";
+			if (this._srs != null) {
+				if(this.service == "WFS" && (this._version == "2.0.0" || this._version == "1.1.0")) {
+					str += "SRSNAME=" + this._srs + "&";
+				} else {
+					str += "SRS=" + this._srs + "&";
+				}
+			}
 
 			var keys:Array = _additionalParams.getKeys();
 			var n:uint = keys.length;
