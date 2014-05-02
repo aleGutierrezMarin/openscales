@@ -2,6 +2,7 @@ package org.openscales.core.control
 {
 	import flash.display.Bitmap;
 	import flash.display.Loader;
+	import flash.display.LoaderInfo;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.events.TimerEvent;
@@ -125,7 +126,7 @@ package org.openscales.core.control
 		 * The width of all displayed logos.
 		 */
 		private var _logoWidth:Number = DataOriginatorsDisplay.DEFAULT_LOGO_WIDTH;
-			
+		
 		/**
 		 * @private
 		 * @default DEFAULT_LOGO_HEIGHT
@@ -175,7 +176,7 @@ package org.openscales.core.control
 				
 				for(; i<j; ++i)
 				{
-					this.removeChild(this._currentOriginator.bitmap());
+					this.removeChild(this._currentOriginator.bitmap);
 					this._currentOriginator = this.getFollowing(this._currentOriginator);
 				}
 				this._currentOriginator = null;
@@ -193,7 +194,7 @@ package org.openscales.core.control
 		 * (according to the logoNumber given) and rotate each given delay
 		 */
 		override public function draw():void {
-
+			
 			if(this._timer!=null)
 				return;
 			
@@ -228,33 +229,33 @@ package org.openscales.core.control
 		 * @param originator The originator node of the logo to add
 		 * @param position The position of this button
 		 */
-		 private function addLogoButton(originatorNode:LinkedListOriginatorNode, position:Pixel):void
-		 {
-			 var btn:Button = new Button(originatorNode.originator.name, originatorNode.bitmap(), position);
-			 btn.addEventListener(MouseEvent.CLICK, this.onClick);
-			 
-			 this.addChild(btn);
-		 }
-		 
-		 /**
-		  * @private
-		  * Remove logo button from the stage.
-		  * Remove the listener on this button
-		  *
-		  * @param originator The originator node of the logo to remove
-		  */
-		 private function removeLogoButton(originatorNode:LinkedListOriginatorNode):void
-		 { 
+		private function addLogoButton(originatorNode:LinkedListOriginatorNode, position:Pixel):void
+		{
+			var btn:Button = new Button(originatorNode.originator.key, originatorNode.bitmap, position);
+			btn.addEventListener(MouseEvent.CLICK, this.onClick);
+			
+			this.addChild(btn);
+		}
+		
+		/**
+		 * @private
+		 * Remove logo button from the stage.
+		 * Remove the listener on this button
+		 *
+		 * @param originator The originator node of the logo to remove
+		 */
+		private function removeLogoButton(originatorNode:LinkedListOriginatorNode):void
+		{ 
 			// get the corresponding button
-			var btn:Button = this.getChildByName(originatorNode.originator.name) as Button;
-
+			var btn:Button = this.getChildByName(originatorNode.originator.key) as Button;
+			
 			if( btn != null)
 			{
 				btn.removeEventListener(MouseEvent.CLICK, this.onClick);
 				this.removeChild(btn);
 				
 			}
-		 }
+		}
 		
 		/**
 		 * @private
@@ -267,17 +268,12 @@ package org.openscales.core.control
 		private function addOriginator(originator:DataOriginator):void
 		{
 			// if not already on the linked list
-			if(this._linkedList.getIndex(originator.name)==-1)
+			if(this._linkedList.getIndex(originator.key)==-1)
 			{
-				var loader:Loader = new Loader();
-				loader.contentLoaderInfo.addEventListener(Event.COMPLETE, this.completeLoading);
-				loader.name = originator.name;
-				
-				var request:URLRequest = new URLRequest(originator.pictureUrl);
-				loader.load(request);
+				this._linkedList.insertTail(new LinkedListOriginatorNode(originator,null,originator.key));
+				originator.getImage(this.completeLoading);
 			}
 		}
-		
 		
 		/**
 		 * @private
@@ -302,7 +298,7 @@ package org.openscales.core.control
 			}
 			return false;
 		}
-			
+		
 		/**
 		 * @private
 		 * Delete a DataOriginator from a given list
@@ -333,28 +329,22 @@ package org.openscales.core.control
 		 * 
 		 * @param The event of complete loading.
 		 */
-		private function completeLoading(event:Event):void 
+		private function completeLoading(dataOriginator:DataOriginator,event:Event):void 
 		{
-			var name:String = event.target.loader.name;
-			var bmp:Bitmap = Bitmap(event.target.loader.content);
+			if(!dataOriginator || !event)
+				return;
+			var i:int = this._linkedList.getIndex(dataOriginator.key);
+			if(i==-1)
+				return;
+			
+			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
+			var loader:Loader = loaderInfo.loader as Loader;
+			var bmp:Bitmap = Bitmap(loader.content);
 			bmp.addEventListener(MouseEvent.CLICK, this.onClick);
 			bmp.width = this._logoWidth;
 			bmp.height = this._logoHeight;
 			
-			// get the DataOriginator linked to this bitmap and pictureUrl :
-			var originator:DataOriginator = this._dataOriginators.findOriginatorByName(name);
-			
-			if(originator!=null)
-			{
-				this._linkedList.insertTail(new LinkedListOriginatorNode(originator,bmp,originator.name));
-			}
-			
-			/*
-			var bmp:Bitmap = ( event.target as LoaderInfo ).content as Bitmap;
-			imgColl.addItem(bmp); //sore elements
-			Alert.show("load complete");//scheck for loadin
-			img.source = imgColl.getItemAt(1) as Bitmap;
-			*/
+			(this._linkedList[i] as LinkedListOriginatorNode).bitmap = bmp;
 		}
 		
 		/**
@@ -416,7 +406,7 @@ package org.openscales.core.control
 			{
 				i = 0;
 				j = this._removeOriginatorList.length;
-
+				
 				for (; i<j; ++i) 
 				{
 					// if the current is deleted
@@ -424,7 +414,7 @@ package org.openscales.core.control
 					{
 						this._currentOriginator = getPrevious(this._currentOriginator);
 					}
-					this.linkedList.remove(this._removeOriginatorList[i].name);
+					this.linkedList.remove(this._removeOriginatorList[i].key);
 				}
 				// clear the waiting list
 				this._removeOriginatorList.splice(0,j);
@@ -518,6 +508,7 @@ package org.openscales.core.control
 				var tmpOriginator:LinkedListOriginatorNode = this._currentOriginator;
 				
 				var i:uint = 0;
+				var max:uint = this._linkedList.size;
 				// if enought logo display logoNumber, else display the number max of logo in the list		
 				var j:uint = (listSize < this._logoNumber) ? listSize : this._logoNumber;
 				var currentPosition:Pixel = position;
@@ -530,13 +521,15 @@ package org.openscales.core.control
 					
 					// add new logos to display
 					i = 0;
-					for (; i<j; ++i) 
-					{
-						tmpOriginator.bitmap().x = currentPosition.x;
+					while ( i<j && max>0 ) {
+						--max;
+						if(!tmpOriginator.bitmap)
+							continue;
+						++i;
+						tmpOriginator.bitmap.x = currentPosition.x;
 						
 						addLogoButton(tmpOriginator, currentPosition);			
 						currentPosition.x += this._spacing;
-						
 						// the following logo (head if current is tail)
 						tmpOriginator = getFollowing(tmpOriginator);
 					}
@@ -545,8 +538,11 @@ package org.openscales.core.control
 				{
 					// remove current logo from the scene
 					i = 0;
-					for (; i<j; ++i) 
-					{
+					while ( i<j && max<0 ) {
+						--max;
+						if(!tmpOriginator.bitmap)
+							continue;
+						++i;
 						/// this.removeChild(this._currentOriginator.bitmap());
 						removeLogoButton(tmpOriginator);
 						
@@ -563,16 +559,20 @@ package org.openscales.core.control
 						listSize = this._linkedList.size;
 						j = (listSize < this._logoNumber) ? listSize : this._logoNumber;;
 					}
-				
+					
 					// change this._currentOriginator
 					this.moveToNextCurrent();
 					
 					// add new logos to display
 					i = 0;		
 					tmpOriginator = this._currentOriginator;
-					for (; i<j; ++i) 
-					{
-						tmpOriginator.bitmap().x = currentPosition.x;
+					i = 0;
+					while ( i<j && max<0 ) {
+						--max;
+						if(!tmpOriginator.bitmap)
+							continue;
+						++i;
+						tmpOriginator.bitmap.x = currentPosition.x;
 						
 						addLogoButton(tmpOriginator, currentPosition);
 						
@@ -594,8 +594,8 @@ package org.openscales.core.control
 			if (!(event.type == MouseEvent.CLICK)) return;
 			
 			var btn:Button = event.currentTarget as Button;
-
-			var originatorClick:DataOriginator = this._dataOriginators.findOriginatorByName(btn.name);
+			
+			var originatorClick:DataOriginator = this._dataOriginators.findOriginatorByKey(btn.name);
 			if(originatorClick!=null)
 			{
 				// open a new page with the originator url
@@ -674,7 +674,7 @@ package org.openscales.core.control
 		{
 			this._linkedList = linkedList;
 		}
-
+		
 		/**
 		 * LinkedLiist to store originator to remove at the next change
 		 */

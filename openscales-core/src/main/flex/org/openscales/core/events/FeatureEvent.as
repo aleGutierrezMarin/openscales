@@ -45,6 +45,7 @@ package org.openscales.core.events
 		 * Event type dispatched when a click occur on a feature. 
 		 */
 		public static const FEATURE_CLICK:String="openscales.feature.click";
+		public static const FEATURE_SIMPLECLICK:String="openscales.feature.simpleclick";
 		
 		/**
 		 * Event type dispatched when a double click occur on a feature. 
@@ -94,33 +95,39 @@ package org.openscales.core.events
 		/**
 		 * Event type dispatched when one or more features are unselected. 
 		 */
-		public static const FEATURE_UNSELECTED:String="org.openscales.feature.unselected";
+		public static const FEATURE_UNSELECTED:String="openscales.feature.unselected";
 
 		/**
 		 * Event type dispatched when we start dragging of a temporary features
 		 * */
 		
-		public static const EDITION_POINT_FEATURE_DRAG_START:String="org.openscales.editionFeature.dragstart";	
+		public static const EDITION_POINT_FEATURE_DRAG_START:String="openscales.editionFeature.dragstart";	
 		/**
 		 * Event type dispatched when we stop dragging of a temporary features
 		 * */
 		
-		public static const EDITION_POINT_FEATURE_DRAG_STOP:String="org.openscales.editionFeature.dragstop";	
+		public static const EDITION_POINT_FEATURE_DRAG_STOP:String="openscales.editionFeature.dragstop";	
 		
 		/**
 		 * Event type dispatched when a feature is selected, and we want to update information in FeatureInfo component
 		 */
-		 public static const FEATURE_SHOW_INFORMATIONS:String="org.openscales.feature.showinformations";
+		 public static const FEATURE_SHOW_INFORMATIONS:String="openscales.feature.showinformations";
+		 
+		 /**
+		  * Event type dispatched before a feature is drawn
+		  */
+		 public static const FEATURE_DRAWING_START:String="openscales.feature.drawingstart";
 		 
 		 /**
 		  * Event type dispatched when a feature is finished to be drawn
 		  */
-		 public static const FEATURE_DRAWING_END:String="org.openscales.feature.drawingend";
+		 public static const FEATURE_DRAWING_END:String="openscales.feature.drawingend";
 		 
 		 /**
 		  * Event type dispatched when a feature is finished to be edited
 		  */
-		 public static const FEATURE_EDITED_END:String="org.openscales.feature.editedend";
+		 public static const FEATURE_EDITED_END:String="openscales.feature.editedend";
+		 public static const FEATURE_SELECT:String="openscales.feature_select";
 		
 		/**
 		 * FeatureEvent constructor
@@ -147,9 +154,10 @@ package org.openscales.core.events
 		}
 		
 		/**
-		 * Feature concerned by the event. If the event concern multiple features, the first one is returned.
+		 * Feature concerned by the event. If the event concerns multiple features, the first one is returned.
 		 */
 		public function get feature():Feature{
+			if(!_features || _features.length == 0) return null;
 			return this._features[0];
 		}
 		public function set feature(value:Feature):void{

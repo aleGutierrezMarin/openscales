@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="false" version="1">
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
   <includeClasses>
     <classEntry path="org.openscales.geometry.Collection"/>
     <classEntry path="org.openscales.geometry.Geometry"/>
@@ -18,10 +18,14 @@
     <classEntry path="org.openscales.geometry.basetypes.Unit"/>
     <classEntry path="org.openscales.geometry.utils.StringUtils"/>
     <classEntry path="org.openscales.geometry.utils.UtilGeometry"/>
-    <classEntry path="org.openscales.geometry.CollectionTest"/>
     <classEntry path="org.openscales.geometry.ContainsPointTest"/>
-    <classEntry path="org.openscales.geometry.OperationGeometryTest"/>
+    <classEntry path="org.openscales.geometry.GeometryTest"/>
     <classEntry path="org.openscales.geometry.PointTest"/>
+    <classEntry path="org.openscales.geometry.basetypes.BoundsTest"/>
+    <classEntry path="org.openscales.geometry.utils.IDistanceCalculator"/>
+    <classEntry path="org.openscales.geometry.utils.VincentyDistance"/>
+    <classEntry path="org.openscales.geometry.utils.GreatCircleDistance"/>
+    <classEntry path="org.openscales.geometry.utils.GreatCircleTest"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

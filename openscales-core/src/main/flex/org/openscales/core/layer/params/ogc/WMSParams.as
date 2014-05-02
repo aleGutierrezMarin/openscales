@@ -22,7 +22,7 @@ package org.openscales.core.layer.params.ogc
 		private var _sld:String;
 
 		public function WMSParams(layers:String,
-								  format:String = "image/jpeg",
+								  format:String = "image/png",
 								  transparent:Boolean = false,
 								  tiled:Boolean = false,
 								  styles:String = null,

@@ -1,8 +1,8 @@
 package org.openscales.core.handler.mouse
 {
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 	import org.openscales.core.handler.Handler;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * This handler encapsulates all handlers that are mouse related and add them to the map.
@@ -42,7 +42,29 @@ package org.openscales.core.handler.mouse
 		public static const ZOOM_BOX_HANDLER:String = "zoomBoxHandler";
 		
 		private var _clickHandler:ClickHandler = null;
+
+		public function get clickHandler():ClickHandler
+		{
+			return _clickHandler;
+		}
+
+		public function set clickHandler(value:ClickHandler):void
+		{
+			_clickHandler = value;
+		}
+
 		private var _dragHandler:DragHandler = null;
+
+		public function get dragHandler():DragHandler
+		{
+			return _dragHandler;
+		}
+
+		public function set dragHandler(value:DragHandler):void
+		{
+			_dragHandler = value;
+		}
+
 		private var _wheelHandler:WheelHandler = null;
 		private var _zoomBoxHandler:ZoomBoxHandler = null;
 		
@@ -72,6 +94,20 @@ package org.openscales.core.handler.mouse
 			
 			_zoomWheelEnabled = active;
 			_zoomBoxEnabled = active;
+			_clickHandler.doubleClick = this.onDoubleClick;
+		}
+		
+		
+		/**
+		 * Call back method for doubleclick events
+		 */ 
+		private function onDoubleClick(pixel:Pixel):void
+		{
+			// TODO refactor double click
+			// If the handler is configured to zoom on mouse position
+			if(this.map.mouseNavigationEnabled && this.map.doubleclickZoomEnabled){
+				this.map.zoomBy(0.5, new Pixel(this.map.mouseX, this.map.mouseY));
+			}
 		}
 		
 		/**
@@ -135,10 +171,10 @@ package org.openscales.core.handler.mouse
 			
 			if(this.map)// Handler constructor calls "set map" with null value, need to check
 			{
-				this.map.addHandler(_clickHandler);
-				this.map.addHandler(_dragHandler);
-				this.map.addHandler(_wheelHandler);
-				this.map.addHandler(_zoomBoxHandler);
+				this.map.addControl(_clickHandler);
+				this.map.addControl(_dragHandler);
+				this.map.addControl(_wheelHandler);
+				this.map.addControl(_zoomBoxHandler);
 			}
 		}
 		
@@ -184,9 +220,9 @@ package org.openscales.core.handler.mouse
 			if(_dragHandler)
 				_dragHandler.active = value;
 			if(_wheelHandler)
-				_wheelHandler.active = value;
+				_wheelHandler.active = value && _zoomWheelEnabled;
 			if(_zoomBoxHandler)
-				_zoomBoxHandler.active = value;
+				_zoomBoxHandler.active = value && _zoomBoxEnabled;
 		}
 
 	}

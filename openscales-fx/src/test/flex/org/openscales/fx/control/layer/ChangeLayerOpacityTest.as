@@ -9,8 +9,9 @@ package org.openscales.fx.control.layer
 	import org.flexunit.asserts.assertFalse;
 	import org.flexunit.asserts.fail;
 	import org.openscales.core.Map;
+	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.fx.control.layer.ChangeLayerOpacity;
+	import org.openscales.fx.control.layer.ChangeLayerAlpha;
 	import org.openscales.fx.control.layer.LayerManager;
 	
 	public class ChangeLayerOpacityTest extends OpenScalesTest
@@ -19,41 +20,64 @@ package org.openscales.fx.control.layer
 		/**
 		 * Basic controls for testing
 		 */
-		private var _map:Map = null;
-		private var _layer1:Layer = null;
-		private var _opacity:ChangeLayerOpacity = null;
+		private var _map:Map;
+		private var _layer1:Layer;
+		private var _opacity:ChangeLayerAlpha;
 		
-		[Before]
+		public function ChangeLayerOpacityTest() {}
+		
+		[Before(ui)]
 		override public function setUp():void
 		{
 			super.setUp();
 			
-			_map = new Map();
-			_layer1 = new Layer("layer");
+			this._map = new Map();
+			this._layer1 = new Layer("layer");
 			
-			_map.addLayer(_layer1);
+			this._map.addLayer(this._layer1);
 			
-			_opacity = new ChangeLayerOpacity();
-			_opacity.layer = _layer1;
+			this._opacity = new ChangeLayerAlpha();
+			this._opacity.layer = this._layer1;
 			
-			this._container.addElement(_opacity);
+			this._container.addElement(this._opacity);
 		}
 		
-		[Test]
+		[After]
+		override public function tearDown():void
+		{
+			super.tearDown();
+			if(this._opacity) {
+				this._container.removeElement(this._opacity);
+				this._opacity.layer = null;
+				this._opacity = null;
+			}
+			
+			if(this._map) {
+				this._map.removeAllLayers();
+				this._map = null;
+			}
+			
+			if(this._layer1) {
+				this._layer1.destroy();
+				this._layer1 = null;
+			}
+		}
+		
+		[Test(ui)]
 		public function testSliderOpacityChange():void
 		{
-			_opacity.layerControlOpacity.value = 50;
-			
-			Assert.assertEquals(_opacity.layerControlOpacity.value, (_layer1.alpha*100));
+			this._opacity.layerControlOpacity.value = 50;
+			this._opacity.layerOpacity(new Event(Event.CHANGE));
+			Assert.assertEquals(this._opacity.layerControlOpacity.value, (this._layer1.alpha*100));
 		}
 		
 		
-		[Test]
+		[Test(ui)]
 		public function testLayerOpacityChange():void
 		{
-			_layer1.alpha = 0.5;
+			this._layer1.alpha = 0.5;
 			
-			Assert.assertEquals((_layer1.alpha*100), _opacity.layerControlOpacity.value);
+			Assert.assertEquals((this._layer1.alpha*100), this._opacity.layerControlOpacity.value);
 		}
 	}
 }

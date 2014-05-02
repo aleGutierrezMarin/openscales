@@ -2,7 +2,7 @@ package {
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.control.LayerManager;
 	import org.openscales.core.control.MousePosition;
 	import org.openscales.core.control.OverviewMap;
@@ -34,12 +34,10 @@ package {
 			// Add layers to map
 			var layerWMS130:WMS=new WMS("Map 1.3.0","http://openscales.org/geoserver/wms","topp:states","");
 			layerWMS130.version="1.3.0";
+			layerWMS130.tiled = true;
 			this._map.addLayer(layerWMS130);
 			
-			// Add layers to map
-			var layerWMS111:WMS=new WMS("Map 1.1.1","http://openscales.org/geoserver/wms","topp:states","");
-			layerWMS111.version="1.1.1";
-			this._map.addLayer(layerWMS111);
+
 						
 			
 			// Add Controls to map
@@ -54,14 +52,9 @@ package {
 			selectHandler.enableOverSelection = true;
 			selectHandler.active = true;
 			
-			_map.addHandler(selectHandler);
-			_map.addHandler(new WheelHandler());
-			_map.addHandler(new DragHandler());
-			
-			// Set the map center
-			//_map.center=new Location(538850.47459,5740916.1243,mapnik.projSrsCode);
-			
-			
+			_map.addControl(selectHandler);
+			_map.addControl(new WheelHandler());
+			_map.addControl(new DragHandler());
 			
 			this.addChild(_map);
 		}

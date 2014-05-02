@@ -1,14 +1,21 @@
 package org.openscales.core.feature {
 	import flash.display.DisplayObject;
+	import flash.sampler.getMemberNames;
 	
+	import org.openscales.core.style.Style;
+	import org.openscales.core.style.stroke.Stroke;
+	import org.openscales.core.style.symbolizer.LineSymbolizer;
+	import org.openscales.core.style.symbolizer.PointSymbolizer;
+	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.core.style.symbolizer.TextSymbolizer;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.LinearRing;
 	import org.openscales.geometry.MultiPolygon;
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
-	import org.openscales.core.style.Style;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.core.style.symbolizer.Symbolizer;
+	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Pixel;
 
 	/**
 	 * Feature used to draw a MultiPolygon geometry on FeatureLayer
@@ -21,12 +28,27 @@ package org.openscales.core.feature {
 		public function get polygons():MultiPolygon {
 			return this.geometry as MultiPolygon;
 		}
+		
+		/**
+		 * @inheritdoc
+		 */
+		override protected function acceptSymbolizer(symbolizer:Symbolizer):Boolean
+		{
+			if (symbolizer is PolygonSymbolizer || symbolizer is TextSymbolizer)
+				return true;
+			else
+				return false;
+		}
 
+		/**
+		 * @inheritdoc
+		 */
 		override protected function executeDrawing(symbolizer:Symbolizer):void {
 
 			if (symbolizer is PointSymbolizer) {
-
 				this.renderPointSymbolizer(symbolizer as PointSymbolizer);
+			} else if (symbolizer is TextSymbolizer) {
+				(symbolizer as TextSymbolizer).drawTextField(this);
 			} else {
 				// Variable declaration before for loop to improve performances 
 				var polygon:Polygon = null;
@@ -40,13 +62,18 @@ package org.openscales.core.feature {
 				var n:int= this.polygons.componentsLength;
 				var count:int = 0;
 				var countFeature:int = 0;
-				var resolution:Number = this.layer.map.resolution
-				var dX:int = -int(this.layer.map.layerContainer.x) + this.left;
-				var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
+				this.x = 0;
+				this.y = 0;
 				var x:Number;
 				var y:Number;
 				var coords:Vector.<Number>;
 				var commands:Vector.<int> = new Vector.<int>();
+				var polySym:PolygonSymbolizer = (symbolizer as PolygonSymbolizer);
+				var stroke:Stroke;
+				if(polySym && polySym.stroke && polySym.stroke.dashArray && polySym.stroke.dashArray.length>0) {
+					stroke = polySym.stroke.clone();
+					stroke.opacity=0;
+				}
 				for (m = 0; m < n; ++m) {
 					polygon = (this.polygons.componentByIndex(m) as Polygon);
 					k= polygon.componentsLength;
@@ -56,9 +83,9 @@ package org.openscales.core.feature {
 						coords =linearRing.getcomponentsClone();
 						commands= new Vector.<int>(linearRing.componentsLength);
 						for (j = 0; j < l; j+=2){
-							
-							coords[j] = dX + coords[j] / resolution; 
-							coords[j+1] = dY - coords[j+1] / resolution;
+							var px:Pixel = this.layer.getLayerPxForLastReloadedStateFromLocation(new Location(coords[j], coords[j+1], this.projection));
+							coords[j] = px.x; 
+							coords[j+1] = px.y;
 							
 							if (j==0) {
 								commands.push(1);
@@ -72,9 +99,24 @@ package org.openscales.core.feature {
 							coords.push(coords[1]);
 							commands.push(2);
 						}
-						this.graphics.drawPath(commands, coords);
+						
+						if(stroke)
+						{
+							stroke.configureGraphics(this.graphics);
+							this.graphics.drawPath(commands, coords);
+							polySym.stroke.configureGraphics(this.graphics);
+							var size:uint = coords.length;
+							for(j = 0; j + 2 < size; j = j + 2){
+								this.dottedTo(new Pixel(coords[j],coords[j+1]),
+									new Pixel(coords[j+2],coords[j+3]),
+									polySym.stroke);
+							}
+						}
+						else
+							this.graphics.drawPath(commands, coords);
 					}
 				}
+				this.graphics.endFill();
 			}
 		}
 
@@ -82,9 +124,9 @@ package org.openscales.core.feature {
 
 			var x:Number;
 			var y:Number;
-			var resolution:Number = this.layer.map.resolution
-			var dX:int = -int(this.layer.map.layerContainer.x) + this.left;
-			var dY:int = -int(this.layer.map.layerContainer.y) + this.top;
+			var resolution:Number = this.layer.map.resolution.value;
+			var dX:int = -int(this.layer.map.x) + this.left;
+			var dY:int = -int(this.layer.map.y) + this.top;
 			x = dX + this.geometry.bounds.center.x / resolution;
 			y = dY - this.geometry.bounds.center.y / resolution;
 
@@ -103,6 +145,8 @@ package org.openscales.core.feature {
 		override public function clone():Feature {
 			var geometryClone:Geometry = this.geometry.clone();
 			var MultiPolygonFeatureClone:MultiPolygonFeature = new MultiPolygonFeature(geometryClone as MultiPolygon, null, this.style, this.isEditable);
+			MultiPolygonFeatureClone._originGeometry = this._originGeometry;
+			MultiPolygonFeatureClone.layer = this.layer;
 			return MultiPolygonFeatureClone;
 		}
 

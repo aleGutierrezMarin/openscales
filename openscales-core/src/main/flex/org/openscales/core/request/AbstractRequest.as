@@ -10,14 +10,11 @@ package org.openscales.core.request
 	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.system.LoaderContext;
-	import flash.utils.Timer;
 	
-	import mx.controls.Alert;
-	
-	import org.openscales.core.Trace;
-	import org.openscales.core.UID;
-	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.events.RequestEvent;
 	import org.openscales.core.security.ISecurity;
+	import org.openscales.core.utils.Trace;
+	import org.openscales.core.utils.UID;
 
 	/**
 	 * Request wapper in order to make data or XML request easier to use (proxy, timeout, etc.)
@@ -31,14 +28,7 @@ package org.openscales.core.request
 		 * can manage the number of simultaneous connections and
 		 * prevent browser's "saturation"
 		 */
-		public static const DEFAULT_MAX_CONN:uint = 10; // number of parallel requests
 		private static const DEFAULT_MAX_ACTIVE_TIME:uint = 0; // 5000 for a timeout of 5s by request
-		private static var _maxConn:uint = DEFAULT_MAX_CONN;
-		private static var _pendingRequests:Vector.<AbstractRequest> = new Vector.<AbstractRequest>();
-		private static var _activeConn:HashMap = new HashMap();
-		
-		private var _duration:Number = DEFAULT_MAX_ACTIVE_TIME;
-		private var _timer:Timer = null;
 
 		public static const PUT:String = "put";
 		public static const DELETE:String = "delete";
@@ -65,8 +55,8 @@ package org.openscales.core.request
 		 * 
 		 * @param SWForImage Boolean that defines if the request is a loading of a SWF object / an image or not
 		 * @param url URL to use for the request (for instance http://server/dir/image123.png to dowload an image)
-		 * @param onComplete Function called when the request is completed
-		 * @param onFailure Function called when an error occurs
+		 * @param onComplete Function called when the request is completed (param: evt:flash.events.Event)
+		 * @param onFailure Function called when an error occurs (param: evt:flash.events.Event)
 		 */
 		public function AbstractRequest(SWForImage:Boolean,
 										url:String,
@@ -75,22 +65,13 @@ package org.openscales.core.request
 			this._uid = UID.gen_uid();
 			// Create a loader for a SWF or an image (Loader), or for an URL (URLLoader)
 			this._loader = (SWForImage) ? new Loader() : new URLLoader();
-
-			_loader.addEventListener(IOErrorEvent.IO_ERROR,function(event:Event):void{
-				event.stopImmediatePropagation();
-				
-				if (this._onFailure == null)
-					this._onFailure = onFailure;
-				
-				this._onFailure;
-			});
 			
 			this.url = url;
 			this._onComplete = onComplete;
 			this._onFailure = onFailure;
 			this._addListeners();
 		}
-
+		
 		/**
 		 * Destroy the request.
 		 */
@@ -98,27 +79,17 @@ package org.openscales.core.request
 			this._removeListeners();
 			if(!this._isSent && this.security!=null)
 				this.security.removeWaitingRequest(this);
-			this._isSent = true;
+			
 			try {
 				if (this._isCompleted && (this.loader is Loader)) {
 					(this.loader as Loader).unloadAndStop(true);
 				} // else ? // FixMe
-				this.loader.close();
+				if(this._isSent)
+					this.loader.close();
 			} catch(e:Error) {
 				// Empty catch is evil, but here it's fair.
 			}
-			if (AbstractRequest._activeConn.containsKey(uid)) {
-				AbstractRequest._activeConn.remove(uid);
-				AbstractRequest._runPending();
-			} else {
-				var i:int = AbstractRequest._pendingRequests.indexOf(this);
-				if (i!=-1) {
-					AbstractRequest._pendingRequests.splice(i, 1);
-				}
-			}
-			if (this._timer) {
-				this._timer = null;
-			}
+			this._isSent = true;
 			//this._loader = null; // FixMe
 		}
 		
@@ -134,16 +105,16 @@ package org.openscales.core.request
 				this.loaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this._loadEnd, false, int.MAX_VALUE, true);
 				// SecurityErrorEvent.SECURITY_ERROR must be listened for the cross domain errors
 				
-				if (this._onComplete != null) {
+				/*if (this._onComplete != null) {
 					this.loaderInfo.addEventListener(Event.COMPLETE, this._onComplete);
-				}
+				}*/
 				
 				if (this._onFailure != null) {
 					this.loaderInfo.addEventListener(IOErrorEvent.IO_ERROR, this._onFailure);
 					this.loaderInfo.addEventListener(SecurityErrorEvent.SECURITY_ERROR, this._onFailure);
 				}
 			} catch (e:Error) {
-				Trace.error(e.message);
+				// Empty catch is evil, but here it's fair.
 			}
 		}
 		
@@ -156,16 +127,16 @@ package org.openscales.core.request
 				this.loaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, this._loadEnd);
 				this.loaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this._loadEnd);
 				
-				if (this._onComplete != null) {
+				/*if (this._onComplete != null) {
 					this.loaderInfo.removeEventListener(Event.COMPLETE, this._onComplete);
-				}
+				}*/
 				
 				if (this._onFailure != null) {
 					this.loaderInfo.removeEventListener(IOErrorEvent.IO_ERROR, this._onFailure);
 					this.loaderInfo.removeEventListener(SecurityErrorEvent.SECURITY_ERROR, this._onFailure);
 				}
 			} catch (e:Error) {
-				Trace.error(e.message);
+				trace("unexcpeeted error");
 			}
 		}
 		
@@ -176,9 +147,6 @@ package org.openscales.core.request
 		 * We don't care about whitch one it is because it just means that a connection have been released.
 		 */
 		private function _loadEnd(event:Event=null):void {
-			if (this._timer) {
-				this._timer.stop();
-			}
 			if (event==null || (event.type == TimerEvent.TIMER)) {
 				if (this._onFailure != null) {
 					this._onFailure(new IOErrorEvent(IOErrorEvent.IO_ERROR));
@@ -187,6 +155,9 @@ package org.openscales.core.request
 			} else {
 				if (event.type == Event.COMPLETE) {
 					this._isCompleted = true;
+					if (this._onComplete != null) {
+						this._onComplete(new RequestEvent(event.type,this.finalUrl,event.target,event.bubbles,event.cancelable));
+					}
 				}
 				else if (this._onFailure == null) {
 					switch (event.type) {
@@ -196,20 +167,6 @@ package org.openscales.core.request
 							break;
 					}
 				}
-			}
-			AbstractRequest._activeConn.remove(uid);
-			AbstractRequest._runPending();
-		}
-		
-		/**
-		 * Run pending connections if there is at least one
-		 */
-		static private function _runPending():void {
-			var i:int = (AbstractRequest.maxConn==0) ? AbstractRequest._pendingRequests.length : (AbstractRequest.maxConn - AbstractRequest._activeConn.size());
-			while ((i > 0) && (AbstractRequest._pendingRequests.length > 0)) {
-				var pending:AbstractRequest = AbstractRequest._pendingRequests.shift();
-				pending.execute();
-				i--;
 			}
 		}
 		
@@ -342,23 +299,28 @@ package org.openscales.core.request
 			if (this.security != null) {
 				if (! this.security.initialized) {
 					// A redraw will be called on the layer when a SecurityEvent.SECURITY_INITIALIZED will be dispatched
-					Trace.log("Security not initialized so cancel request");
 					return null;
 				}
-				_finalUrl += (_finalUrl.indexOf("?") == -1) ? "?" : "&"; // If there is no "?" in the url, we will have to add it, else we will have to add "&"
-				var token:String = this.security.securityParameter;
-				if(token!=null)
-					_finalUrl += this.security.securityParameter;
+				
+				_finalUrl = this.security.getFinalUrl(_finalUrl);
 			}
 
 			if ((this.proxy != null)) {
-				_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
+				if(this.proxy.charAt(this.proxy.length-1) == '/')
+				{
+					_finalUrl = _finalUrl.replace("http://", "http:/");
+					_finalUrl = _finalUrl.replace("https://", "https:/");
+					_finalUrl = this.proxy + _finalUrl;
+				}else{
+					_finalUrl = this.proxy + encodeURIComponent(_finalUrl);
+				}
 			}
+			
 			if (!this._cache){
 				_finalUrl += "&timestamp=" + new Date().getTime();
 			}
 
-			return _finalUrl;
+ 			return _finalUrl;
 		}
 
 		/**
@@ -370,28 +332,21 @@ package org.openscales.core.request
 		 */
 		public function send():void {
 			if (this.isSent) {
-				Trace.warn("AbstractRequest - send: the request has already been sent");
 				return;
 			}
 			this._isSent = true;
 			if(this.security != null && !this.security.initialized) {
-				Trace.log("wait for security token");
 				this.security.addWaitingRequest(this);
 				this.security.initialize();
 				return;
 			}
-			if ((AbstractRequest.maxConn == 0) || (AbstractRequest._activeConn.size() < AbstractRequest.maxConn)) {
-				this.execute();
-			} else {
-				AbstractRequest._pendingRequests.push(this);
-			}
+			this.execute();
 		}
 
 		/**
 		 * Execute the request
 		 */
 		private function execute():void {
-			AbstractRequest._activeConn.put(uid, null);
 			try {
 				// Define the urlRequest
 				var _finalUrl:String = this.finalUrl;
@@ -407,11 +362,15 @@ package org.openscales.core.request
 					urlRequest.contentType = this.postContentType;
 					urlRequest.data = this.postContent;
 				}
-				if (this.duration > 0) {
-					this._timer = new Timer(this.duration, 1);
-					this._timer.addEventListener(TimerEvent.TIMER, this._loadEnd);
-					this._timer.start();
-				} // else there is no timeout for the request
+				
+				if (this.security != null) {
+					if (! this.security.initialized) {
+						return;
+					}
+					
+					urlRequest = this.security.addCustomHeaders(urlRequest);
+				}
+				
 				if (this.loader is Loader) {
 					this.loader.name = this.url; // Needed, see KMLFormat.updateImages for instance
 					// Define the context for the loading of the SWF or Image
@@ -421,55 +380,11 @@ package org.openscales.core.request
 					(this.loader as Loader).load(urlRequest, loaderContext);
 				} else {
 					// Send the request
-					(this.loader as URLLoader).load(urlRequest);
+ 					(this.loader as URLLoader).load(urlRequest);
 				}
 			} catch (e:Error) {
-				Trace.error("Request - send: " + e.message);
 				this._loadEnd(null);
 			}
-		}
-
-		/**
-		 * Setter for the maximum running connections
-		 * If the value is zero, all the pending requests will be sent and the
-		 * future requests will be sent immediately.
-		 * 
-		 * @param value:uint the number of connections allowed
-		 */
-		static public function set maxConn(value:uint):void {
-			AbstractRequest._maxConn = value;
-			AbstractRequest._runPending();
-		}
-
-		/**
-		 * getter for the maximum running connections
-		 * 
-		 * @return uint the allowed number of running connection
-		 */
-		static public function get maxConn():uint {
-			return AbstractRequest._maxConn;
-		}
-
-		/**
-		 * Setter for the delay before forcing an active connexion to close.
-		 * If the value is zero (default), no timeout will be used.
-		 * 
-		 * @param Number value delay in milliseconds
-		 */ 
-		public function set duration(value:Number):void {
-			if (this.isSent) {
-				return;
-			}
-			this._duration = value;
-		}
-
-		/**
-		 * getter for the delay before forcing an active connexion to close
-		 * 
-		 * @return Number duration in milliseconds
-		 */
-		public function get duration():Number {
-			return this._duration;
 		}
 		
 		/**
@@ -489,7 +404,6 @@ package org.openscales.core.request
 		public function get cache():Boolean{
 			return this._cache;
 		}
-		
 	}
 	
 }

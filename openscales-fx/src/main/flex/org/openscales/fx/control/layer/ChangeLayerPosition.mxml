@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LayerControl xmlns:fx="http://ns.adobe.com/mxml/2009" 
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx"
 		 xmlns="org.openscales.fx.control.layer.*"
@@ -20,7 +20,6 @@
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.layer.Layer;
 			import org.openscales.fx.control.layer.LayerManager;
-			import org.openscales.fx.control.layer.LayerRenderer;
 			
 			/**
 			 * Tooltip for move front button
@@ -33,44 +32,49 @@
 			[Bindable]
 			public var tooltipMoveBack:String = Catalog.getLocalizationForKey('layercontrol.moveback');
 			
-			/**
-			 * Indicates if the arrow up has to be displayed (if true) or not otherwise.
-			 * This value is bind to the layerSwitcherArrowUp enable attribute
-			 * 
-			 * @default true
-			 */
-			[Bindable]
-			public var _arrowUpVisibility:Boolean = true;
-
-			/**
-			 * Indicates if the arrow down has to be displayed (if true) or not otherwise.
-			 * This value is bind to the layerSwitcherArrowDown enable attribute
-			 * 
-			 * @default true
-			 */
-			[Bindable]
-			public var _arrowDownVisibility:Boolean = true;
+			private var _layer:Layer;
 			
+			private var _layerManager:LayerManager;
+			
+			public function get layer():Layer{
+				return _layer;
+			}
+						
 			/**
 			 * Configure the first display for this component when the layer is set
 			 * Set one or two arrows depending of the position of the current layer
 			 */ 
-			override public function set layer(value:Layer):void
+			public function set layer(value:Layer):void
 			{
-				super.layer = value;
+				this._layer = value;
 				
-				if(this._layer.map != null)
-				{
-					this.updateArrowsDisplay();
-					
+				this.updateArrowsDisplay();
+				
+				if(_layer && _layer.map)
+				{			
+					this._layer.map.addEventListener(LayerEvent.LAYER_REMOVED, updateArrowsDisplay);
+					this._layer.map.addEventListener(LayerEvent.LAYER_ADDED, updateArrowsDisplay);
+					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED, updateArrowsDisplay);
 					this._layer.map.addEventListener(LayerEvent.LAYER_CHANGED_ORDER, updateArrowsDisplay);
+					this._layer.map.addEventListener(LayerEvent.LAYER_PROJECTION_CHANGED, updateArrowsDisplay);
+					this._layer.map.addEventListener(I18NEvent.LOCALE_CHANGED, onMapLanguageChange);
 				}
+			}
+			public function get layerManager():LayerManager{
+			
+				return _layerManager;
+			}
+			
+			public function set layerManager(value:LayerManager):void{
+			
+				_layerManager = value;
+				this.updateArrowsDisplay();
 			}
 			
 			/**
 			 * @inherit
 			 */
-			override public function onMapLanguageChange(event:I18NEvent):void 
+			public function onMapLanguageChange(event:I18NEvent):void 
 			{
 				this.tooltipMoveFront = Catalog.getLocalizationForKey('layercontrol.movefront');
 				this.tooltipMoveBack = Catalog.getLocalizationForKey('layercontrol.moveback');		
@@ -81,37 +85,31 @@
 			 */
 			public function updateArrowsDisplay(event:LayerEvent = null):void
 			{
-				var map:Map = this._layer.map;
-				if(map)
-				{
-					// get the current map layer
-					var length:uint = map.layerContainer.numChildren;
-					
-					if(length<=1) 
-					{
-						this._arrowUpVisibility = false;
-						this._arrowDownVisibility = false;
+				if(layerSwitcherArrowUp && layerSwitcherArrowDown) {
+					if(_layerManager && _layer && _layerManager.layers.length > 1){
+						
+						switch(_layerManager.layers.getItemIndex(_layer)){
+							// the layer is at the bottom of the list, we hide the arrowDown						
+							case  _layerManager.layers.length-1:{
+								this.layerSwitcherArrowUp.enabled = true;
+								this.layerSwitcherArrowDown.enabled = false;
+								break;
+							}
+							case 0:{
+								this.layerSwitcherArrowUp.enabled = false;
+								this.layerSwitcherArrowDown.enabled = true;
+								break;
+							}
+							default:{
+								this.layerSwitcherArrowUp.enabled = true;
+								this.layerSwitcherArrowDown.enabled = true;
+							}
+						
+						}
 					}
-					else 
-					{
-						// the layer is at the bottom of the list, we hide the arrowDown						
-						if(map.layerContainer.getChildIndex(this._layer) == 0)
-						{
-							this._arrowUpVisibility = true;
-							this._arrowDownVisibility = false;
-						}
-							// the layer is on the top of the list, we hide the arrowUp
-						else if(map.layerContainer.getChildIndex(this._layer)==length-1)
-						{
-							this._arrowUpVisibility = false;
-							this._arrowDownVisibility = true;
-						}
-							// the layer is in the middle, you can up or down it
-						else
-						{
-							this._arrowUpVisibility = true;
-							this._arrowDownVisibility = true;
-						}           	
+					else{
+						this.layerSwitcherArrowUp.enabled = false;
+						this.layerSwitcherArrowDown.enabled = false;
 					}
 				}
 			}
@@ -120,20 +118,25 @@
 			 * Move the current Layer up on the map
 			 */
 			public function upLayer(event:MouseEvent):void {
-				this._layer.map.changeLayerIndexByStep(this._layer,+1);
+				if(_layerManager){
+					_layerManager.moveForward(_layer);
+				}
+				else{
+					this._layer.map.changeLayerIndexByDelta(this._layer,+1);
+				}
 			}
 			
 			/**
 			 * Move the current Layer down on the map
 			 */
 			public function downLayer(event:MouseEvent):void {
-				this._layer.map.changeLayerIndexByStep(this._layer,-1);
+				if(_layerManager){
+					_layerManager.moveBack(_layer);
+				}
+				else{
+					this._layer.map.changeLayerIndexByDelta(this._layer,-1);
+				}
 			}
-			
-			
-			
-			
-			
 		]]>
 	</fx:Script>
 	
@@ -142,14 +145,14 @@
 			<s:VerticalLayout gap="0" verticalAlign="middle" />
 		</s:layout>
 		<os:IconButton id="layerSwitcherArrowUp"
-					toolTip="{this.tooltipMoveBack}"
+					toolTip="{this.tooltipMoveFront}"
 					click="upLayer(event)"
 					icon="{new UpArrowUp()}"
 					iconOver="{new UpArrowOver()}"
 					iconDown="{new UpArrowDown()}"
 					width="10"
 					height="10" 
-					enabled="{this._arrowUpVisibility}"/>
+					enabled="false"/>
 		
 		<os:IconButton id="layerSwitcherArrowDown"
 					toolTip="{this.tooltipMoveBack}"
@@ -159,6 +162,6 @@
 					iconDown="{new DownArrowDown()}"
 					width="10"
 					height="10"
-					enabled="{this._arrowDownVisibility}"/>
+					enabled="false"/>
 	</s:SkinnableContainer>
-</LayerControl>
+</s:Group>

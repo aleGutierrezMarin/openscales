@@ -1,10 +1,16 @@
 package org.openscales.core.layer.originator
 {
+	import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	
+	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.request.DataRequest;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 
 	/**
 	 * Instances of DataOriginator are used to keep the informations about the origintor/provider of a Layer 
-	 * (name, url, logo and extent and resolution constraint).
+	 * (name, attribution, url, logo and extent and resolution constraint).
 	 * 
 	 * This DataOriginator class represents informations about the originator of a Layer.
 	 * 
@@ -13,32 +19,22 @@ package org.openscales.core.layer.originator
 	
 	public class DataOriginator 
 	{
-		/**
-		 * @private
-		 * @default null
-		 * The originator name of a Layer.
-		 */
 		private var _name:String = null;
 		
-		/**
-		 * @private
-		 * @default null
-		 * The originator url.
-		 */
+		private var _attribution:String = null;
+		
 		private var _url:String = null
 			
-		/**
-		 * @private
-		 * @default null
-		 * The url of the originator logo picture.
-		 */
 		private var _pictureUrl:String = null;
 		
+		private var _loading:Boolean = false;
+
 		/**
-		 * @private
-		 * @default null
-		 * The constraint list of the originator.
+		 * @Private
+		 * The callback called when image is retrieved
 		 */
+		private var _callback:Function = null;
+		
 		private var _constraints:Vector.<ConstraintOriginator> = null;
 		
 		/**
@@ -51,6 +47,7 @@ package org.openscales.core.layer.originator
 		public function DataOriginator(name:String, url:String, pictureUrl:String)
 		{
 			this._name = name;
+			this._attribution = name;
 			this._url = url;
 			this._pictureUrl = pictureUrl;	
 			this._constraints = new Vector.<ConstraintOriginator>();
@@ -66,7 +63,6 @@ package org.openscales.core.layer.originator
 			// Is the input constraint valid ?
 			if (! constraint) 
 			{
-				trace("DataOriginator.addConstraint: null constraint not added");
 				return;
 			}
 			var i:uint = 0;
@@ -75,14 +71,12 @@ package org.openscales.core.layer.originator
 			{
 				if (constraint == this._constraints[i]) 
 				{
-					trace("DataOriginator.addConstraint: this constraint is already registered, not added ");
 					return;
 				}
 			}
 			// If the constraint is a new constraint, add it
 			if (i == j) 
 			{
-				trace("DataOriginator.addConstraint: add a new constraint");
 				this._constraints.push(constraint);
 			}
 		}
@@ -111,13 +105,7 @@ package org.openscales.core.layer.originator
 		 * @return It is equal or not
 		 */
 		public function equals(originator:DataOriginator):Boolean {
-			var equals:Boolean = false;
-			if (originator != null) {
-				equals = this._name == originator.name &&
-					this._url == originator.url &&
-					this._pictureUrl == originator.pictureUrl;
-			}
-			return equals;
+			return (originator != null && (this.key == originator.key));
 		}
 		
 		/**
@@ -126,85 +114,186 @@ package org.openscales.core.layer.originator
 		 * 
 		 * @param extent The extent at which the coverage is checked
 		 * @param resolution The resolution at which the coverage is checked
+		 * @param round Boolean allowing or not resolution check with rounding (true = rounding activated)
 		 */
-		public function isCoveredArea(extent:Bounds, resolution:Number):Boolean
+		public function isCoveredArea(extent:Bounds, resolution:Resolution, round:Boolean=false):Boolean
 		{
-			var i:uint = 0;
 			var j:uint = this._constraints.length;
+			var constraint:ConstraintOriginator = null;
+			var minRes:Resolution = null;
+			var maxRes:Resolution = null;
+			var delta:Number = 100;
 			// check for each constraint
-			for (; i<j; ++i) 
+			for (var i:Number = 0; i<j; i++) 
 			{
-				// if extent and resolution contain given extent and resolution : covered
-				if( this._constraints[i].extent.intersectsBounds(extent) &&
-					this._constraints[i].minResolution <= resolution &&
-					this._constraints[i].maxResolution >= resolution)
-				{
-					return true;
+				constraint = this._constraints[i];
+				minRes = constraint.minResolution.reprojectTo(resolution.projection);
+				maxRes = constraint.maxResolution.reprojectTo(resolution.projection);
+				
+				//First check if we are in the bounding box
+				if( constraint.extent.intersectsBounds(extent,false) ) {
+					//if rounded check is activated, 2 possible cases
+					if ( round ) {
+						// Interval is 0 => minres = maxres
+						if (minRes.value == maxRes.value)
+						{
+							// We build an interval and use it
+							var d:Number = minRes.value * 0.05;
+							if( minRes.value + d >= resolution.value && minRes.value - d <= resolution.value)
+								return true;
+								
+						} else {
+							//We got an interval, we roud resolutions to n decimals with delta
+							if ( Math.round(minRes.value * delta) / delta <= Math.round(resolution.value * delta) / delta 
+								&& Math.round(maxRes.value * delta) / delta >= Math.round(resolution.value * delta) / delta )
+								return true;
+						}
+					} else {
+						// if extent and resolution contain given extent and resolution : covered
+						if ( minRes.value <= resolution.value && maxRes.value >= resolution.value )
+							return true;
+					}
 				}
 			}
 			return false;
 		}
 		
-		// getters setters
+		/**
+		 * This function makes the dataoriginator to retrieve the picture
+		 * 
+		 * @param callback The callback to call when the loading is finished
+		 */
+		public function getImage(callback:Function):void {
+			if(callback!=null && this._callback!=null && !this._loading) {
+				this._loading = true;
+				this._callback = callback;
+				new DataRequest(this.pictureUrl, this.onLoadEnd, this.onLoadError);
+			}
+		}
 		
 		/**
-		 * The originator name of a Layer.
+		 * @private
+		 * handle image loading end
+		 */
+		private function onLoadEnd(event:Event):void {
+			this._loading = false;
+			this._callback(this, event);
+		}
+		
+		/**
+		 * @private
+		 * handle image loading errors
+		 */
+		private function onLoadError(event:IOErrorEvent):void {
+			Trace.log("Originator image load failure: "+this.pictureUrl);
+		}
+		
+		// getters setters
+		/**
+		 * indicates the unique key of the originator
+		 */
+		public function get key():String {
+			return this._name;
+		}
+
+		/**
+		 * The originator name of a Layer (eg.: "ign")
+		 * @default null
 		 */
 		public function get name():String
 		{
-			return this._name;
+			return _name;
 		}
+
 		/**
 		 * @private
 		 */
-		public function set name(name:String):void 
+		public function set name(value:String):void
 		{
-			this._name = name;
+			_name = value;
 		}
-		
+
 		/**
 		 * The originator url.
+		 * 
+		 * @default null
 		 */
 		public function get url():String
 		{
-			return this._url;
+			return _url;
 		}
+
 		/**
 		 * @private
 		 */
-		public function set url(url:String):void 
+		public function set url(value:String):void
 		{
-			this._url = url;
+			_url = value;
 		}
-		
+
 		/**
+		 * 
 		 * The url of the originator logo picture.
+		 * 
+		 * @default null
 		 */
 		public function get pictureUrl():String
 		{
-			return this._pictureUrl;
+			return _pictureUrl;
 		}
+
 		/**
 		 * @private
 		 */
-		public function set pictureUrl(pictureUrl:String):void 
+		public function set pictureUrl(value:String):void
 		{
-			this._pictureUrl = pictureUrl;
+			_pictureUrl = value;
 		}
-		
+
+		/**
+		 * Is the image loading
+		 * 
+		 * @default false
+		 */
+		public function get loading():Boolean
+		{
+			return _loading;
+		}
+
 		/**
 		 * The constraint list of the originator.
+		 * @default null
 		 */
 		public function get constraints():Vector.<ConstraintOriginator>
 		{
-			return this._constraints;
+			return _constraints;
 		}
+
 		/**
 		 * @private
 		 */
-		public function set constraints(constraints:Vector.<ConstraintOriginator>):void 
+		public function set constraints(value:Vector.<ConstraintOriginator>):void
 		{
-			this._constraints = constraints;
+			_constraints = value;
 		}
+
+		/**
+		 * The entity this originator is attributed to (eg. "Institut National de l'Information géographique et forestière"). This is basically a human readable name, it also could be an i18n key.
+		 * @default The value of <code>name</code> property
+		 */
+		public function get attribution():String
+		{
+			return _attribution;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set attribution(value:String):void
+		{
+			_attribution = value;
+		}
+
+
 	}
 }

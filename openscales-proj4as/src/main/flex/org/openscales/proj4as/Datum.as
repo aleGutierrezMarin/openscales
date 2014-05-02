@@ -14,9 +14,15 @@ package org.openscales.proj4as {
 		public var ep2:Number;
 		public var datum_params:Array;
 		public var params:Array;
+		public var grids:Object;
+		public var nadgrids:String;
 
 		public function Datum(proj:ProjProjection) {
 			this.datum_type=ProjConstants.PJD_WGS84; //default setting
+			this.init(proj);
+		}
+		
+		private function init(proj:ProjProjection):void {
 			if (proj.datumCode && proj.datumCode == 'none') {
 				this.datum_type=ProjConstants.PJD_NODATUM;
 			}
@@ -37,13 +43,22 @@ package org.openscales.proj4as {
 					}
 				}
 			}
-			if (proj) {
-				this.a=proj.a; //datum object also uses these values
-				this.b=proj.b;
-				this.es=proj.es;
-				this.ep2=proj.ep2;
-				this.datum_params=proj.datum_params;
+			
+			if (proj.projParams.grids){
+                          this.datum_type = ProjConstants.PJD_GRIDSHIFT;  
+                          this.nadgrids = proj.projParams.nadgrids;
+			} else {
+                            this.datum_type;
 			}
+			
+			this.a=proj.a; //datum object also uses these values
+			this.b=proj.b;
+			this.es=proj.es;
+			this.ep2=proj.ep2;
+			this.datum_params=proj.datum_params;
+			if (this.datum_type==ProjConstants.PJD_GRIDSHIFT) {
+                            this.grids= proj.projParams.grids;
+                       }
 		}
 
 		/****************************************************************/
@@ -60,10 +75,11 @@ package org.openscales.proj4as {
 				return (this.datum_params[0] == dest.datum_params[0] && this.datum_params[1] == dest.datum_params[1] && this.datum_params[2] == dest.datum_params[2]);
 			} else if (this.datum_type == ProjConstants.PJD_7PARAM) {
 				return (this.datum_params[0] == dest.datum_params[0] && this.datum_params[1] == dest.datum_params[1] && this.datum_params[2] == dest.datum_params[2] && this.datum_params[3] == dest.datum_params[3] && this.datum_params[4] == dest.datum_params[4] && this.datum_params[5] == dest.datum_params[5] && this.datum_params[6] == dest.datum_params[6]);
-			} else if (this.datum_type == ProjConstants.PJD_GRIDSHIFT) {
+			} else if (this.datum_type == ProjConstants.PJD_GRIDSHIFT ||
+                dest.datum_type == ProjConstants.PJD_GRIDSHIFT) {
 				/*return strcmp( pj_param(this.params,"snadgrids").s,
 				 pj_param(dest.params,"snadgrids").s ) == 0; */
-				return false;
+				return this.nadgrids == dest.nadgrids;
 			} else {
 				return true; // datums are equal
 			}
@@ -276,7 +292,7 @@ package org.openscales.proj4as {
 			} else {
 				Height=Z / Sin_p1 + Rn * (this.es - 1.0);
 			}
-			if (At_Pole == false) {
+			if (!At_Pole) {
 				Latitude=Math.atan(Sin_p1 / Cos_p1);
 			}
 

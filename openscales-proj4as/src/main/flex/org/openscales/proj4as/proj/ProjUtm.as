@@ -31,11 +31,11 @@ package org.openscales.proj4as.proj {
 				trace("utm:init: zone must be specified for UTM");
 				return;
 			}
-			this.lat0=0.0;
-			this.long0=((6 * Math.abs(this.zone)) - 183) * ProjConstants.D2R;
-			this.x0=500000.0;
-			this.y0=this.utmSouth ? 10000000.0 : 0.0;
-			this.k0=0.9996;
+			this.latZero=0.0;
+			this.longZero=((6 * Math.abs(this.zone)) - 183) * ProjConstants.D2R;
+			this.xZero=500000.0;
+			this.yZero=this.utmSouth ? 10000000.0 : 0.0;
+			this.kZero=0.9996;
 
 			super.init();
 		}

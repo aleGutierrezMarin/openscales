@@ -8,7 +8,7 @@ package org.openscales.core.handler.multitouch {
 	import flash.ui.MultitouchInputMode;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.handler.Handler;
 	
 	/**
@@ -50,14 +50,14 @@ package org.openscales.core.handler.multitouch {
 			} if (event.phase==GesturePhase.END) {
 				
 				if(cummulativeScaleX*cummulativeScaleY > 1)
-					this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+					this.map.zoomIn();
 				else
-					this.map.moveTo(this.map.center, this.map.zoom - 1, false, true);
+					this.map.zoomOut();
 			}
 		}
 		
 		private function onTwoFingerTap(event:GestureEvent):void {
-			this.map.moveTo(this.map.center, this.map.zoom + 1, false, true);
+			this.map.zoomIn();
 		}
 		
 	}

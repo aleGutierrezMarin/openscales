@@ -1,11 +1,11 @@
 package org.openscales.core.i18n.provider
 {
-	import com.adobe.serialization.json.JSON;
-	import com.adobe.serialization.json.JSONDecoder;
 	
-	import org.openscales.core.Trace;
+	import org.openscales.core.events.I18NEvent;
 	import org.openscales.core.i18n.Catalog;
 	import org.openscales.core.i18n.Locale;
+	import org.openscales.core.json.GENERICJSON;
+	import org.openscales.core.utils.Trace;
 
 	public class I18nJSONProvider implements Ii18nProvider
 	{
@@ -24,7 +24,7 @@ package org.openscales.core.i18n.provider
 		static public function addTranslation(jsonSource:Class):void {
 			try {
 				var text:String = new jsonSource();
-				var obj:Object = JSON.decode(text) as Object;
+				var obj:Object = GENERICJSON.decode(text) as Object;
 				if(!obj["locale.key"]
 					|| obj["locale.key"] == ''
 					|| !obj["locale.name"]
@@ -33,17 +33,20 @@ package org.openscales.core.i18n.provider
 					|| obj["locale.localizedName"] == ''
 				)
 					return;
-				var locale:Locale = Locale.genLocale(obj["locale.key"] as String,
+				var locale:Locale = Locale.addLocale(obj["locale.key"] as String,
 													 obj["locale.name"] as String,
 													 obj["locale.localizedName"] as String);
 				var value:String = null;
 				for (var key:String in obj) {
 					value = obj[key];
 					if(value
-					   && value != "locale.key"
-					   && value != "locale.name"
-					   && value != "locale.localizedName")
+					   && key != "locale.key"
+					   && key != "locale.name"
+					   && key != "locale.localizedName")
 						Catalog.setLocalizationForKey(locale,key,value);
+				}
+				if(Locale.activeLocale == locale) {
+					Catalog.catalog.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_CHANGED, locale));
 				}
 			} catch (e:Error) {
 				Trace.debug("invalid json");

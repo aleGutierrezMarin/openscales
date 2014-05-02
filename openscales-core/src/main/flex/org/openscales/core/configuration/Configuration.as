@@ -3,7 +3,7 @@ package org.openscales.core.configuration
 	import flash.geom.Point;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
 	import org.openscales.core.control.Control;
 	import org.openscales.core.control.LayerManager;
@@ -18,14 +18,13 @@ package org.openscales.core.configuration
 	import org.openscales.core.handler.mouse.ClickHandler;
 	import org.openscales.core.handler.mouse.DragHandler;
 	import org.openscales.core.handler.mouse.WheelHandler;
-	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.layer.ogc.WFS;
 	import org.openscales.core.layer.ogc.WFST;
 	import org.openscales.core.layer.ogc.WMS;
 	import org.openscales.core.layer.ogc.WMSC;
 	import org.openscales.core.layer.osm.CycleMap;
-	import org.openscales.core.layer.osm.Maplint;
 	import org.openscales.core.layer.osm.Mapnik;
 	import org.openscales.core.layer.params.ogc.WMSParams;
 	import org.openscales.core.security.AbstractSecurity;
@@ -33,12 +32,12 @@ package org.openscales.core.configuration
 	import org.openscales.core.style.Rule;
 	import org.openscales.core.style.Style;
 	import org.openscales.core.style.fill.SolidFill;
-	import org.openscales.core.style.marker.Marker;
-	import org.openscales.core.style.marker.WellKnownMarker;
+	import org.openscales.core.style.graphic.Mark;
 	import org.openscales.core.style.stroke.Stroke;
 	import org.openscales.core.style.symbolizer.LineSymbolizer;
 	import org.openscales.core.style.symbolizer.PointSymbolizer;
 	import org.openscales.core.style.symbolizer.PolygonSymbolizer;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -120,9 +119,8 @@ package org.openscales.core.configuration
 			}else{
 				return null;
 			}
-			
-			return filterFormat.addComparisonFilter(propertyType,propertyName,literalValue);
-      }
+			return filterFormat.addComparisonFilter(filterFormat.getRootFilter(), propertyType,propertyName,literalValue);
+		}
 		
 		protected function beginConfigureMap():void {
 			// Parse the XML (children of Layers, Handlers, Controls ...)    
@@ -146,7 +144,7 @@ package org.openscales.core.configuration
 				map.y = Number(config.@y);
 			
 			if (String(config.@maxExtent) != "") {
-				map.maxExtent = Bounds.getBoundsFromString(config.@maxExtent, Geometry.DEFAULT_SRS_CODE);
+				map.maxExtent = Bounds.getBoundsFromString(String(config.@maxExtent)+","+Geometry.DEFAULT_SRS_CODE);
 			}
 			
 		}
@@ -175,8 +173,8 @@ package org.openscales.core.configuration
 				var security:AbstractSecurity=this.parseSecurity(xmlSecurity);
 				if(xmlSecurity.@layers!=null && map!=null){
 					var layers:Array = xmlSecurity.@layers.split(",");
-					for each (var name:String in layers) {
-						var layer:Layer=map.getLayerByName(name);
+					for each (var id:String in layers) {
+						var layer:Layer=map.getLayerByIdentifier(id);
 						if(layer!=null) layer.security=security;
 					}
 				}
@@ -184,15 +182,13 @@ package org.openscales.core.configuration
 		}
 		
 		protected function endConfigureMap():void {
-			if(String(config.@zoom) != ""){
-				map.zoom = Number(config.@zoom);
+			if(String(config.@resolution) != ""){
+				// TODO : DEFAULT SRS CODE USED Changed Config to complete resolution difinition
+				map.resolution = new Resolution(Number(config.@resolution), Geometry.DEFAULT_SRS_CODE);
 			}
 			if(String(config.@center) != ""){
 				var location:Array = String(config.@center).split(",");
-				if (this.map.baseLayer != null)
-					map.center = new Location(Number(location[0]), Number(location[1]), this.map.baseLayer.projSrsCode);
-				else
-					map.center = new Location(Number(location[0]), Number(location[1]));
+				map.center = new Location(Number(location[0]), Number(location[1]), this.map.projection);
 			}
 		}
 		
@@ -282,9 +278,9 @@ package org.openscales.core.configuration
 			else{visible = true;}
 			
 			var name:String=xmlNode.@name;
-			var projSrsCode:String = Geometry.DEFAULT_SRS_CODE;
+			var projection:String = Layer.DEFAULT_PROJECTION.srsCode;
 			if (String(xmlNode.@projection) != "") {
-				projSrsCode = String(xmlNode.@projection);
+				projection = String(xmlNode.@projection);
 			}
 			
 			var resolution:Array=null;
@@ -332,8 +328,9 @@ package org.openscales.core.configuration
 						// We create the WMSC Layer with all params
 						var wmscLayer:WMSC = new WMSC(name,urlWMS,layers);
 						wmscLayer.visible=visible;
-						wmscLayer.projSrsCode = projSrsCode;
-						wmscLayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmscLayer.projSrsCode);
+						wmscLayer.setProjection(projection);
+						if (String(config.@maxExtent) != "")
+							wmscLayer.setMaxExtent(Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmscLayer.projection));
 						wmscLayer.params = paramsWms;
 						layer = wmscLayer;
 						if (method!=null) {
@@ -347,8 +344,9 @@ package org.openscales.core.configuration
 						// We create the WMS Layer with all params
 						var wmslayer:WMS = new WMS(name,urlWMS,layers);
 						wmslayer.visible = visible;
-						wmslayer.projSrsCode = projSrsCode;                       
-						wmslayer.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,wmslayer.projSrsCode);
+						wmslayer.setProjection(projection);  
+						if (String(config.@maxExtent) != "")
+							wmslayer.setMaxExtent(Bounds.getBoundsFromString(String(config.@maxExtent)+","+wmslayer.projection));
 						wmslayer.params = paramsWms;
 						layer=wmslayer;
 						break;
@@ -395,7 +393,7 @@ package org.openscales.core.configuration
 				wfsLayer.visible = visible;
 				wfsLayer.useCapabilities = useCapabilities;
 				wfsLayer.capabilities = capabilities;
-				wfsLayer.projSrsCode = projSrsCode;
+				wfsLayer.setProjection(projection);
 				
 				if(String(xmlNode.@style) !="")
 				{
@@ -404,28 +402,31 @@ package org.openscales.core.configuration
 					else
 						wfsLayer.style = this.getDefaultStyle(String(xmlNode.@style));
 				}
-				if(String(xmlNode.@filter) !="")
-				{
-					if(this._filter[xmlNode.@filter.toString()])
-						wfsLayer.filter = this._filter[xmlNode.@filter.toString()];
+				
+				if(wfsLayer is WFST) {
+					var wfstLayer:WFST = (wfsLayer as WFST);
+					if(String(xmlNode.@filter) !="" && (wfsLayer is WFST))
+					{
+						if(this._filter[xmlNode.@filter.toString()])
+							wfstLayer.filter = this._filter[xmlNode.@filter.toString()];
+					}
+					
+					if (String(xmlNode.@featureNS) != "") {
+						wfstLayer.featureNS = String(xmlNode.@featureNS);
+					}
+					
+					if (String(xmlNode.@featurePrefix) != "") {
+						wfstLayer.featurePrefix = String(xmlNode.@featurePrefix);
+					}
 				}
 				
-				if (String(xmlNode.@featureNS) != "") {
-					wfsLayer.featureNS = String(xmlNode.@featureNS);
-				}
-				
-				if (String(xmlNode.@featurePrefix) != "") {
-					wfsLayer.featurePrefix = String(xmlNode.@featurePrefix);
-				}
-				
-				
-				if (String(xmlNode.@minZoomLevel) != "" ) {
+				/*if (String(xmlNode.@minR) != "" ) {
 					wfsLayer.minZoomLevel = Number(xmlNode.@minZoomLevel);
 				}
 				if (String(xmlNode.@maxZoomLevel) != "") {
 					wfsLayer.maxZoomLevel = Number(xmlNode.@maxZoomLevel);
-				}
-				wfsLayer.capabilitiesVersion = capabilitiesVersion;
+				}*/
+				wfsLayer.version = capabilitiesVersion;
 				layer=wfsLayer;
 			}
 			else if(type == "Mapnik"){
@@ -433,7 +434,7 @@ package org.openscales.core.configuration
 				// We create the Mapnik Layer with all params
 				var mapnik:Mapnik=new Mapnik(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					mapnik.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,mapnik.projSrsCode);
+					mapnik.setMaxExtent(Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+mapnik.projection));
 				layer=mapnik;
 			}
 			else if(xmlNode.name() == "CycleMap"){
@@ -441,21 +442,13 @@ package org.openscales.core.configuration
 				// We create the CycleMap Layer with all params
 				var cycleMap:CycleMap=new CycleMap(xmlNode.name());
 				if (String(xmlNode.@maxExtent) != "")
-					cycleMap.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,cycleMap.projSrsCode);
+					cycleMap.setMaxExtent(Bounds.getBoundsFromString(String(xmlNode.@maxExtent)+","+cycleMap.projection));
 				layer=cycleMap;
-			}
-			else if(type == "Maplint"){
-				Trace.log("Configuration - Find Maplint Layer : " + xmlNode.name());
-				// We create the CycleMap Layer with all params
-				var maplint:Maplint=new Maplint(xmlNode.name());
-				if (String(xmlNode.@maxExtent) != "")
-					maplint.maxExtent = Bounds.getBoundsFromString(xmlNode.@maxExtent,maplint.projSrsCode);
-				layer=maplint;
 			}
 			else if(type == "FeatureLayer"){
 				// Case when the layer is FeatureLayer
-				var featurelayer:FeatureLayer = new FeatureLayer(name);
-				featurelayer.projSrsCode = projSrsCode;
+				var featurelayer:VectorLayer = new VectorLayer(name);
+				featurelayer.setProjection(projection);
 				layer = featurelayer;
 			} else {
 				// Case when the layer is unknown
@@ -480,8 +473,8 @@ package org.openscales.core.configuration
 					layer.alpha = Number(xmlNode.@alpha);
 				}
 				//editable?
-				if (String(xmlNode.@editable) == "true"){
-					layer.editable = Boolean(xmlNode.@editable);
+				if (String(xmlNode.@editable) == "true" && (layer is VectorLayer)){
+					(layer as VectorLayer).editable = Boolean(xmlNode.@editable);
 				}
 			}
 			
@@ -531,7 +524,6 @@ package org.openscales.core.configuration
 			
 			var xmlMakers:XMLList = xmlSymbolizer.*;
 			var poinSymbolizer:PointSymbolizer;
-			var marker:Marker;
 			
 			if(xmlMakers.name() =="WellKnownMarker"){
 				var fill:SolidFill = null;
@@ -543,12 +535,15 @@ package org.openscales.core.configuration
 						stroke = new Stroke(fillAndStroke.@color,fillAndStroke.@width,fillAndStroke.@opacity,fillAndStroke.@linecap,fillAndStroke.@linejoin);
 					}
 				}
-				marker = new WellKnownMarker(xmlMakers.@wellKnowName,null,null,Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
-				poinSymbolizer = new PointSymbolizer(marker);
+				poinSymbolizer = new PointSymbolizer();
+				poinSymbolizer.graphic.graphics.push(new Mark(xmlMakers.@wellKnowName,fill,stroke));
+				poinSymbolizer.graphic.opacity = xmlMakers.@opacity;
+				poinSymbolizer.graphic.rotation = xmlMakers.@rotation;
 				
 			}else if(xmlMakers.name() =="Marker"){
-				marker = new Marker(Number(xmlMakers.@size),xmlMakers.@opacity,xmlMakers.@rotation);
-				poinSymbolizer = new PointSymbolizer(marker);
+				poinSymbolizer.graphic.graphics.push(new Mark(Mark.WKN_SQUARE));
+				poinSymbolizer.graphic.opacity = xmlMakers.@opacity;
+				poinSymbolizer.graphic.rotation = xmlMakers.@rotation;
 			}
 			return poinSymbolizer;
 		}
@@ -598,16 +593,15 @@ package org.openscales.core.configuration
 				return Style.getDefaultPointStyle();
 			}
 			if(defaultStyle == "DefaultSurfaceStyle"){
-				return Style.getDefaultSurfaceStyle();
+				return Style.getDefaultPolygonStyle();
 			}
 			if(defaultStyle == "DrawLineStyle"){
-				return Style.getDrawLineStyle();
+				return Style.getDefaultSelectedLineStyle();
 			}
 			if(defaultStyle == "DrawSurfaceStyle"){
-				return Style.getDrawSurfaceStyle();
+				return Style.getDefaultSelectedPolygonStyle();
 			}
 			
-			Trace.error("you must define a style for feature layer");
 			return null;
 		}
 		
@@ -675,7 +669,7 @@ package org.openscales.core.configuration
 			else if(xmlNode.name() == "MousePosition"){
 				var mousePosition:MousePosition = new MousePosition();
 				mousePosition.name = xmlNode.@id;
-				mousePosition.displayProjSrsCode = String(xmlNode.@displayProjection);
+				mousePosition.displayProjection = String(xmlNode.@displayProjection);
 				control = mousePosition;
 			}
 			return control;         

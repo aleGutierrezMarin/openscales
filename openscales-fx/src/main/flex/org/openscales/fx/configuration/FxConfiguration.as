@@ -5,7 +5,7 @@ package org.openscales.fx.configuration
 	import mx.core.IVisualElementContainer;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.core.configuration.Configuration;
 	import org.openscales.fx.FxMap;
 	import org.openscales.fx.control.Control;

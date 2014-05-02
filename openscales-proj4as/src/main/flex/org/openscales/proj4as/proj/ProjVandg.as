@@ -1,8 +1,8 @@
 package org.openscales.proj4as.proj {
 
-	import org.openscales.proj4as.ProjPoint;
-	import org.openscales.proj4as.ProjConstants;
 	import org.openscales.proj4as.Datum;
+	import org.openscales.proj4as.ProjConstants;
+	import org.openscales.proj4as.ProjPoint;
 
 	/**
 	 <p>VAN DER GRINTEN projection</p>
@@ -37,7 +37,8 @@ package org.openscales.proj4as.proj {
 		}
 
 		override public function init():void {
-			this.R=6370997.0; //Radius of earth
+			//this.R=6370997.0; //Radius of earth
+			this.R=this.a;
 		}
 
 		override public function forward(p:ProjPoint):ProjPoint {
@@ -46,20 +47,20 @@ package org.openscales.proj4as.proj {
 
 			/* Forward equations
 			 -----------------*/
-			var dlon:Number=ProjConstants.adjust_lon(lon - this.long0);
+			var dlon:Number=ProjConstants.adjust_lon(lon - this.longZero);
 			var x:Number, y:Number;
 
 			if (Math.abs(lat) <= ProjConstants.EPSLN) {
-				x=this.x0 + this.R * dlon;
-				y=this.y0;
+				x=this.xZero + this.R * dlon;
+				y=this.yZero;
 			}
 			var theta:Number=ProjConstants.asinz(2.0 * Math.abs(lat / ProjConstants.PI));
 			if ((Math.abs(dlon) <= ProjConstants.EPSLN) || (Math.abs(Math.abs(lat) - ProjConstants.HALF_PI) <= ProjConstants.EPSLN)) {
-				x=this.x0;
+				x=this.xZero;
 				if (lat >= 0) {
-					y=this.y0 + ProjConstants.PI * this.R * Math.tan(.5 * theta);
+					y=this.yZero + ProjConstants.PI * this.R * Math.tan(.5 * theta);
 				} else {
-					y=this.y0 + ProjConstants.PI * this.R * -Math.tan(.5 * theta);
+					y=this.yZero + ProjConstants.PI * this.R * -Math.tan(.5 * theta);
 				}
 					//  return(OK);
 			}
@@ -76,12 +77,16 @@ package org.openscales.proj4as.proj {
 			if (dlon < 0) {
 				con=-con;
 			}
-			x=this.x0 + con;
-			con=Math.abs(con / (ProjConstants.PI * this.R));
+			x=this.xZero + con;
+			//con=Math.abs(con / (ProjConstants.PI * this.R));
+			var q:Number = asq+g;
+			con=ProjConstants.PI*this.R*(m*q-al*Math.sqrt((msq+asq)*(asq+1.0)-q*q))/(msq+asq);
 			if (lat >= 0) {
-				y=this.y0 + ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				//y=this.yZero + ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				y=this.yZero + con;
 			} else {
-				y=this.y0 - ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				//y=this.yZero - ProjConstants.PI * this.R * Math.sqrt(1.0 - con * con - 2.0 * al * con);
+				y=this.yZero - con;
 			}
 			p.x=x;
 			p.y=y;
@@ -91,19 +96,18 @@ package org.openscales.proj4as.proj {
 		/* Van Der Grinten inverse equations--mapping x,y to lat/long
 		 ---------------------------------------------------------*/
 		override public function inverse(p:ProjPoint):ProjPoint {
-			var dlon:Number, lat:Number, lon:Number;
+			var lat:Number, lon:Number;
 			var xx:Number, yy:Number, xys:Number, c1:Number, c2:Number, c3:Number;
-			var al:Number, asq:Number;
-			var a1:Number;
-			var m1:Number;
+			var aOne:Number;
+			var mOne:Number;
 			var con:Number;
-			var th1:Number;
+			var thOne:Number;
 			var d:Number;
 
 			/* inverse equations
 			 -----------------*/
-			p.x-=this.x0;
-			p.y-=this.y0;
+			p.x-=this.xZero;
+			p.y-=this.yZero;
 			con=ProjConstants.PI * this.R;
 			xx=p.x / con;
 			yy=p.y / con;
@@ -112,9 +116,9 @@ package org.openscales.proj4as.proj {
 			c2=c1 - 2.0 * yy * yy + xx * xx;
 			c3=-2.0 * c1 + 1.0 + 2.0 * yy * yy + xys * xys;
 			d=yy * yy / c3 + (2.0 * c2 * c2 * c2 / c3 / c3 / c3 - 9.0 * c1 * c2 / c3 / c3) / 27.0;
-			a1=(c1 - c2 * c2 / 3.0 / c3) / c3;
-			m1=2.0 * Math.sqrt(-a1 / 3.0);
-			con=((3.0 * d) / a1) / m1;
+			aOne=(c1 - c2 * c2 / 3.0 / c3) / c3;
+			mOne=2.0 * Math.sqrt(-aOne / 3.0);
+			con=((3.0 * d) / aOne) / mOne;
 			if (Math.abs(con) > 1.0) {
 				if (con >= 0.0) {
 					con=1.0;
@@ -122,17 +126,18 @@ package org.openscales.proj4as.proj {
 					con=-1.0;
 				}
 			}
-			th1=Math.acos(con) / 3.0;
+			thOne=Math.acos(con) / 3.0;
 			if (p.y >= 0) {
-				lat=(-m1 * Math.cos(th1 + ProjConstants.PI / 3.0) - c2 / 3.0 / c3) * ProjConstants.PI;
+				lat=(-mOne * Math.cos(thOne + ProjConstants.PI / 3.0) - c2 / 3.0 / c3) * ProjConstants.PI;
 			} else {
-				lat=-(-m1 * Math.cos(th1 + Math.PI / 3.0) - c2 / 3.0 / c3) * ProjConstants.PI;
+				lat=-(-mOne * Math.cos(thOne + ProjConstants.PI / 3.0) - c2 / 3.0 / c3) * ProjConstants.PI;
 			}
 
 			if (Math.abs(xx) < ProjConstants.EPSLN) {
-				lon=this.long0;
+				lon=this.longZero;
+			} else {
+				lon=ProjConstants.adjust_lon(this.longZero + ProjConstants.PI * (xys - 1.0 + Math.sqrt(1.0 + 2.0 * (xx * xx - yy * yy) + xys * xys)) / 2.0 / xx);
 			}
-			lon=ProjConstants.adjust_lon(this.long0 + ProjConstants.PI * (xys - 1.0 + Math.sqrt(1.0 + 2.0 * (xx * xx - yy * yy) + xys * xys)) / 2.0 / xx);
 
 			p.x=lon;
 			p.y=lat;

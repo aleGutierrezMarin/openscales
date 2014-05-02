@@ -6,27 +6,33 @@ package org.openscales.core.layer
 	import flash.events.Event;
 	import flash.events.IOErrorEvent;
 	
+	import org.openscales.core.Map;
+	import org.openscales.core.events.LayerEvent;
+	import org.openscales.core.request.DataRequest;
+	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
-	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
-	import org.openscales.core.events.LayerEvent;
-	import org.openscales.core.request.DataRequest;
 	
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LOAD_END
+	 */ 
+	[Event(name="openscales.layerloadend", type="org.openscales.core.events.LayerEvent")]
 
 	public class ImageLayer extends Layer
 	{
     
 		private var _request:DataRequest = null;
 		private var _size:Size = null;
+		private var _image:DisplayObject = null;
 		
 	    public function ImageLayer(name:String,
 	    						  url:String,
-	    						  bounds:Bounds) {
+	    						  bounds:Bounds
+								  ) {
 	        this.url = url;
-	        this.maxExtent = bounds;
+	        this.setMaxExtent(bounds);
 						
 	        super(name);
 			
@@ -69,18 +75,22 @@ package org.openscales.core.layer
 		}
 		
 		override public function clear():void  {
-			//this.graphics.clear();			
+			if(this._image && this.numChildren>0)
+				this.removeChild(this._image);			
 		}
 		
 		override protected function draw():void  {
-			if(numChildren != 0) {
-				var image:DisplayObject = this.getChildAt(0);
-				image.width = this.maxExtent.width/this.map.resolution;
-				image.height = this.maxExtent.height/this.map.resolution;
+			if(this._image && this.available) {
+				if(this.numChildren==0)
+					this.addChild(this._image);
+				_image.width = this.maxExtent.reprojectTo(this.map.projection).width/this.map.resolution.value;
+				_image.height = this.maxExtent.reprojectTo(this.map.projection).height/this.map.resolution.value;
 				var ul:Location = new Location(this.maxExtent.left, this.maxExtent.top);
-				var ulPx:Pixel = this.map.getLayerPxFromLocation(ul);
-				image.x = ulPx.x;
-				image.y = ulPx.y;
+				var ulPx:Pixel = this.map.getMapPxFromLocation(ul);
+				_image.x = ulPx.x;
+				_image.y = ulPx.y;
+			} else {
+				this.clear();
 			}
 		}
 		
@@ -90,7 +100,7 @@ package org.openscales.core.layer
 			var loader:Loader = loaderInfo.loader as Loader;
 			// Store image size
 			this._size = new Size(loader.width, loader.height);
-			this.addChild(loader);
+			this._image = loader;
 			this.draw();
 			this.loading = false;
 		} 

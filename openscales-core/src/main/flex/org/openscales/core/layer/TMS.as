@@ -19,7 +19,7 @@ package org.openscales.core.layer
 	{
 		private var _serviceVersion:String = "1.0.0";
 
-		private var _tileOrigin:Location = null;
+		//private var _tileOrigin:Location = null;
 		
 		private var _format:String = "png";
 		
@@ -31,23 +31,23 @@ package org.openscales.core.layer
 		 */
 		private var _serverResolutions:Array = null;
 		
-		public function TMS(name:String,
+		public function TMS(identifier:String,
 							url:String, layerName:String="") {
-			super(name, url);
+			super(identifier, url);
 			this._layerName = layerName;
 			
 		}
 		
 		override public function getURL(bounds:Bounds):String {
-			var res:Number = this.map.resolution;
+			var res:Number = this.getSupportedResolution(this.map.resolution).value;
 			if(this._tileOrigin==null) {
-				this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.bottom);
+				this._tileOrigin = new Location(this.maxExtent.left,this.maxExtent.bottom, this.maxExtent.projection);
 			}
 			
 			var x:Number = Math.round((bounds.left - this._tileOrigin.lon) / (res * this.tileWidth));
 			var y:Number = Math.round((bounds.bottom - this._tileOrigin.lat) / ( res* this.tileHeight));
-			var z:Number = (this._serverResolutions!=null) ? this._serverResolutions.indexOf(res) : this.map.zoom;
-
+			var z:Number = this.getZoomForResolution(this.map.resolution.reprojectTo(this.projection).value);
+			
 			var url:String = this.url + this._serviceVersion +"/" + this.layerName + "/" + z + "/" + x + "/" + y+"."+this._format;
 			return url ;
 		}
@@ -61,6 +61,28 @@ package org.openscales.core.layer
 			if (! this._tileOrigin) {
 				this._tileOrigin = new Location(this.map.maxExtent.left, this.map.maxExtent.bottom);
 			}
+		}
+		
+		/**
+		 * Return The index of the zoomLevel (entry in the resolutions array)
+		 * that corresponds to the best fit resolution given the passed in
+		 * value and the 'closest' specification.
+		 */
+		public function getZoomForResolution(resolution:Number):Number {
+			if(resolution > this.resolutions[0]) {
+				return 0;
+			}
+			if(resolution < this.resolutions[this.resolutions.length - 1]) {
+				return this.resolutions.length - 1;
+			}
+			var i:int = 1;
+			var j:int = this.resolutions.length;
+			for (i; i < j; ++i) {
+				if ((this.resolutions[i] < resolution) && (Math.abs(this.resolutions[i] - resolution) > RESOLUTION_TOLERANCE)) {
+					break;
+				}
+			}
+			return i - 1;
 		}
 
 		/**

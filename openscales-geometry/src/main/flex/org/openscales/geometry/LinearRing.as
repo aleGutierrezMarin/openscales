@@ -1,8 +1,11 @@
 package org.openscales.geometry
 {
 
-	import org.openscales.geometry.utils.UtilGeometry;
 	import org.openscales.geometry.basetypes.Location;
+	import org.openscales.geometry.basetypes.Unit;
+	import org.openscales.geometry.utils.UtilGeometry;
+	import org.openscales.proj4as.ProjCalculus;
+	import org.openscales.proj4as.ProjProjection;
 		
 	/**
 	 * A Linear Ring is a special LineString which is closed. 
@@ -13,8 +16,24 @@ package org.openscales.geometry
 	 */
 	public class LinearRing extends LineString
 	{
-		public function LinearRing(points:Vector.<Number> = null) {
-			super(points);
+		private var _units:String;
+
+		public function get units():String
+		{
+			return _units;
+		}
+
+		public function set units(value:String):void
+		{
+			_units = value;
+		}
+
+		/**
+		 * @param points
+		 * @param projection The projection to use for this LinearRing, default is EPSG:4326
+		 */ 
+		public function LinearRing(points:Vector.<Number> = null,projection:ProjProjection = null) {
+			super(points,projection);
 		}
 
 		override public function addComponent(point:Geometry, index:Number=NaN):Boolean {
@@ -43,7 +62,7 @@ package org.openscales.geometry
 		override public function containsPoint(p:Point):Boolean {
 			// If the point is not inside the bounding box of the LinearRing, it
 			// can not be in the LinearRing.
-			if (! this.bounds.containsLocation(new Location(p.x, p.y))) {
+			if (! this.bounds.containsLocation(new Location(p.x, p.y, p.projection))) {
 				return false;
 			}
 			
@@ -131,7 +150,69 @@ package org.openscales.geometry
 		 * The auto-intersection of edges of the LinearRing is not managed yet.
 		 */
 		override public function get area():Number {
-			return 0.0;  // TODO, FixMe
+			var area:Number = 0;
+			if ( this.components && (this.components.length > 4)) {
+				var sum:Number = 0;
+				var len:Number = len=this.components.length;
+				for (var i:Number=0; i<len - 3; i+=2) {
+					var bx:Number = this.components[i];
+					var by:Number = this.components[i+1];
+					var cx:Number = this.components[i+2];
+					var cy:Number = this.components[i+3];
+					sum += (bx + cx) * (cy - by);
+				}
+				
+				bx = cx;
+				by = cy;
+				sum += (bx + cx) * (cy - by);
+				
+				cx = this.components[0];
+				cy = this.components[1];
+				sum += (bx + cx) * (cy - by);
+				
+				area = - sum / 2;
+			}
+			return area;
+		}
+		
+		/**
+		 * Calculate the approximate area of the polygon were it projected onto
+		 *     the earth.  Note that this area will be positive if ring is oriented
+		 *     clockwise, otherwise it will be negative.
+		 * 
+		 * Reference:
+		 * Robert. G. Chamberlain and William H. Duquette, "Some Algorithms for
+		 *     Polygons on a Sphere", JPL Publication 07-03, Jet Propulsion
+		 *     Laboratory, Pasadena, CA, June 2007 http://trs-new.jpl.nasa.gov/dspace/handle/2014/40409
+		 *
+		 * Returns:
+		 * The approximate signed geodesic area of the polygon in square
+		 *     meters.
+		 */
+		public function get geodesicArea():Number
+		{
+			var ring:LinearRing = this;  // so we can work with a clone if needed
+			var lonlatProj:ProjProjection = ProjProjection.getProjProjection("EPSG:4326");
+			if(lonlatProj != this.projection) {
+				ring = this.clone() as LinearRing;
+				ring.transform(lonlatProj);
+			}
+			var area:Number = 0;
+			var len:Number = ring.components.length;
+			if(len > 4) {
+				var p1:Point;
+				var p2:Point;
+				for(var i:int=0; i<len-2; i=i+2) {
+					p1 = new Point(ring.components[i], ring.components[i+1]);
+					p2 = new Point(ring.components[i+2], ring.components[i+3]);
+					area += ProjCalculus.degtoRad(p2.x - p1.x) * (2 + Math.sin(ProjCalculus.degtoRad(p1.y)) + Math.sin(ProjCalculus.degtoRad(p2.y)));
+				}
+				p1 = new Point(ring.components[len-2], ring.components[len-1]);
+				p2 = new Point(ring.components[0], ring.components[1]);
+				area += ProjCalculus.degtoRad(p2.x - p1.x) * (2 + Math.sin(ProjCalculus.degtoRad(p1.y)) + Math.sin(ProjCalculus.degtoRad(p2.y)));
+				area = area * 6378137.0 * 6378137.0 / 2.0;
+			}
+			return area;
 		}
 		
 		/**
@@ -140,6 +221,8 @@ package org.openscales.geometry
 		override public function clone():Geometry{
 			var LinearRingClone:LinearRing=new LinearRing();
 			var component:Vector.<Number>=this.getcomponentsClone();
+			LinearRingClone.projection = this.projection;
+			LinearRingClone._bounds = this._bounds;
 			LinearRingClone.addPoints(component);
 			return LinearRingClone;
 		}

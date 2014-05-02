@@ -17,15 +17,12 @@ It will retrieve the language information and display the availlable languages.
 			import mx.collections.ArrayCollection;
 			
 			import org.openscales.core.Map;
-			import org.openscales.core.Trace;
 			import org.openscales.core.control.LanguageSwitcher;
 			import org.openscales.core.events.I18NEvent;
 			import org.openscales.core.i18n.Catalog;
 			import org.openscales.core.i18n.Locale;
-			import org.openscales.geometry.basetypes.Pixel;
 			
 			import spark.components.DropDownList;
-			import spark.events.IndexChangeEvent;
 			
 			/**
 			 * Array collection containing the list of the languages to show in the droplist
@@ -58,12 +55,32 @@ It will retrieve the language information and display the availlable languages.
 			{
 				_languageSwitcher = new org.openscales.core.control.LanguageSwitcher();
 				_languageSwitcher.map = this.map;
+				
+				Catalog.catalog.addEventListener(I18NEvent.LOCALE_ADDED, this.updateLocale);
+				
 				actualizeLanguages();
 			}
 			
 			override public function set map(value:Map):void {
 				super.map = value;
 				configure();
+			}
+			
+			
+			/**
+			 * Update the locale list when a new locale is added
+			 */
+			private function updateLocale(event:I18NEvent):void
+			{
+				var locale:Locale = event.locale;
+				
+				this._supportedLocales = Catalog.getAvailableLocalizations();
+				
+				if(locale!=null && !languagesList.contains(locale))
+				{
+					languagesList.addItem(locale);
+				}
+				
 			}
 			
 			/**

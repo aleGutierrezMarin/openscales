@@ -1,24 +1,23 @@
 package org.openscales.core.control
 {
+	import flash.display.Bitmap;
+	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
+	
+	import mx.controls.Image;
 	
 	import org.openscales.core.Map;
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.MapEvent;
-	import org.openscales.core.feature.PointFeature;
-	import org.openscales.core.layer.FeatureLayer;
 	import org.openscales.core.layer.Layer;
-	import org.openscales.core.style.Rule;
-	import org.openscales.core.style.Style;
-	import org.openscales.core.style.fill.SolidFill;
-	import org.openscales.core.style.marker.WellKnownMarker;
-	import org.openscales.core.style.stroke.Stroke;
-	import org.openscales.core.style.symbolizer.PointSymbolizer;
-	import org.openscales.geometry.Point;
 	import org.openscales.geometry.basetypes.Location;
 	import org.openscales.geometry.basetypes.Pixel;
 	import org.openscales.geometry.basetypes.Size;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Display an overview linked with the map.
@@ -36,7 +35,7 @@ package org.openscales.core.control
 		 * @private
 		 * Current map of the overvew
 		 */
-		private var _overviewMap:Map;
+		protected var _overviewMap:Map;
 		
 		/**
 		 * @private
@@ -47,11 +46,36 @@ package org.openscales.core.control
 		
 		/**
 		 * @private
-		 * Shape that will be displayed at the center of the overview map
+		 * Icon that will be displayed at the center of the overview map
 		 * to show the location
 		 */
-		private var _centerPoint:Shape;
+		protected var _centerIcon:Class = null;
 		
+		/**
+		 * @private
+		 * Shape that will be displayed at the center of the overview map
+		 * to show the location if no icon is given
+		 */
+		protected var _centerPoint:Shape;
+		
+		/**
+		 * @private
+		 * The bitmap of the center of the overviewMap
+		 */
+		protected var _centerBitmap:Bitmap;
+		
+		/**
+		 * @private
+		 * The timer used to refresh the overviewMap while moving the map
+		 */
+		protected var _timer:Timer;
+		
+		
+		/**
+		 * @private
+		 * The color of the OverviewMapRatio's cross can be changed. 
+		 */		
+		protected var _colorCross:uint=0xFF0000;
 		
 		/**
 		 * Constructor of the overview map
@@ -65,9 +89,29 @@ package org.openscales.core.control
 			this._overviewMap = new Map();
 			this._overviewMap.size = new Size(100, 100);
 			this.layer = layer;
+			this._timer = new Timer(300, 1);
+			this._timer.addEventListener(TimerEvent.TIMER, this.actualizeLayer);
 			addEventListener(Event.ADDED_TO_STAGE, onAddedToStage);
 		}
 		
+		/**
+		 * @private
+		 * Icon that will be displayed at the center of the overview map
+		 * to show the location
+		 */
+		public function get centerIcon():Class
+		{
+			return _centerIcon;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set centerIcon(value:Class):void
+		{
+			_centerIcon = value;
+		}
+
 		/**
 		 * @private
 		 * Draw the overview map when added to the map 
@@ -77,8 +121,6 @@ package org.openscales.core.control
 			removeEventListener(Event.ADDED_TO_STAGE,onAddedToStage);
 			this.mapChanged();
 			this.draw();
-			
-			
 		}
 		
 		/**
@@ -86,65 +128,49 @@ package org.openscales.core.control
 		 */
 		public override function draw():void {
 			this.addChild(this._overviewMap);
+			this.mapChanged();
 		}
 		
 		/**
 		 * Draw the center point
 		 */
-		private function drawCenter():void
+		protected function drawCenter():void
 		{
-			if (this._centerPoint == null)
-			{
-				_centerPoint = new Shape();
-			}
-			_centerPoint.graphics.clear();
-			_centerPoint.graphics.lineStyle(1, 0xFF0000);
-			_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
-			_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
-			_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
-			_centerPoint.graphics.lineTo(this.width/2, this.height/2 + 5);
-			this._overviewMap.addChild(_centerPoint);
-		}
-		
-		
-		/**
-		 * @private
-		 * Compute the zoom level of the overviewMap according to the ratio setted
-		 */
-		private function computeZoomLevel():void
-		{
-			if (this.map != null && this._overviewMap.baseLayer != null)
-			{
-				// Compute the size ratio between the map and the voerview map
-				var mapsRatio:Number = (this.map.width / this._overviewMap.size.w); 
-				
-				// Compute the reprojection factor for the resolution
-				var unityReproj:Location = new Location(1, 1, this.map.baseLayer.projSrsCode);
-				unityReproj = unityReproj.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
-				
-				// Reproject and multiply by the maps ratio the resolution
-				var targetResolution:Number = this.map.resolution * unityReproj.x* mapsRatio;
-				
-				
-				// Find the best zoom to fit the resolutions ratio
-				var bestZoomLevel:int = 0;
-				var bestRatio:Number = 0;
-				var i:int = Math.max(0, this._overviewMap.baseLayer.minZoomLevel);
-				var len:int = Math.min(this._overviewMap.baseLayer.resolutions.length, this._overviewMap.baseLayer.maxZoomLevel+1);
-				for (i; i < len; ++i)
-				{
-					var ratioSeeker:Number = this._overviewMap.baseLayer.resolutions[i] / targetResolution;
-					if ( ratioSeeker > _ratio){
-						ratioSeeker = _ratio/ratioSeeker;
-					}
-					if ( ratioSeeker > bestRatio){
-						bestRatio = ratioSeeker;
-						bestZoomLevel = i;
-					}
+			if (this._centerIcon) {
+				// Use icon
+				if (this._centerPoint) {
+					this._overviewMap.removeChild(this._centerPoint);
+					this._centerPoint = null;
 				}
 				
-				this._overviewMap.zoom = bestZoomLevel;
-				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.baseLayer.projSrsCode);
+				if (this._centerBitmap)
+				{
+					this.removeChild(this._centerBitmap);
+					this._centerBitmap = null;
+				}
+				_centerBitmap = new _centerIcon;
+				_centerBitmap.x = this.width/2 - _centerBitmap.width/2;
+				_centerBitmap.y = this.height/2 - _centerBitmap.height/2;
+				this.addChild(_centerBitmap);
+			}
+			else {
+				// Draw cross shape
+				if (this._centerPoint == null)
+				{
+					_centerPoint = new Shape();
+				}
+				if (this._centerBitmap)
+				{
+					this.removeChild(this._centerBitmap);
+					this._centerBitmap = null;
+				}
+				_centerPoint.graphics.clear();
+				_centerPoint.graphics.lineStyle(1, this._colorCross);
+				_centerPoint.graphics.moveTo(this.width/2 - 5, this.height/2);
+				_centerPoint.graphics.lineTo(this.width/2 + 5, this.height/2);
+				_centerPoint.graphics.moveTo(this.width/2, this.height/2 - 5);
+				_centerPoint.graphics.lineTo(this.width/2, this.height/2 + 5);
+				this._overviewMap.addChild(_centerPoint);
 			}
 		}
 		
@@ -155,7 +181,7 @@ package org.openscales.core.control
 			if(!value)
 				return;
 			this._overviewMap.size = value;
-			mapChanged();
+			//mapChanged();
 		}
 		
 		/**
@@ -166,23 +192,42 @@ package org.openscales.core.control
 		{
 			if (this.map != null)
 			{
-				this.map.removeEventListener(MapEvent.MOVE_END,
-					mapChanged);
-				this.map.removeEventListener(MapEvent.LOAD_END,
-					mapChanged);
-				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN,
-					onMouseDown);
+				this.map.removeEventListener(MapEvent.CENTER_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
+				this.map.removeEventListener(MapEvent.RESIZE, mapChanged);
+				this.map.removeEventListener(MapEvent.MAP_LOADED, mapChanged);
+				this.map.removeEventListener(MapEvent.RELOAD, mapReload);
+				this._overviewMap.removeEventListener(MouseEvent.MOUSE_DOWN, onMouseDown);
 			}
 			super.map = map;	
 			if (map != null)
 			{	
-				this.map.addEventListener(MapEvent.MOVE_END,
-					mapChanged);
-				this.map.addEventListener(MapEvent.LOAD_END,
-					mapChanged);
-				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN,
-					onMouseDown,true);
+				this.map.addEventListener(MapEvent.CENTER_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.PROJECTION_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.RESOLUTION_CHANGED, mapChanged);
+				this.map.addEventListener(MapEvent.RESIZE, mapChanged);
+				this.map.addEventListener(MapEvent.MAP_LOADED, mapChanged);
+				this.map.addEventListener(MapEvent.RELOAD, mapReload);
+				this._overviewMap.addEventListener(MouseEvent.MOUSE_DOWN, onMouseDown,true);
+				this._overviewMap.maxExtent = this._map.maxExtent.preciseReprojectBounds(this.overviewMap.projection);
+				this._overviewMap.backTileColor = this._map.backTileColor;
+				this.mapChanged();
 			}
+		}
+		
+		protected function mapReload(event:Event = null):void
+		{
+			this._timer.reset();
+			this._timer.start();
+		}
+		
+		private function actualizeLayer(event:Event = null):void
+		{
+			if (this.layer)
+			{
+				this.layer.redraw(true);
+			}	
 		}
 		
 		/**
@@ -190,9 +235,26 @@ package org.openscales.core.control
 		 * Callback to recompute the zoom level of the overview when the zoom level of the map
 		 * has changed 
 		 */
-		private function mapChanged(event:Event = null):void
+		protected function mapChanged(event:Event = null):void
 		{
-			computeZoomLevel();
+			//computeResolutionLevel();
+			if (this.map != null)
+			{
+				this._overviewMap.center = this.map.center.reprojectTo(this._overviewMap.projection);
+				var mapRes:Resolution = this._map.resolution;
+				mapRes = mapRes.reprojectTo(this.overviewMap.projection);
+				var mapsRatio:Number =(this.map.size.w / this._overviewMap.size.w); 
+				var newRes:Resolution =  new Resolution(mapRes.value*ratio*mapsRatio, mapRes.projection);
+				if (newRes.value > this._overviewMap.maxResolution.value)
+				{
+					newRes = this._overviewMap.maxResolution;
+				}
+				if (newRes.value < this._overviewMap.minResolution.value)
+				{
+					newRes = this._overviewMap.minResolution;
+				}
+				this._overviewMap.resolution = newRes
+			}
 			this.drawCenter();	
 		}
 		
@@ -202,17 +264,19 @@ package org.openscales.core.control
 		 * If the new center is out of the max extend of the base map the overview map center is not
 		 * changed
 		 */
-		private function onMouseDown(event:MouseEvent):void {
+		protected function onMouseDown(event:MouseEvent):void {
 			var mousePosition:Pixel =  new Pixel(this._overviewMap.mouseX, this._overviewMap.mouseY);
 			var newCenter:Location = this._overviewMap.getLocationFromMapPx(mousePosition);
 			var oldCenter:Location = this._overviewMap.center;
 			
-			this.map.center = newCenter.reprojectTo(this.map.baseLayer.projSrsCode);	
+			var newMapCenter:Location = newCenter.reprojectTo(this.map.projection);	
+			
+			this.map.center = newMapCenter;
 			//If the new center is valid change the center of the overview
-			if (this.map.center == newCenter.reprojectTo(this.map.baseLayer.projSrsCode))
-				{
-					this._overviewMap.center = newCenter;
-				}
+			if (this.map.center == newMapCenter)
+			{
+				this._overviewMap.center = newCenter;
+			}
 		}
 		
 		/**
@@ -226,7 +290,12 @@ package org.openscales.core.control
 			if (layer != null)
 			{
 				_overviewMap.removeAllLayers();
-				_overviewMap.addLayer(layer, true, true);
+				_overviewMap.addLayer(layer, true);
+				
+				_overviewMap.setProjection(layer.projection);
+				_overviewMap.maxExtent = layer.maxExtent;
+				_overviewMap.minResolution = layer.minResolution;
+				_overviewMap.maxResolution = layer.maxResolution;
 			}
 		}
 		
@@ -236,7 +305,10 @@ package org.openscales.core.control
 		 */
 		public function get layer():Layer
 		{
-			return _overviewMap.baseLayer;
+			if (_overviewMap && _overviewMap.layers && _overviewMap.layers.length >0)
+				return _overviewMap.layers[0];
+			else
+				return null;
 		}
 		
 		/**
@@ -249,6 +321,7 @@ package org.openscales.core.control
 		public function set ratio(ratio:Number):void
 		{
 			this._ratio = ratio;
+			//this.mapChanged();
 		}
 		
 		/**
@@ -263,7 +336,7 @@ package org.openscales.core.control
 		/**
 		 * The overview map resolution
 		 */
-		public function get resolution():Number
+		public function get resolution():Resolution
 		{
 			return _overviewMap.resolution;
 		}
@@ -275,5 +348,89 @@ package org.openscales.core.control
 		{
 			return _overviewMap;
 		}
+		
+		override public function set width(value:Number):void{
+			_overviewMap.size = new Size(value, _overviewMap.size.h);
+			//mapChanged();
+		}
+		
+		override public function get width():Number{
+			return _overviewMap.size.w;
+		}
+		
+		override public function set height(value:Number):void{
+			_overviewMap.size = new Size(_overviewMap.size.w, value);
+			//mapChanged();
+		}
+		
+		override public function get height():Number{
+			return _overviewMap.size.h;
+		}
+		
+		/**
+		 * The actual projection of the map. The default value is Geometry.DEFAULT_SRS_CODE
+		 */
+		public function set projection(value:*):void
+		{
+			this._overviewMap.setProjection(value);
+		}
+		
+		/**
+		 * @public
+		 */
+		public function get projection():ProjProjection
+		{
+			return this._overviewMap.projection;
+		}
+		
+		/**
+		 * The actual maxResolution of the overview map
+		 */
+		public function get maxResolution():Resolution
+		{
+			return this._overviewMap.maxResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set maxResolution(value:Resolution):void
+		{
+			this._overviewMap.maxResolution = value;
+		}
+		
+		/**
+		 * The actual minResolution of the overview map
+		 */
+		public function get minResolution():Resolution
+		{
+			return this._overviewMap.minResolution;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set minResolution(value:Resolution):void
+		{
+			this._overviewMap.minResolution = value;
+		}
+		
+		/**
+		 * The actual color of the cross
+		 */
+		public function get colorCross():uint
+		{
+			return this._colorCross;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set colorCross(value:uint):void
+		{
+			this._colorCross=value;
+		}
+		
+		
 	}
 }

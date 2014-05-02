@@ -136,13 +136,13 @@ package org.openscales.core.control
 			if (!(evt.type == MouseEvent.CLICK)) return;
 			
 			var btn:Button = evt.currentTarget as Button;
-			
+			// TODO : refactor to change the zoom behaviour
 			switch (btn.name) {
 				case "zoomin": 
-					this.map.zoom++; 
+					//this.map.zoom++; 
 					break;
 				case "zoomout": 
-					this.map.zoom--; 
+					//this.map.zoom--; 
 					break;
 				case "zoomworld": 
 					this.map.zoomToMaxExtent(); 

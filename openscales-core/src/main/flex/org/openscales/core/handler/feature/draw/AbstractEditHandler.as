@@ -3,7 +3,6 @@ package org.openscales.core.handler.feature.draw
 	import flash.display.Sprite;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Util;
 	import org.openscales.core.events.FeatureEvent;
 	import org.openscales.core.events.LayerEvent;
 	import org.openscales.core.events.MapEvent;
@@ -11,23 +10,34 @@ package org.openscales.core.handler.feature.draw
 	import org.openscales.core.feature.PointFeature;
 	import org.openscales.core.handler.Handler;
 	import org.openscales.core.handler.feature.FeatureClickHandler;
-	import org.openscales.core.layer.FeatureLayer;
+	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.style.Style;
+	import org.openscales.core.utils.Util;
 	import org.openscales.geometry.Geometry;
 	import org.openscales.geometry.ICollection;
+	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.Point;
 
+	/** 
+	 * @eventType org.openscales.core.events.LayerEvent.LAYER_EDITION_MODE_END
+	 */ 
+	[Event(name="openscales.layerEditionModeEnd", type="org.openscales.core.events.LayerEvent")]
+	
+	
 	/**
-	* Abstract edit handler never instanciate this class
+	 * Abstract edit handler never instanciate this class
 	 * This class is the based class for the edition handlers
-	**/
+	 */
 	public class AbstractEditHandler extends Handler implements IEditFeature
 	{
+		protected var _virtualStyle:Style = Style.getDefaultPointStyle();
+		protected var _inbetweenStyle:Style = Style.getDefaultCircleStyle();
+		protected var _featuresToEdit:Vector.<Feature> = null;
 		/**
 		 * the layer concerned by the edition
 		 * @protected
 		 * */
-		protected var _layerToEdit:FeatureLayer=null;
+		protected var _layerToEdit:VectorLayer=null;
 		/**
 		 *This handler is used for differenciation of mouse actions(drag drop clikc double click) 
 		 * during the edition .
@@ -58,6 +68,12 @@ package org.openscales.core.handler.feature.draw
 		 * egg: A line contains at its first column the virtual vertice and at its' second column the parent of the virtual vertice
 		 **/
 		protected var _editionFeatureArray:Vector.<Vector.<Feature>>=new Vector.<Vector.<Feature>>();
+		
+		/**
+		 * The inbetween edition features array
+		 * It contains all inbetween virtual vertice used for edition  and their parents
+		 **/
+		public var _inbetweenEditionFeatureArray:Vector.<Vector.<Feature>>=new Vector.<Vector.<Feature>>();
 		/**
 		 * Constructor
 		 * @param map Map object
@@ -67,7 +83,7 @@ package org.openscales.core.handler.feature.draw
 		 * @param drawContainer This sprite is used to draw temporaries features during dragging
 		 * @protected
 		 * */
-		public function AbstractEditHandler(map:Map = null, active:Boolean = false,layerToEdit:FeatureLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
+		public function AbstractEditHandler(map:Map = null, active:Boolean = false,layerToEdit:VectorLayer=null,featureClickHandler:FeatureClickHandler=null,drawContainer:Sprite=null,isUsedAlone:Boolean=true)
 		{
 			
 			if(_featureClickHandler!=null){
@@ -79,6 +95,13 @@ package org.openscales.core.handler.feature.draw
 			super(map,active);
 			this._drawContainer=drawContainer; 
 		}
+		
+		
+		public function getEditionVirtualVertices():Vector.<Vector.<Feature>>
+		{
+			return this._editionFeatureArray;
+		}
+		
 		/**
 		 *@inheritDoc 
 		 * */
@@ -117,19 +140,40 @@ package org.openscales.core.handler.feature.draw
 			var j:uint = collection.componentsLength;
 			var v:Vector.<Feature>;
 			var i:int;
+			var firstPoint:Point;
+			var EditionVertice:PointFeature;
 			for (i=0; i < j; ++i) {
 				var geometry:Geometry = collection.componentByIndex(i);
+				
 				if (geometry is ICollection) {
 					createEditionVertices(vectorfeature,geometry as ICollection,arrayToFill);
 				} else {
 					if (geometry is Point) {
-						var EditionVertice:PointFeature = new PointFeature(geometry as Point, null, Style.getDefaultCircleStyle());
+						if (!firstPoint)
+						{
+							firstPoint = geometry as Point;
+						}else{
+							var xInBetween:Number = (firstPoint.x + (geometry as Point).x)/2;
+							var yInBetween:Number = (firstPoint.y + (geometry as Point).y)/2;
+							var inbetweenPoint:Point = new Point(xInBetween, yInBetween, firstPoint.projection);
+							EditionVertice = new PointFeature(inbetweenPoint, null, this._inbetweenStyle);
+							EditionVertice.selectable = false;
+							//We fill the array with the virtual vertice
+							v = new Vector.<Feature>();
+							v[0]=EditionVertice;
+							v[1]=null;
+							_inbetweenEditionFeatureArray.push(v);
+							arrayToFill.push(v);
+							firstPoint = geometry as Point;
+						}
+						
+						EditionVertice = new PointFeature(geometry as Point, null, this._virtualStyle);
+						EditionVertice.selectable = false;
 						//We fill the array with the virtual vertice
 						v = new Vector.<Feature>();
 						v[0]=EditionVertice;
 						v[1]=null;
 						arrayToFill.push(v);
-						/* EditionVertice.editionFeatureParent = vectorfeature; */
 					}
 				}
 			}
@@ -160,6 +204,16 @@ package org.openscales.core.handler.feature.draw
 					}	
 					}
 				}
+				
+				for(var j:int=0;j<_inbetweenEditionFeatureArray.length;j++){
+					var featureInBetween:Feature=_inbetweenEditionFeatureArray[j][0] as Feature;
+					//The edition feature are destroyed  in order to be elective for the Garbage Collector
+					if(featureInBetween!=null){	
+						featureInBetween.destroy();
+						featureInBetween=null;
+					}	
+				}
+				_inbetweenEditionFeatureArray=new Vector.<Vector.<Feature>>();
 				_editionFeatureArray=new Vector.<Vector.<Feature>>();
 			}
 		 	return true;
@@ -191,7 +245,7 @@ package org.openscales.core.handler.feature.draw
 					this.map.addChild(_drawContainer);
 				}
 			}		 	
-		 	}
+		 }
 		 /**
 		 * This function is launched when you are dragging a vertice(Virtual or not)
 		 * 
@@ -226,51 +280,82 @@ package org.openscales.core.handler.feature.draw
 		 * @private
 		 * @param featureEdited: the feature edited
 		 * */
-		protected function displayVisibleVirtualVertice(featureEdited:Feature):void{
-					if(featureEdited!=null) {
-					//We only draw the points included in the map extent
-		 			var tmpfeature:Vector.<Vector.<Feature>>=new Vector.<Vector.<Feature>>();	
-		 			var feature:Feature;
-					var i:int = _editionFeatureArray.length - 1;
+		 
+		 protected function displayVisibleVirtualVertice(featureEdited:Feature):void{
+			if(featureEdited!=null) {
+				//We only draw the points included in the map extent
+	 			var tmpfeature:Vector.<Vector.<Feature>>=new Vector.<Vector.<Feature>>();	
+	 			var feature:Feature;
+				var i:int = _editionFeatureArray.length - 1;
+				for(i;i>-1;--i){
+					 feature=_editionFeatureArray[i][0];
+					 var featureParent:Feature=findVirtualVerticeParent(feature  as PointFeature);
+					 //we also clean the virtual vertices array if the parent doesnt belongs anymore to the _layerToEdit.features array
+					if(featureParent==featureEdited || this._layerToEdit.features.indexOf(featureParent)==-1){
+						this._layerToEdit.removeFeature(feature);
+	 					this._featureClickHandler.removeControledFeature(feature);
+	 					tmpfeature.push(_editionFeatureArray[i]);
+					}
+				}
+				//feature to delete
+				if(tmpfeature.length!=0){
+					//for each(feature in tmpfeature){
+					i = tmpfeature.length - 1;
+					var j:int;
 					for(i;i>-1;--i){
-						 feature=_editionFeatureArray[i][0];
-						 var featureParent:Feature=findVirtualVerticeParent(feature  as PointFeature);
-						 //we also clean the virtual vertices array if the parent doesnt belongs anymore to the _layerToEdit.features array
-						if(featureParent==featureEdited || this._layerToEdit.features.indexOf(featureParent)==-1){
-							this._layerToEdit.removeFeature(feature);
-		 					this._featureClickHandler.removeControledFeature(feature);
-		 					tmpfeature.push(_editionFeatureArray[i]);
-						}
+						j = _editionFeatureArray.indexOf(tmpfeature[i]);
+						if(j!=-1)
+							_editionFeatureArray.splice(j,1);
+						
+						j = _inbetweenEditionFeatureArray.indexOf(tmpfeature[i]);
+						if(j!=-1)
+							_inbetweenEditionFeatureArray.splice(j,1);
 					}
-					//feature to delete
-					if(tmpfeature.length!=0){
-						//for each(feature in tmpfeature){
-						i = tmpfeature.length - 1;
-						var j:int;
-						for(i;i>-1;--i){
-							j = _editionFeatureArray.indexOf(tmpfeature[i]);
-							if(j!=-1)
-								_editionFeatureArray.splice(j,1);
-						}
-						 tmpfeature= new Vector.<Vector.<Feature>>();
+					 tmpfeature= new Vector.<Vector.<Feature>>();
+					 _inbetweenEditionFeatureArray = new Vector.<Vector.<Feature>>();
+				}
+
+				createEditionVertices(featureEdited,featureEdited.geometry as ICollection,tmpfeature);
+				var v:Vector.<Feature>;
+				for each(v in tmpfeature){
+					this._layerToEdit.addFeature(v[0]);
+ 					this._featureClickHandler.addControledFeature(v[0]);
+					feature = v[0];
+					v = new Vector.<Feature>();
+					v[0]=feature;
+					v[1]=featureEdited;
+ 					this._editionFeatureArray.push(v);
+					v=null;
+				}
+				//for garbage collector
+				tmpfeature=null;	
+	 		}
+		}
+		
+		protected function displayInBetweenVirtualVertices(vectorfeature:Feature,collection:ICollection=null,arrayToFill:Vector.<Vector.<Feature>>=null):void 
+		{
+			if (collection == null)
+				collection=vectorfeature.geometry as ICollection;
+			var j:uint = collection.componentsLength;
+			var v:Vector.<Feature>;
+			var i:int;
+			for (i=0; i < j; ++i) 
+			{
+				var geometry:Geometry = collection.componentByIndex(i);
+				if (geometry is ICollection) {
+					createEditionVertices(vectorfeature,geometry as ICollection,arrayToFill);
+				} else {
+					if (geometry is Point) {
+						var EditionVertice:PointFeature = new PointFeature(geometry as Point, null, this._virtualStyle);
+						//We fill the array with the virtual vertice
+						v = new Vector.<Feature>();
+						v[0]=EditionVertice;
+						v[1]=null;
+						arrayToFill.push(v);
+						/* EditionVertice.editionFeatureParent = vectorfeature; */
 					}
-					createEditionVertices(featureEdited,featureEdited.geometry as ICollection,tmpfeature);
-					var v:Vector.<Feature>;
-					for each(v in tmpfeature){
-						if(this.map.extent.containsBounds(v[0].geometry.bounds)){
-							this._layerToEdit.addFeature(v[0]);
-		 					this._featureClickHandler.addControledFeature(v[0]);
-							feature = v[0];
-							v = new Vector.<Feature>();
-							v[0]=feature;
-							v[1]=featureEdited;
-		 					this._editionFeatureArray.push(v);
-							v=null;
-						}
-					}
-					//for garbage collector
-					tmpfeature=null;	
-		 		}
+				}
+			}
 		}
 		/**
 		 * This function is abble to find a virtual vertice parent
@@ -283,18 +368,34 @@ package org.openscales.core.handler.feature.draw
 					arrayTosearch=this._editionFeatureArray;
 				for(var i:int=0;i<arrayTosearch.length;i++){
 					//we return the parent if we find the virtual 
-					if(arrayTosearch[i][0]==virtualVertice) return arrayTosearch[i][1];
+					if(arrayTosearch[i][0]==virtualVertice) 
+						return arrayTosearch[i][1];
 				}	
 			}
 			return null;
 		}
 		 //getters & setters
-		 public function set layerToEdit(value:FeatureLayer):void{
+		 public function set layerToEdit(value:VectorLayer):void{
 		 	this._layerToEdit=value;
 		 }
-		 public function get layerToEdit():FeatureLayer{
+		 public function get layerToEdit():VectorLayer{
 		 	return this._layerToEdit;
 		 }
 		 
+		 public function set featuresToEdit(value:Vector.<Feature>):void{
+			 this._featuresToEdit = value;
+		 }
+		 public function get featuresToEdit():Vector.<Feature>{
+			 return this._featuresToEdit;
+		 }
+		 
+		 public function set virtualStyle(value:Style):void{
+			 
+			 this._virtualStyle = value;
+		 }
+		 public function get virtualStyle():Style{
+			 
+			 return this._virtualStyle;
+		 }
 	}
 }

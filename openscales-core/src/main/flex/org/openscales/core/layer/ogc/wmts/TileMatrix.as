@@ -53,12 +53,16 @@ package org.openscales.core.layer.ogc.wmts
 			this._matrixHeight = matrixHeight;
 			var left:Number = topLeftCorner.x;
 			var top:Number = topLeftCorner.y;
-			var projProjection:ProjProjection = ProjProjection.getProjProjection(this._topLeftCorner.projSrsCode);
+			var projProjection:ProjProjection = ProjProjection.getProjProjection(this._topLeftCorner.projection);
 			if(projProjection!=null) {
-				var resolution:Number = Unit.getResolutionFromScaleDenominator(scaleDenominator,ProjProjection.getProjProjection(this._topLeftCorner.projSrsCode).projParams.units);
+				var resolution:Number;
+				if(projProjection.projName  == "longlat")
+					resolution = Unit.getResolutionFromScaleDenominator(scaleDenominator,Unit.DEGREE);
+				else
+					resolution = Unit.getResolutionFromScaleDenominator(scaleDenominator,projProjection.projParams.units);
 				var right:Number = left+(resolution*tileWidth*matrixWidth);
 				var bottom:Number = top-(resolution*tileHeight*matrixHeight);
-				this._maxExtent = new Bounds(left,bottom,right,top,this._topLeftCorner.projSrsCode);
+				this._maxExtent = new Bounds(left,bottom,right,top,this._topLeftCorner.projection);
 			} else {
 				this._maxExtent = new Bounds(0,0,0,0);
 			}

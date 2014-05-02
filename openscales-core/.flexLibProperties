@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<flexLibProperties includeAllClasses="false" version="1">
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="1">
   <includeClasses>
+    <classEntry path="com.foxaweb.utils.Raster"/>
     <classEntry path="org.openscales.core.Map"/>
-    <classEntry path="org.openscales.core.StringUtils"/>
-    <classEntry path="org.openscales.core.Trace"/>
-    <classEntry path="org.openscales.core.UID"/>
-    <classEntry path="org.openscales.core.Util"/>
+    <classEntry path="org.openscales.core.basetypes.Resolution"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.AbstractLinkedListNode"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedList"/>
     <classEntry path="org.openscales.core.basetypes.linkedlist.ILinkedListNode"/>
@@ -30,7 +28,9 @@
     <classEntry path="org.openscales.core.control.IControl"/>
     <classEntry path="org.openscales.core.control.LanguageSwitcher"/>
     <classEntry path="org.openscales.core.control.LayerManager"/>
+    <classEntry path="org.openscales.core.control.LogoRotator"/>
     <classEntry path="org.openscales.core.control.MousePosition"/>
+    <classEntry path="org.openscales.core.control.MouseWheelEnabler"/>
     <classEntry path="org.openscales.core.control.NumericScale"/>
     <classEntry path="org.openscales.core.control.OverviewMap"/>
     <classEntry path="org.openscales.core.control.OverviewMapRatio"/>
@@ -43,7 +43,6 @@
     <classEntry path="org.openscales.core.control.Zoom"/>
     <classEntry path="org.openscales.core.control.ZoomBar"/>
     <classEntry path="org.openscales.core.control.ZoomData"/>
-    <classEntry path="org.openscales.core.control.logoRotator"/>
     <classEntry path="org.openscales.core.control.ui.Arrow"/>
     <classEntry path="org.openscales.core.control.ui.Button"/>
     <classEntry path="org.openscales.core.control.ui.CheckBox"/>
@@ -51,6 +50,7 @@
     <classEntry path="org.openscales.core.control.ui.SliderHorizontal"/>
     <classEntry path="org.openscales.core.control.ui.SliderVertical"/>
     <classEntry path="org.openscales.core.cursor.CrosshairCursor"/>
+    <classEntry path="org.openscales.core.events.DisplayMeasureEvent"/>
     <classEntry path="org.openscales.core.events.DrawingEvent"/>
     <classEntry path="org.openscales.core.events.FeatureEvent"/>
     <classEntry path="org.openscales.core.events.GetFeatureInfoEvent"/>
@@ -58,8 +58,11 @@
     <classEntry path="org.openscales.core.events.LayerEvent"/>
     <classEntry path="org.openscales.core.events.LayerManagerEvent"/>
     <classEntry path="org.openscales.core.events.MapEvent"/>
+    <classEntry path="org.openscales.core.events.MeasureEvent"/>
     <classEntry path="org.openscales.core.events.OpenScalesEvent"/>
     <classEntry path="org.openscales.core.events.OriginatorEvent"/>
+    <classEntry path="org.openscales.core.events.RequestEvent"/>
+    <classEntry path="org.openscales.core.events.SearchEvent"/>
     <classEntry path="org.openscales.core.events.TileEvent"/>
     <classEntry path="org.openscales.core.events.TraceEvent"/>
     <classEntry path="org.openscales.core.events.WFSTFeatureEvent"/>
@@ -67,7 +70,9 @@
     <classEntry path="org.openscales.core.events.ZoomBoxEvent"/>
     <classEntry path="org.openscales.core.feature.CustomMarker"/>
     <classEntry path="org.openscales.core.feature.DescribeFeature"/>
+    <classEntry path="org.openscales.core.feature.DiscreteCircleFeature"/>
     <classEntry path="org.openscales.core.feature.Feature"/>
+    <classEntry path="org.openscales.core.feature.LabelFeature"/>
     <classEntry path="org.openscales.core.feature.LineStringFeature"/>
     <classEntry path="org.openscales.core.feature.Marker"/>
     <classEntry path="org.openscales.core.feature.MultiLineStringFeature"/>
@@ -79,15 +84,37 @@
     <classEntry path="org.openscales.core.filter.Comparison"/>
     <classEntry path="org.openscales.core.filter.ContainsFilter"/>
     <classEntry path="org.openscales.core.filter.ElseFilter"/>
+    <classEntry path="org.openscales.core.filter.FeatureId"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilter"/>
     <classEntry path="org.openscales.core.filter.IFilter"/>
     <classEntry path="org.openscales.core.filter.IntersectsFilter"/>
+    <classEntry path="org.openscales.core.filter.Logical"/>
+    <classEntry path="org.openscales.core.filter.Spatial"/>
     <classEntry path="org.openscales.core.filter.expression.IExpression"/>
+    <classEntry path="org.openscales.core.format.DCFormat"/>
     <classEntry path="org.openscales.core.format.FilterEncodingFormat"/>
     <classEntry path="org.openscales.core.format.Format"/>
-    <classEntry path="org.openscales.core.format.GMLFormat"/>
+    <classEntry path="org.openscales.core.format.GMDFormat"/>
+    <classEntry path="org.openscales.core.format.GPXFormat"/>
+    <classEntry path="org.openscales.core.format.GeoRssFormat"/>
     <classEntry path="org.openscales.core.format.KMLFormat"/>
     <classEntry path="org.openscales.core.format.WFSFormat"/>
     <classEntry path="org.openscales.core.format.WKTFormat"/>
+    <classEntry path="org.openscales.core.format.WMCFormat"/>
+    <classEntry path="org.openscales.core.format.csw.CSWGetRecordByIdFormat"/>
+    <classEntry path="org.openscales.core.format.csw.CSWGetRecordsFormat"/>
+    <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordByIdParser202"/>
+    <classEntry path="org.openscales.core.format.csw.parser.CSWGetRecordsParser202"/>
+    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordByIdParser"/>
+    <classEntry path="org.openscales.core.format.csw.parser.ICSWGetRecordsParser"/>
+    <classEntry path="org.openscales.core.format.geojson.mapfish.MapFishGeoJSONFormat"/>
+    <classEntry path="org.openscales.core.format.gml.GMLFormat"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML2Parser"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML311Parser"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321Parser"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GMLParser"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GML321Writer"/>
+    <classEntry path="org.openscales.core.format.gml.writer.IGMLWriter"/>
     <classEntry path="org.openscales.core.handler.Handler"/>
     <classEntry path="org.openscales.core.handler.IHandler"/>
     <classEntry path="org.openscales.core.handler.feature.DragFeatureHandler"/>
@@ -96,11 +123,18 @@
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractDrawHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditCollectionHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.AbstractEditHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawDiscreteCircleHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawMultiHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.DrawPolygonHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawRectangleHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawSegmentHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.DrawShapeHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditFeaturesHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditKMLStyleHandler"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditLabelHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPathHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPointHandler"/>
     <classEntry path="org.openscales.core.handler.feature.draw.EditPolygonHandler"/>
@@ -114,30 +148,52 @@
     <classEntry path="org.openscales.core.handler.mouse.WMSGetFeatureInfo"/>
     <classEntry path="org.openscales.core.handler.mouse.WheelHandler"/>
     <classEntry path="org.openscales.core.handler.mouse.ZoomBoxHandler"/>
+    <classEntry path="org.openscales.core.history.HistoryItem"/>
+    <classEntry path="org.openscales.core.history.NavigationHistoryLogger"/>
     <classEntry path="org.openscales.core.i18n.Catalog"/>
     <classEntry path="org.openscales.core.i18n.Locale"/>
     <classEntry path="org.openscales.core.i18n.provider.I18nJSONProvider"/>
     <classEntry path="org.openscales.core.i18n.provider.Ii18nProvider"/>
-    <classEntry path="org.openscales.core.layer.FeatureLayer"/>
+    <classEntry path="org.openscales.core.json.GENERICJSON"/>
+    <classEntry path="org.openscales.core.json.JSONDecoder"/>
+    <classEntry path="org.openscales.core.json.JSONEncoder"/>
+    <classEntry path="org.openscales.core.json.JSONParseError"/>
+    <classEntry path="org.openscales.core.json.JSONToken"/>
+    <classEntry path="org.openscales.core.json.JSONTokenType"/>
+    <classEntry path="org.openscales.core.json.JSONTokenizer"/>
+    <classEntry path="org.openscales.core.layer.Aggregate"/>
+    <classEntry path="org.openscales.core.layer.Bing"/>
+    <classEntry path="org.openscales.core.layer.Constraint"/>
+    <classEntry path="org.openscales.core.layer.DefaultGraticuleLabelFormatter"/>
+    <classEntry path="org.openscales.core.layer.DrawingsLayer"/>
+    <classEntry path="org.openscales.core.layer.Graticule"/>
     <classEntry path="org.openscales.core.layer.Grid"/>
     <classEntry path="org.openscales.core.layer.HTC"/>
     <classEntry path="org.openscales.core.layer.HTTPRequest"/>
+    <classEntry path="org.openscales.core.layer.IFileUser"/>
+    <classEntry path="org.openscales.core.layer.IGraticuleLabelFormatter"/>
     <classEntry path="org.openscales.core.layer.ImageLayer"/>
     <classEntry path="org.openscales.core.layer.KML"/>
     <classEntry path="org.openscales.core.layer.Layer"/>
-    <classEntry path="org.openscales.core.layer.PolyLayer"/>
+    <classEntry path="org.openscales.core.layer.MultiBoundingBoxConstraint"/>
     <classEntry path="org.openscales.core.layer.SwitchLayers"/>
     <classEntry path="org.openscales.core.layer.TMS"/>
+    <classEntry path="org.openscales.core.layer.VectorLayer"/>
     <classEntry path="org.openscales.core.layer.capabilities.CapabilitiesParser"/>
     <classEntry path="org.openscales.core.layer.capabilities.GetCapabilities"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WFS100"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WFS110"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMS100"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMS110"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMS111"/>
-    <classEntry path="org.openscales.core.layer.capabilities.WMTS100"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WFS100Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WFS110Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WFS200Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS100Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS110Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS111Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMS130Capabilities"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMTS100Capabilities"/>
     <classEntry path="org.openscales.core.layer.grid.provider.HTTPTileProvider"/>
     <classEntry path="org.openscales.core.layer.grid.provider.ITileProvider"/>
+    <classEntry path="org.openscales.core.layer.ogc.GML"/>
+    <classEntry path="org.openscales.core.layer.ogc.GPX"/>
+    <classEntry path="org.openscales.core.layer.ogc.GeoRss"/>
     <classEntry path="org.openscales.core.layer.ogc.WFS"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST.Transaction"/>
     <classEntry path="org.openscales.core.layer.ogc.WFST"/>
@@ -147,19 +203,23 @@
     <classEntry path="org.openscales.core.layer.ogc.provider.OGCTileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProvider"/>
     <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProvider"/>
+    <classEntry path="org.openscales.core.layer.ogc.wmts.TileMatrix"/>
+    <classEntry path="org.openscales.core.layer.ogc.wmts.TileMatrixSet"/>
     <classEntry path="org.openscales.core.layer.originator.ConstraintOriginator"/>
     <classEntry path="org.openscales.core.layer.originator.DataOriginator"/>
     <classEntry path="org.openscales.core.layer.osm.CycleMap"/>
-    <classEntry path="org.openscales.core.layer.osm.Maplint"/>
     <classEntry path="org.openscales.core.layer.osm.Mapnik"/>
     <classEntry path="org.openscales.core.layer.osm.OSM"/>
-    <classEntry path="org.openscales.core.layer.osm.Osmarender"/>
     <classEntry path="org.openscales.core.layer.params.AbstractParams"/>
     <classEntry path="org.openscales.core.layer.params.IHttpParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.OGCParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.WFSParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.WMSGetFeatureInfoParams"/>
     <classEntry path="org.openscales.core.layer.params.ogc.WMSParams"/>
+    <classEntry path="org.openscales.core.measure.Azimuth"/>
+    <classEntry path="org.openscales.core.measure.Distance"/>
+    <classEntry path="org.openscales.core.measure.IMeasure"/>
+    <classEntry path="org.openscales.core.measure.Surface"/>
     <classEntry path="org.openscales.core.ns.os_internal"/>
     <classEntry path="org.openscales.core.popup.Anchored"/>
     <classEntry path="org.openscales.core.popup.Popup"/>
@@ -168,92 +228,110 @@
     <classEntry path="org.openscales.core.request.IRequest"/>
     <classEntry path="org.openscales.core.request.OpenLSRequest"/>
     <classEntry path="org.openscales.core.request.XMLRequest"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordByIdRequest"/>
+    <classEntry path="org.openscales.core.request.csw.GetRecordsRequest"/>
+    <classEntry path="org.openscales.core.request.csw.getrecordbyid.GetRecordByIdRequest202"/>
+    <classEntry path="org.openscales.core.request.csw.getrecords.GetRecordsRequest202"/>
     <classEntry path="org.openscales.core.routing.AbstractRouting"/>
     <classEntry path="org.openscales.core.routing.IRouting"/>
     <classEntry path="org.openscales.core.routing.SampleRouting"/>
+    <classEntry path="org.openscales.core.search.engine.BingSearchEngine"/>
+    <classEntry path="org.openscales.core.search.engine.OpenLsSearchEngine"/>
+    <classEntry path="org.openscales.core.search.engine.SearchEngine"/>
+    <classEntry path="org.openscales.core.search.engine.YahooPlaceFinderEngine"/>
+    <classEntry path="org.openscales.core.search.result.Address"/>
+    <classEntry path="org.openscales.core.search.result.Confidence"/>
     <classEntry path="org.openscales.core.security.AbstractSecurity"/>
+    <classEntry path="org.openscales.core.security.AuthBasicSecurity"/>
     <classEntry path="org.openscales.core.security.ISecurity"/>
+    <classEntry path="org.openscales.core.security.RefererSecurity"/>
     <classEntry path="org.openscales.core.security.events.SecurityEvent"/>
     <classEntry path="org.openscales.core.security.ign.IGNGeoRMSecurity"/>
     <classEntry path="org.openscales.core.style.Rule"/>
     <classEntry path="org.openscales.core.style.Style"/>
-    <classEntry path="org.openscales.core.style.fill.BitmapFill"/>
     <classEntry path="org.openscales.core.style.fill.Fill"/>
+    <classEntry path="org.openscales.core.style.fill.GraphicFill"/>
     <classEntry path="org.openscales.core.style.fill.SolidFill"/>
-    <classEntry path="org.openscales.core.style.marker.DisplayObjectMarker"/>
-    <classEntry path="org.openscales.core.style.marker.Marker"/>
-    <classEntry path="org.openscales.core.style.marker.WellKnownMarker"/>
+    <classEntry path="org.openscales.core.style.font.Font"/>
+    <classEntry path="org.openscales.core.style.graphic.ExternalGraphic"/>
+    <classEntry path="org.openscales.core.style.graphic.Graphic"/>
+    <classEntry path="org.openscales.core.style.graphic.IGraphic"/>
+    <classEntry path="org.openscales.core.style.graphic.Mark"/>
+    <classEntry path="org.openscales.core.style.graphic.WaitingRendering"/>
+    <classEntry path="org.openscales.core.style.halo.Halo"/>
     <classEntry path="org.openscales.core.style.stroke.Stroke"/>
+    <classEntry path="org.openscales.core.style.symbolizer.ArrowSymbolizer"/>
+    <classEntry path="org.openscales.core.style.symbolizer.Geometry"/>
     <classEntry path="org.openscales.core.style.symbolizer.IFillSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.IStrokeSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.LineSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.PointSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.PolygonSymbolizer"/>
     <classEntry path="org.openscales.core.style.symbolizer.Symbolizer"/>
+    <classEntry path="org.openscales.core.style.symbolizer.TextSymbolizer"/>
     <classEntry path="org.openscales.core.tile.ImageTile"/>
     <classEntry path="org.openscales.core.tile.Tile"/>
+    <classEntry path="org.openscales.core.utils.BrowserInfo"/>
+    <classEntry path="org.openscales.core.utils.Chronometer"/>
+    <classEntry path="org.openscales.core.utils.StringUtils"/>
+    <classEntry path="org.openscales.core.utils.Trace"/>
+    <classEntry path="org.openscales.core.utils.UID"/>
+    <classEntry path="org.openscales.core.utils.Util"/>
     <classEntry path="org.openscales.core.MapTest"/>
+    <classEntry path="org.openscales.core.StringUtilsTest"/>
+    <classEntry path="org.openscales.core.basetypes.BaseTypesResolutionTest"/>
     <classEntry path="org.openscales.core.basetypes.TreeTest"/>
     <classEntry path="org.openscales.core.configuration.ConfigurationTest"/>
+    <classEntry path="org.openscales.core.control.CopyrightTest"/>
+    <classEntry path="org.openscales.core.control.DataOriginatorsDisplayTest"/>
+    <classEntry path="org.openscales.core.control.DataOriginatorsTest"/>
+    <classEntry path="org.openscales.core.control.LanguageSwitcherTest"/>
+    <classEntry path="org.openscales.core.control.OverviewMapRatioTest"/>
+    <classEntry path="org.openscales.core.control.TermsOfServiceTest"/>
+    <classEntry path="org.openscales.core.events.MapEventTest"/>
+    <classEntry path="org.openscales.core.feature.DiscreteCircleFeatureTest"/>
+    <classEntry path="org.openscales.core.filter.GeometryTypeFilterTest"/>
+    <classEntry path="org.openscales.core.format.GPXFormatTest"/>
+    <classEntry path="org.openscales.core.format.GeoRssFormatTest"/>
+    <classEntry path="org.openscales.core.format.KMLBuildTest"/>
     <classEntry path="org.openscales.core.format.KMLFormatTest"/>
     <classEntry path="org.openscales.core.format.WKTFormatTest"/>
+    <classEntry path="org.openscales.core.format.WMCFormatTest"/>
+    <classEntry path="org.openscales.core.format.gml.parser.GML321ParserTest"/>
+    <classEntry path="org.openscales.core.format.gml.writer.GML321WriterTest"/>
     <classEntry path="org.openscales.core.handler.keyboard.KeyboardHandlerTest"/>
+    <classEntry path="org.openscales.core.handler.mouse.MouseHandlerTest"/>
+    <classEntry path="org.openscales.core.history.NavigationHistoryLoggerTest"/>
+    <classEntry path="org.openscales.core.i18n.CatalogTest"/>
+    <classEntry path="org.openscales.core.i18n.LocaleTest"/>
+    <classEntry path="org.openscales.core.i18n.i18nTest"/>
+    <classEntry path="org.openscales.core.i18n.provider.I18nJSONProviderTest"/>
+    <classEntry path="org.openscales.core.layer.AggregateTest"/>
+    <classEntry path="org.openscales.core.layer.GraticuleTest"/>
+    <classEntry path="org.openscales.core.layer.KMLTest"/>
     <classEntry path="org.openscales.core.layer.LayerTest"/>
     <classEntry path="org.openscales.core.layer.capabilities.ParsingTest"/>
-    <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
-    <classEntry path="org.openscales.core.utils.StringUtilsTest"/>
-    <classEntry path="org.openscales.map.ControlManagementTest"/>
-    <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProviderTest"/>
+    <classEntry path="org.openscales.core.layer.capabilities.WMTS100Test"/>
+    <classEntry path="org.openscales.core.layer.ogc.GPXTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.GeoRSSTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.WFSTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.WMSTest"/>
     <classEntry path="org.openscales.core.layer.ogc.WMTSTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.provider.WMSTileProviderTest"/>
+    <classEntry path="org.openscales.core.layer.ogc.provider.WMTSTileProviderTest"/>
+    <classEntry path="org.openscales.core.layer.originator.ConstraintOriginatorTest"/>
+    <classEntry path="org.openscales.core.layer.originator.DataOriginatorTest"/>
+    <classEntry path="org.openscales.core.utils.SexagecimalTest"/>
+    <classEntry path="org.openscales.map.ControlManagementTest"/>
+    <classEntry path="org.openscales.map.ExtentTest"/>
+    <classEntry path="org.openscales.map.LayerManagementTest"/>
+    <classEntry path="org.openscales.map.MapExtentTest"/>
+    <classEntry path="org.openscales.map.MapResolutionTest"/>
+    <classEntry path="org.openscales.map.PositioningTest"/>
+    <classEntry path="org.openscales.map.ProjectionTest"/>
+    <classEntry path="org.openscales.core.format.FormatTest"/>
+    <classEntry path="org.openscales.core.handler.feature.draw.EditKMLPopupHandler"/>
   </includeClasses>
-  <includeResources>
-    <resourceEntry destPath="assets/images/cursorCrosshair.swf" sourcePath="assets/images/cursorCrosshair.swf"/>
-    <resourceEntry destPath="assets/configuration/sampleMapConfOk.xml" sourcePath="assets/configuration/sampleMapConfOk.xml"/>
-    <resourceEntry destPath="assets/images/layerDraw.png" sourcePath="assets/images/layerDraw.png"/>
-    <resourceEntry destPath="org/openscales/core/configuration/openscales-configuration.xsd" sourcePath="org/openscales/core/configuration/openscales-configuration.xsd"/>
-    <resourceEntry destPath="assets/images/marker.png" sourcePath="assets/images/marker.png"/>
-    <resourceEntry destPath="assets/images/west-mini.png" sourcePath="assets/images/west-mini.png"/>
-    <resourceEntry destPath="assets/images/check.png" sourcePath="assets/images/check.png"/>
-    <resourceEntry destPath="assets/images/uncheck.png" sourcePath="assets/images/uncheck.png"/>
-    <resourceEntry destPath="assets/images/layerDel.png" sourcePath="assets/images/layerDel.png"/>
-    <resourceEntry destPath="assets/kml/sample2.kml" sourcePath="assets/kml/sample2.kml"/>
-    <resourceEntry destPath="assets/images/radiobutton-selected.png" sourcePath="assets/images/radiobutton-selected.png"/>
-    <resourceEntry destPath="assets/images/panning-hand-off.png" sourcePath="assets/images/panning-hand-off.png"/>
-    <resourceEntry destPath="assets/images/slider.png" sourcePath="assets/images/slider.png"/>
-    <resourceEntry destPath="assets/i18n/FR.json" sourcePath="assets/i18n/FR.json"/>
-    <resourceEntry destPath="assets/images/layer-switcher-minimize.png" sourcePath="assets/images/layer-switcher-minimize.png"/>
-    <resourceEntry destPath="assets/images/layerViz.png" sourcePath="assets/images/layerViz.png"/>
-    <resourceEntry destPath="assets/images/marker-blue.png" sourcePath="assets/images/marker-blue.png"/>
-    <resourceEntry destPath="assets/kml/sample1.kml" sourcePath="assets/kml/sample1.kml"/>
-    <resourceEntry destPath="assets/images/close.gif" sourcePath="assets/images/close.gif"/>
-    <resourceEntry destPath="assets/images/radiobutton-noselected.png" sourcePath="assets/images/radiobutton-noselected.png"/>
-    <resourceEntry destPath="assets/images/drag-rectangle-on.png" sourcePath="assets/images/drag-rectangle-on.png"/>
-    <resourceEntry destPath="assets/images/panning-hand-on.png" sourcePath="assets/images/panning-hand-on.png"/>
-    <resourceEntry destPath="assets/kml/sample3.kml" sourcePath="assets/kml/sample3.kml"/>
-    <resourceEntry destPath="assets/images/measuring-stick-on.png" sourcePath="assets/images/measuring-stick-on.png"/>
-    <resourceEntry destPath="assets/images/marker-green.png" sourcePath="assets/images/marker-green.png"/>
-    <resourceEntry destPath="assets/images/layerSave.png" sourcePath="assets/images/layerSave.png"/>
-    <resourceEntry destPath="assets/images/zoombar.png" sourcePath="assets/images/zoombar.png"/>
-    <resourceEntry destPath="assets/images/zoom-plus-mini.png" sourcePath="assets/images/zoom-plus-mini.png"/>
-    <resourceEntry destPath="assets/images/zoom-world-mini.png" sourcePath="assets/images/zoom-world-mini.png"/>
-    <resourceEntry destPath="assets/images/zoom-minus-mini.png" sourcePath="assets/images/zoom-minus-mini.png"/>
-    <resourceEntry destPath="assets/images/slide-horizontal.png" sourcePath="assets/images/slide-horizontal.png"/>
-    <resourceEntry destPath="assets/images/south-mini.png" sourcePath="assets/images/south-mini.png"/>
-    <resourceEntry destPath="assets/images/blank.gif" sourcePath="assets/images/blank.gif"/>
-    <resourceEntry destPath="assets/images/cursorCrosshair.fla" sourcePath="assets/images/cursorCrosshair.fla"/>
-    <resourceEntry destPath="assets/images/slide-vertical.png" sourcePath="assets/images/slide-vertical.png"/>
-    <resourceEntry destPath="assets/images/layerAccept.png" sourcePath="assets/images/layerAccept.png"/>
-    <resourceEntry destPath="assets/i18n/EN.json" sourcePath="assets/i18n/EN.json"/>
-    <resourceEntry destPath="assets/images/marker-gold.png" sourcePath="assets/images/marker-gold.png"/>
-    <resourceEntry destPath="assets/images/arrow_down.png" sourcePath="assets/images/arrow_down.png"/>
-    <resourceEntry destPath="assets/images/north-mini.png" sourcePath="assets/images/north-mini.png"/>
-    <resourceEntry destPath="assets/images/arrow_up.png" sourcePath="assets/images/arrow_up.png"/>
-    <resourceEntry destPath="assets/images/layerSel.png" sourcePath="assets/images/layerSel.png"/>
-    <resourceEntry destPath="assets/images/layerCancel.png" sourcePath="assets/images/layerCancel.png"/>
-    <resourceEntry destPath="assets/images/east-mini.png" sourcePath="assets/images/east-mini.png"/>
-    <resourceEntry destPath="assets/images/drag-rectangle-off.png" sourcePath="assets/images/drag-rectangle-off.png"/>
-    <resourceEntry destPath="assets/images/layer-switcher-maximize.png" sourcePath="assets/images/layer-switcher-maximize.png"/>
-    <resourceEntry destPath="assets/images/measuring-stick-off.png" sourcePath="assets/images/measuring-stick-off.png"/>
-  </includeResources>
+  <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>

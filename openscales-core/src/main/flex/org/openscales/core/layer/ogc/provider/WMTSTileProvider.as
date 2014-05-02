@@ -1,11 +1,12 @@
 package org.openscales.core.layer.ogc.provider
 {
-	import org.openscales.core.Trace;
-	import org.openscales.core.UID;
+	import mx.containers.Tile;
+	
+	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.basetypes.maps.HashMap;
+	import org.openscales.core.layer.Grid;
 	import org.openscales.core.layer.Layer;
 	import org.openscales.core.layer.ogc.WMTS;
-	import org.openscales.core.layer.ogc.provider.OGCTileProvider;
 	import org.openscales.core.layer.ogc.wmts.TileMatrix;
 	import org.openscales.core.layer.ogc.wmts.TileMatrixSet;
 	import org.openscales.core.ns.os_internal;
@@ -46,7 +47,9 @@ package org.openscales.core.layer.ogc.provider
 		protected var _format:String = null;
 		
 		private var _tileMatrixSets:HashMap = null;
-		private var _capabilitiesRequested:Boolean = false;
+		
+		private var _tileMatrixSetsLimits:HashMap = null;
+		
 		
 		private var _maxExtents:HashMap = null;
 		
@@ -76,6 +79,22 @@ package org.openscales.core.layer.ogc.provider
 			this.generateMaxExtents();
 		}
 		
+		/**
+		 * An HashMap of limits which will be applied to current <code>tileMatrixSet</code>. The strucuture of the HashMap is explicited in <code>WMTS100Capabilities.read</code> documentation
+		 */
+		public function get tileMatrixSetsLimits():HashMap
+		{
+			return _tileMatrixSetsLimits;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set tileMatrixSetsLimits(value:HashMap):void
+		{
+			_tileMatrixSetsLimits = value;
+		}
+
 		/**
 		 * @Private
 		 * calculates maxExtent of each TileMatrixSet
@@ -158,10 +177,22 @@ package org.openscales.core.layer.ogc.provider
 		/**
 		 * @inheritDoc
 		 */ 
-		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile
-		{
+		override public function getTile(bounds:Bounds, center:Pixel, layer:Layer):ImageTile {
 			var imageTile:ImageTile = new ImageTile(layer,center,bounds,null,null);
-			if(this._tileMatrixSets==null || layer == null || layer.map == null)
+			//imageTile.useNoDataTile = _useNoDataTile;
+				
+			return initializeTile(imageTile, layer, bounds, false);
+		}
+		
+
+		public function refreshTile(imageTile:ImageTile, bounds:Bounds):ImageTile {
+			var layer:WMTS = imageTile.layer as WMTS;
+			return initializeTile(imageTile, layer, bounds, false);
+		}
+		
+		private function initializeTile(tile:ImageTile, layer:Layer, bounds:Bounds, refresh:Boolean=true):ImageTile {
+			var imageTile:ImageTile = tile;
+			if(this._tileMatrixSets==null || layer == null || !(layer is WMTS) || layer.map == null)
 				return imageTile;
 			if(!this._tileMatrixSets.containsKey(this._tileMatrixSet))
 				return imageTile;
@@ -169,45 +200,82 @@ package org.openscales.core.layer.ogc.provider
 			if(tileMatrixSet==null)
 				return imageTile;
 			
-			if(tileMatrixSet.supportedCRS.toUpperCase() != bounds.projSrsCode.toUpperCase()) {
-				bounds = bounds.reprojectTo(tileMatrixSet.supportedCRS);
+			var proj:ProjProjection = ProjProjection.getProjProjection(tileMatrixSet.supportedCRS);
+			if(proj != bounds.projection) {
+				bounds = bounds.reprojectTo(proj);
 			}
 			
-			var mapResolution:Number = layer.map.resolution;
-			var mapUnit:String = ProjProjection.getProjProjection(layer.map.baseLayer.projSrsCode).projParams.units;
-			
 			//tileMatrix are referenced by their resolutions
-			var zoom:Number = layer.getZoomForResolution(mapResolution);
-			var resolution:Number = (layer.resolutions[zoom] as Number);
-			var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution);
+			var resolution:Resolution = (layer as WMTS).getUpperResolution(layer.map.resolution.reprojectTo(layer.projection), imageTile.digUpAttempt);
+			var tileMatrix:TileMatrix = tileMatrixSet.tileMatrices.getValue(resolution.value);
+			
 			
 			var tileWidth:Number = tileMatrix.tileWidth;
 			var tileHeight:Number = tileMatrix.tileHeight;
 			
-			imageTile.size = new Size(tileWidth,tileHeight);
+			if(!refresh) {
+				imageTile.size = new Size(tileWidth,tileHeight);
+			}
 			
-			var tileSpanX:Number = tileWidth * resolution;
-			var tileSpanY:Number = tileHeight * resolution;
+			var tileSpanX:Number = tileWidth * resolution.value;
+			var tileSpanY:Number = tileHeight * resolution.value;
 			
 			var location:Location = bounds.center;
 			var tileOrigin:Location = tileMatrix.topLeftCorner;
-			if(location.projSrsCode.toUpperCase()!=tileOrigin.projSrsCode.toUpperCase())
-				location = location.reprojectTo(tileOrigin.projSrsCode.toUpperCase());
+			if(location.projection!=tileOrigin.projection)
+				location = location.reprojectTo(tileOrigin.projection);
+			
 			var col:Number = WMTSTileProvider.calculateTileIndex(tileOrigin.x,location.x,tileSpanX);
 			var row:Number = WMTSTileProvider.calculateTileIndex(location.y,tileOrigin.y,tileSpanY);
-			/*
-			if(col<0 || row< 0 || col>tileMatrix.matrixWidth-1 || row>tileMatrix.matrixHeight-1)
-				return imageTile;
-			*/
+			
 			var params:Object = {
 				"TILECOL" : col,
 				"TILEROW" : row,
 				"TILEMATRIX" : tileMatrix.identifier
 			};
-			
-			imageTile.url = buildGETQuery(bounds,params);
+			if(col>-1 && row>-1 && isInsideLimits(col,row,tileMatrix.identifier,_tileMatrixSet))
+				imageTile.url = buildGETQuery(bounds,params);
+			else
+				imageTile.url = null;
 			
 			return imageTile;
+		}
+		
+		/**
+		 * <p>This method is used internally before any WMTS request is sent.</p>
+		 * 
+		 * This method checks if the given <code>tileCol</code>, <code>tileRow</code> pair is contained inside TileMatrixSetLimits for the given <code>tileMatrix</code> and <code>tileMatrixSet</code>.
+		 * 
+		 * <p>Be aware that this method will return true in following cases (in addition to nominal case):
+		 * <ul>
+		 * <li><code>tileMatrixSetsLimits</code> property is not defined</li>
+		 * <li>The is no reference to the given <code>tileMatrixSet</code> inside the <code>tileMatrixSetsLimits</code> property</li>
+		 * <li>There are no limits referenced for the given <code>tileMatrix</code> inside the <code>tileMatrixSetsLimits</code> property</li>
+		 * </ul>
+		 * </p>
+		 * 
+		 * <p>Thus, this method returns <code>false</code> only when limits are defined but given <code>tileRow</code> and <code>tileCol</code> are not within those limits.</p>
+		 * 
+		 * @param tileCol a WMTS matrix column identifier
+		 * @param tileRow a WMTS matrix row identifier
+		 * @param tileMatrix a WMTS matrix identifier
+		 * @param tileMatrixSet a WMTS matrix set identifier
+		 * @return <code>true</code> or <code>false</code>. See above for more information.
+		 */ 
+		public function isInsideLimits(tileCol:Number,tileRow:Number,tileMatrix:String,tileMatrixSet:String):Boolean{
+			if(!_tileMatrixSetsLimits || !_tileMatrixSetsLimits.getValue(tileMatrixSet)) return true;
+			
+			var limits:HashMap = (_tileMatrixSetsLimits.getValue(tileMatrixSet) as HashMap).getValue(tileMatrix) as HashMap;
+			if(!limits) return false;
+			var minTileCol:Number =  new Number(limits.getValue("MinTileCol"));
+			var maxTileCol:Number =  new Number(limits.getValue("MaxTileCol"));
+			var minTileRow:Number =  new Number(limits.getValue("MinTileRow"));
+			var maxTileRow:Number =  new Number(limits.getValue("MaxTileRow"));
+			
+			if(minTileRow <= tileRow && tileRow <= maxTileRow &&
+				minTileCol <= tileCol && tileCol <= maxTileCol) return true;
+			
+			return false;
 		}
 		
 		/**
@@ -240,8 +308,8 @@ package org.openscales.core.layer.ogc.provider
 				var tm:TileMatrix = i as TileMatrix;
 				resolutions.push(Unit.getResolutionFromScaleDenominator(tm.scaleDenominator,units));
 				++j;
-				if(j>=numZoomLevels)
-					break;
+				/*if(j>=numZoomLevels)
+					break;*/
 			}
 			return resolutions;
 		}

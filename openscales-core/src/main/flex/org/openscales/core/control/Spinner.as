@@ -96,21 +96,25 @@ package org.openscales.core.control {
 		override public function set map(value:Map):void{
 			super.map = value;
 			
-			this.map.addEventListener(MapEvent.LOAD_START,mapEventHandler);
-			this.map.addEventListener(MapEvent.LOAD_END,mapEventHandler);
+			this.map.addEventListener(MapEvent.LAYERS_LOAD_START,mapEventHandler);
+			this.map.addEventListener(MapEvent.LAYERS_LOAD_END,mapEventHandler);
 			
 			// check if map is already loading.
-			if (!this.map.loadComplete)			 
+			if (this.map.loading && this.map.layers.length>0)			 
 				this.start();
+			else
+				this.visible = false;
 		}
 		
 		private function mapEventHandler(event:MapEvent):void
 		{
 			switch (event.type) 	{
-				case MapEvent.LOAD_START:
+				case MapEvent.LAYERS_LOAD_START:
+					if(this.map.layers.length==0)
+						return;
 					this.start();
 				break;
-				case MapEvent.LOAD_END:
+				case MapEvent.LAYERS_LOAD_END:
 				this.visible = false;
 					this.stop();
 				break;

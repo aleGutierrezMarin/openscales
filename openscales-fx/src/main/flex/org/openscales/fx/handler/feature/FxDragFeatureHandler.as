@@ -13,8 +13,6 @@ package org.openscales.fx.handler.feature
 	public class FxDragFeatureHandler extends FxHandler
 	{
 		
-		private var _onstart:Function;
-		
 		public function FxDragFeatureHandler()
 		{
 			this.handler=new DragFeatureHandler();

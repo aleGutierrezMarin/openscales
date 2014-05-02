@@ -1,5 +1,7 @@
 package org.openscales.core.layer.originator
 {
+	import org.openscales.core.basetypes.Resolution;
+	import org.openscales.core.layer.Constraint;
 	import org.openscales.geometry.basetypes.Bounds;
 	
 	/**
@@ -11,7 +13,7 @@ package org.openscales.core.layer.originator
 	 * @author ajard
 	 */ 
 	
-	public class ConstraintOriginator
+	public class ConstraintOriginator extends Constraint
 	{
 		/**
 		 * @private
@@ -21,31 +23,16 @@ package org.openscales.core.layer.originator
 		private var _extent:Bounds = null;
 		
 		/**
-		 * @private
-		 * @default NaN
-		 * The minimum resolution covered by the originator.
-		 */
-		private var _minResolution:Number = NaN;
-		
-		/**
-		 * @private
-		 * @default NaN
-		 * The maximum resolution covered by the originator.
-		 */
-		private var _maxResolution:Number = NaN;
-		
-		/**
 		 * Constructor of the class ConstraintOriginator.
 		 * 
 		 * @param extent The extent of the provided data (mandatory)
 		 * @param minResolution The minimum resolution of the provided data (mandatory)
 		 * @param maxResolution The maximum resolution of the provided data (mandatory)
 		 */ 
-		public function ConstraintOriginator(extent:Bounds, minResolution:Number, maxResolution:Number)
+		public function ConstraintOriginator(extent:Bounds, minResolution:Resolution, maxResolution:Resolution)
 		{
+			super(minResolution, maxResolution);
 			this._extent = extent;
-			this._minResolution = minResolution;
-			this._maxResolution = maxResolution;
 		}
 		
 		/**
@@ -59,8 +46,8 @@ package org.openscales.core.layer.originator
 			if (constraint != null) 
 			{
 				equals = this._extent == constraint.extent &&
-					this._minResolution == constraint.minResolution &&
-					this._maxResolution == constraint.maxResolution;
+					this.minResolution == constraint.minResolution &&
+					this.maxResolution == constraint.maxResolution;
 			}
 			return equals;
 		}
@@ -80,36 +67,6 @@ package org.openscales.core.layer.originator
 		public function set extent(extent:Bounds):void 
 		{
 			this._extent = extent;
-		}
-		
-		/**
-		 * The minimum resolution covered by the originator.
-		 */
-		public function get minResolution():Number
-		{
-			return this._minResolution;
-		}
-		/**
-		 * @private
-		 */
-		public function set minResolution(minResolution:Number):void 
-		{
-			this._minResolution = minResolution;
-		}
-		
-		/**
-		 * The maximum resolution covered by the originator.
-		 */
-		public function get maxResolution():Number
-		{
-			return this._maxResolution;
-		}
-		/**
-		 * @private
-		 */
-		public function set maxResolution(maxResolution:Number):void 
-		{
-			this._maxResolution = maxResolution;
 		}
 	}
 }

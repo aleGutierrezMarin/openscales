@@ -1,14 +1,13 @@
 package org.openscales.core.handler
 {
-	import flash.events.Event;
+	import flash.events.EventDispatcher;
 	
 	import org.openscales.core.Map;
-	import org.openscales.core.Trace;
 
 	/**
 	 * Handler base class
 	 */
-	public class Handler implements IHandler
+	public class Handler extends EventDispatcher implements IHandler
 	{
 		/**
 		 * Map associated to the handler
@@ -20,9 +19,6 @@ package org.openscales.core.handler
 		 */
 		private var _active:Boolean;
 		
-		/**
-		 * Callback function toggleHandlerActivity(active:Boolean):void
-		 */
 		private var _toggleHandlerActivity:Function = null;
 		
 		/**
@@ -52,12 +48,12 @@ package org.openscales.core.handler
 			}
 			// Remove the handler of its previous associated map
 			if (this._map) {
-				this._map.removeHandler(this);
+				this._map.removeControl(this);
 			}
 			// Associate the handler and the input map
 			this._map = value;
 			if (this.map) {
-				this.map.addHandler(this);
+				this.map.addControl(this);
 			}
 			// If the handler is active, register its listeners
 			if (this._active) {
@@ -89,16 +85,7 @@ package org.openscales.core.handler
 			}
 		}
 		
-		/**
-		 * Getter and setter of the callback function used when the handler's
-		 * activity changes
-		 */
-		public function get toggleHandlerActivity():Function {
-			return this._toggleHandlerActivity;
-		}
-		public function set toggleHandlerActivity(value:Function):void {
-			this._toggleHandlerActivity = value;
-		}
+		
 		
 		/**
 		 * Add the listeners to the associated map
@@ -111,6 +98,23 @@ package org.openscales.core.handler
 		 */
 		protected function unregisterListeners():void {
 		}
+
+		/**
+		 * Callback function toggleHandlerActivity(active:Boolean):void
+		 */
+		public function get toggleHandlerActivity():Function
+		{
+			return _toggleHandlerActivity;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set toggleHandlerActivity(value:Function):void
+		{
+			_toggleHandlerActivity = value;
+		}
+
 		
 	}
 }

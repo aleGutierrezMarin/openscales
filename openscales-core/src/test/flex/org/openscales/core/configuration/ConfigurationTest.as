@@ -14,6 +14,8 @@ package org.openscales.core.configuration
 		[Embed(source="/assets/configuration/sampleMapConfOk.xml", mimeType="application/octet-stream")]
 		protected const SampleMapConfOk:Class;
 		
+		public function ConfigurationTest() {}
+		
 		[Test]
 		public function testLoadingConfOkByContructor( ) : void {
 			var conf:IConfiguration = new Configuration(XML(new SampleMapConfOk()));
@@ -55,8 +57,8 @@ package org.openscales.core.configuration
 			map.configuration=conf;
 			conf.configure();
 			
-			Assert.assertEquals(String(Layer.DEFAULT_NUM_ZOOM_LEVELS), map.getLayerByName("Metacarta").resolutions.length);
-			Assert.assertEquals(String(Layer.DEFAULT_NOMINAL_RESOLUTION), map.getLayerByName("Metacarta").resolutions[0]);			
+			Assert.assertEquals(String(Layer.DEFAULT_NUM_ZOOM_LEVELS), map.getLayerByIdentifier("Metacarta").resolutions.length);
+			Assert.assertEquals(String(Layer.DEFAULT_NOMINAL_RESOLUTION.value), map.getLayerByIdentifier("Metacarta").resolutions[0]);			
 		}
 		
 		

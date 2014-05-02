@@ -1,7 +1,10 @@
 package org.openscales.core.i18n
 {
+	import flash.events.EventDispatcher;
+	
 	import org.openscales.core.basetypes.maps.HashMap;
-
+	import org.openscales.core.events.I18NEvent;
+	
 	/**
 	 * This class represent an abstration to the Json files used to store the keys.
 	 * The class is used to read and write association key - values.
@@ -11,9 +14,10 @@ package org.openscales.core.i18n
 	 * @author javocale
 	 */
 	
-	public class Catalog
+	public class Catalog extends EventDispatcher
 	{
 		static private var _hmCatalog:HashMap = new HashMap();
+		static private var _catalog:Catalog = null;
 		
 		public function Catalog()
 		{
@@ -36,6 +40,7 @@ package org.openscales.core.i18n
 			else{ // the language doesn't exist, create it and put the key value
 				hmTmp = new HashMap();
 				_hmCatalog.put(locale.localeKey, hmTmp);
+				Catalog.catalog.dispatchEvent(new I18NEvent(I18NEvent.LOCALE_ADDED, locale));
 			}
 			hmTmp.put(key,translation);
 		}
@@ -122,6 +127,20 @@ package org.openscales.core.i18n
 					locales.push(locale);
 			}
 			return locales;
+		}
+		
+		/**
+		 * Return the only instance of this class. 
+		 * Usefull for dispatch event on language change
+		 */
+		static public function get catalog():Catalog
+		{
+			if(!Catalog._catalog)
+			{
+				Catalog._catalog = new Catalog();
+			}
+			
+			return Catalog._catalog;
 		}
 	}
 }

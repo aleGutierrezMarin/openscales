@@ -4,6 +4,7 @@ package org.openscales.geometry
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.proj4as.Proj4as;
 	import org.openscales.proj4as.ProjPoint;
+	import org.openscales.proj4as.ProjProjection;
 	
 	/**
 	 * Class to represent a point geometry.
@@ -15,8 +16,13 @@ package org.openscales.geometry
 
 		private var _y:Number = NaN;
 
-		public function Point(x:Number = NaN, y:Number = NaN) {
-			super();
+		/**
+		 * @param x
+		 * @param y
+		 * @param projection The projection to use for this Point, default is EPSG:4326
+		 */ 
+		public function Point(x:Number = NaN, y:Number = NaN, projection:ProjProjection = null) {
+			super(projection);
 
 			this._x = x;
 			this._y = y;
@@ -26,7 +32,12 @@ package org.openscales.geometry
 		 * To get this geometry clone
 		 * */
 		override public function clone():Geometry{
-			return new Point(this._x,this._y);
+			var returnedValue:Point = new Point(this._x,this._y, this.projection);
+			if(this._bounds)
+				returnedValue._bounds = this._bounds.clone();
+			else 
+				returnedValue._bounds = null;
+			return returnedValue;
 		}
 		
 		/**
@@ -37,7 +48,7 @@ package org.openscales.geometry
 		}
 		
 		override public function calculateBounds():void {
-			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projSrsCode);
+			this._bounds = new Bounds(this._x, this._y, this._x, this._y, this.projection);
 		}
 
 		override public function distanceTo(point:Geometry, options:Object=null):Number{
@@ -81,17 +92,17 @@ package org.openscales.geometry
     	}
 	
 		/**
-		 * Method to convert the point (x/y) from a projection sysrtem to an other.
+		 * Method to convert the point (x/y) from a projection system to another.
 		 *
-		 * @param sourceSrs SRS of the source projection
-		 * @param destSrs SRS of the destination projection
+		 * @param dest the destination projection, can be both a String or a ProjProjection
 		 */
-		override public function transform(sourceSrs:String, destSrs:String):void {
+		override public function transform(dest:*):void {
 			// Update the pojection associated to the geometry
-			this.projSrsCode = destSrs;
+			var source:ProjProjection = this.projection;
+			this.projection = dest;
 			// Update the geometry
 			var p:ProjPoint = new ProjPoint(this._x, this._y);
-			Proj4as.transform(sourceSrs, destSrs, p);
+			Proj4as.transform(source, this.projection, p);
 			this._x = p.x;
 			this._y = p.y;
 		}
