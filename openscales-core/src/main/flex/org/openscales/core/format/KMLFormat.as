@@ -597,7 +597,8 @@ package org.openscales.core.format
 					htmlContent = htmlContent + "<b>" + attributeName + "</b> : " + simpleExtendedData.text() + "<br />";
 				}
 				attributes["popupContentHTML"] = htmlContent;	
-				if (StringUtils.isEmpty(attributes["title"]) || StringUtils.isEmpty(placemark.*::name[0].text())) {
+				if (hasOwnProperty(attributes["title"]) &&
+					(StringUtils.isEmpty(attributes["title"]) || StringUtils.isEmpty(placemark.*::name[0].text()))) {
 					attributes["title"] = placemark.*::name[0].text();
 				}
 				
