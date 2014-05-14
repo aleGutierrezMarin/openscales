@@ -16,6 +16,7 @@ package org.openscales.core.tile
 	import org.openscales.core.basetypes.Resolution;
 	import org.openscales.core.events.TileEvent;
 	import org.openscales.core.layer.Layer;
+	import org.openscales.core.layer.ogc.WMTS;
 	import org.openscales.core.request.DataRequest;
 	import org.openscales.core.utils.Trace;
 	import org.openscales.geometry.basetypes.Bounds;
@@ -139,6 +140,24 @@ package org.openscales.core.tile
 		 * @param event on load complete
 		 */
 		public function onTileLoadEnd(event:Event):void {
+			
+			
+			if(this._digUpAttempts <= 0 && this.layer && this.layer is WMTS) {
+				var lay:WMTS = layer as WMTS;
+				if(lay.isUnderData()) {
+					this._digUpAttempts = lay.computeDelta();
+					if(this._digUpAttempts > 0){
+						var upperBounds:Bounds = lay.getUpperboundsFromBounds(this.bounds, this._digUpAttempts);
+						if(upperBounds != null) {
+							//Get the delta (in %) of the offset
+							this.dx = Math.round((bounds.left - upperBounds.left) / upperBounds.width*1000)/1000;
+							this.dy = Math.round((upperBounds.top - bounds.top) / upperBounds.height*1000)/1000;
+						}
+					}
+						
+				}
+			}
+			
 			var loaderInfo:LoaderInfo = event.target as LoaderInfo;
 			var loader:Loader = loaderInfo.loader as Loader;
 			var bitmap:Bitmap = new Bitmap(Bitmap(loader.content).bitmapData,PixelSnapping.NEVER,true);
