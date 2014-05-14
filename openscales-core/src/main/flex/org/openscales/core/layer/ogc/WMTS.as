@@ -48,7 +48,7 @@ package org.openscales.core.layer.ogc
 		 *  
 		 * A tile provider for this layer.
 		 */ 
-		private var _tileProvider:WMTSTileProvider = null;
+		protected var _tileProvider:WMTSTileProvider = null;
 		private var _useCapabilities:Boolean = false;
 		private var _tmssProvided:Boolean = false;
 		private var _styleProvided:Boolean = false;
@@ -321,12 +321,15 @@ package org.openscales.core.layer.ogc
 				tile.draw();
 				return;
 			}
-			
+			setUpperTile(tile).draw();
+		}	
+		
+		public function setUpperTile(imageTile:ImageTile):ImageTile {
+			var tile:ImageTile = imageTile;
 			//compute the bounds of the "mother" tile
 			var upperBounds:Bounds = this.getUpperBounds(tile);
 			if(upperBounds == null) {
-				tile.draw();
-				return;
+				return tile;
 			}
 			upperBounds.reprojectTo(tile.bounds.projection);
 			
@@ -336,7 +339,16 @@ package org.openscales.core.layer.ogc
 			
 			//refresh the tile
 			tile = _tileProvider.refreshTile(tile, upperBounds); 
-			tile.generateAndSendRequest();
+			
+			return tile;
+		}
+		
+		public function isUnderData():Boolean {
+			return false;
+		}
+		
+		public function computeDelta():Number {
+			return 0;
 		}
 		
 		/**
@@ -346,12 +358,15 @@ package org.openscales.core.layer.ogc
 		 * @return the upper bounds of the tile
 		 */
 		private function getUpperBounds(tile:ImageTile):Bounds {
+			return this.getUpperboundsFromBounds(tile.bounds, tile.digUpAttempt);
+		}
 			
-			var upperResolution:Resolution = this.getUpperResolution(this.map.resolution.reprojectTo(this.projection), tile.digUpAttempt);
+		public function getUpperboundsFromBounds(bounds:Bounds, up:Number):Bounds {
+			var upperResolution:Resolution = this.getUpperResolution(this.map.resolution.reprojectTo(this.projection), up);
 
 			//Refresh the upper bounds grid if needed
 			if(this._boundsGrid == null || this._boundsGridResolution == null || upperResolution.equals(this._boundsGridResolution) != 0)
-				this.computeUpperGrid(tile.digUpAttempt, upperResolution);
+				this.computeUpperGrid(up, upperResolution);
 			
 			var row:Vector.<Bounds>;
 			var i:Number;
@@ -359,7 +374,7 @@ package org.openscales.core.layer.ogc
 			for (i=0; i < this._boundsGrid.length; i++){
 				row = this._boundsGrid[i];
 				for (j=0; j < row.length; j++){
-					if (this.containsBounds(row[j], tile.bounds))
+					if (this.containsBounds(row[j], bounds))
 						return row[j];
 				}
 			}
