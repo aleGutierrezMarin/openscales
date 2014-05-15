@@ -1,0 +1,114 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+@namespace os "http://openscales.org";
+
+
+
+/***************** DRAWING *****************/
+os|FeatureDrawing 
+{
+}
+
+
+/***************** LAYER SWITCHER *****************/
+
+/***************** NAVIGATION *****************/
+
+/********
+ * Zoom *
+ ********/
+os|Zoom s|VSlider#zoomSlider
+{
+	skinClass: ClassReference("skin.ZoomSkin");
+}
+
+os|Zoom s|Button#zoomIn
+{
+	skinClass: ClassReference("skin.ZoomInSkin");
+}
+
+os|Zoom s|Button#zoomOut
+{
+	skinClass: ClassReference("skin.ZoomOutSkin");
+}
+
+/*******
+ * Pan *
+ *******/
+os|Pan s|SkinnableContainer#panContainer
+{
+	skinClass: ClassReference("skin.PanSkin");
+}
+
+os|Pan s|Button#panNorth
+{
+	skinClass: ClassReference("skin.PanNorthSkin");
+}
+
+os|Pan s|Button#panSouth
+{
+	skinClass: ClassReference("skin.PanSouthSkin");
+}
+
+os|Pan s|Button#panEast
+{
+	skinClass: ClassReference("skin.PanEastSkin");
+}
+
+os|Pan s|Button#panWest
+{
+	skinClass: ClassReference("skin.PanWestSkin");
+}
+
+/****************
+* MousePosition *
+****************/
+os|MousePosition
+{
+}
+
+
+/************
+* ScaleLine *
+*************/
+os|ScaleLine 
+{
+}
+
+/***************** LEGAL NOTICE *****************/
+
+/************
+* Copyright *
+*************/
+os|Copyright s|Label#copyrightLabel
+{
+
+}
+
+/*****************
+* TermsOfService *
+******************/
+os|TermsOfService mx|Text#TermsOfServiceText
+{
+	
+}
+
+/************************
+* DataOriginatorDisplay *
+*************************/
+os|DataOriginatorsDisplay s|List#originatorsList
+{
+	
+}
+
+/***************** OTHER *****************/
+os|FeatureInfo
+{
+	
+}
+
+os|LanguageSwitcher s|DropDownList#languageDropList
+{
+	
+}

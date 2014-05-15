@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>openscales-fx-examples</name>
+	<comment></comment>
+	<projects>
+		<project>openscales-commons</project>
+		<project>openscales-core</project>
+		<project>openscales-flex-component</project>
+		<project>openscales-fx</project>
+		<project>openscales-proj4as</project>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>com.adobe.flexbuilder.project.flexbuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>com.adobe.flexbuilder.project.flexnature</nature>
+		<nature>com.adobe.flexbuilder.project.actionscriptnature</nature>
+	</natures>
+</projectDescription>
