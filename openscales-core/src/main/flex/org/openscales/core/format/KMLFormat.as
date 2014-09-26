@@ -70,6 +70,7 @@ package org.openscales.core.format
 		private var _externalImages:Object = {};
 		private var _images:Object = {};
 		
+		private var _featureNames:Vector.<String> = new Vector.<String>();
 		// features
 		private var iconsfeatures:Vector.<Feature> = new Vector.<Feature>();
 		private var linesfeatures:Vector.<Feature> = new Vector.<Feature>();
@@ -529,7 +530,7 @@ package org.openscales.core.format
 		{
 			//use namespace google;
 			//use namespace opengis;
-			
+			this._featureNames = new Vector.<String>;
 			for each(var placemark:XML in placemarks) {
 				var coordinates:Array;
 				var point:Point;
@@ -552,8 +553,12 @@ package org.openscales.core.format
 					name = placemark.*::name[0].text();
 					//attributes["name"] = placemark.*::name.text();
 				}
-				//We need a name wich is not null
-				name = (name == null) ? UID.gen_uid() : name;
+				
+				//We need a name wich is uique and not null
+				if(name == null || this._featureNames.indexOf(name) != -1) {
+					name = UID.gen_uid();
+				}
+				this._featureNames.push(name);
 				attributes["name"] = name;
 				htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";
 				
@@ -915,8 +920,8 @@ package org.openscales.core.format
 			XML.ignoreWhitespace = true;
 			var lineData:String = lineNode..localns::coordinates[0].toString();
 			
-			lineData = lineData.split("\n").join("");
-			lineData = lineData.split("\t").join("");
+			lineData = lineData.split("\n").join(" ");
+			lineData = lineData.split("\t").join(" ");
 			
 			lineData = lineData.replace(/^\s*(.*?)\s*$/g, "$1");
 			coordinates = lineData.split(" ");
