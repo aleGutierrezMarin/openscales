@@ -401,6 +401,7 @@ public class IIPZoom extends Sprite
 		var identityMatrix:Matrix = new Matrix();
 		identityMatrix.identity();
 		this.transform.matrix = identityMatrix;
+		reset();	
 	}
 
 	/**
