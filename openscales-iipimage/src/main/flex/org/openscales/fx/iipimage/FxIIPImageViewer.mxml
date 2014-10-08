@@ -8,26 +8,23 @@ This control allows to display and browse an image served by an IIPImage server.
 @see http://iipimage.sourceforge.net/
 
 -->
-<Control xmlns:fx="http://ns.adobe.com/mxml/2009" 
-					  xmlns:s="library://ns.adobe.com/flex/spark" 
-					  xmlns:mx="library://ns.adobe.com/flex/mx" width="400" height="300"
-					  xmlns="http://openscales.org"
-					  initialize="onInitialize(event)"
-					  creationComplete="onCreationComplete(event);"
-					  backgroundColor="#1a1a1a">
+<Control xmlns:fx="http://ns.adobe.com/mxml/2009"
+		 xmlns:s="library://ns.adobe.com/flex/spark"
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns="http://openscales.org"
+		 width="400" height="300" backgroundColor="#1a1a1a"
+		 creationComplete="onCreationComplete(event);" initialize="onInitialize(event)">
 	
 	
 	<fx:Script>
 		<![CDATA[
 			import mx.events.FlexEvent;
 			
-			import org.openscales.core.events.I18NEvent;
-			import org.openscales.core.i18n.Catalog;
 			import org.openzoom.flash.utils.FullScreenUtil;
 			
 			import spark.core.SpriteVisualElement;
 			
-			private var _iipzoom:IIPZoom = new IIPZoom();; 
+			private var _iipzoom:IIPZoom = new IIPZoom(); 
 			private var _container:SpriteVisualElement = new SpriteVisualElement();
 			private var _tmpOverview:Boolean = false; 
 			private var _widthSave:Number;
@@ -55,9 +52,24 @@ This control allows to display and browse an image served by an IIPImage server.
 				_container.width = this.width;
 				_container.height = this.height;
 				_container.addChild(this._iipzoom);
-				this._iipzoom.navigationEnabled = _tmpOverview;
-				
-				
+				this._iipzoom.navigationEnabled = _tmpOverview;		
+			}
+			
+			/**
+			 * On close of image preview, reset the IIPZoom (may have been rotated)
+			 * 
+			 */
+			public function resetIIPZoom():void {
+				_iipzoom.resetMatrix();
+			}
+			
+			/**
+			 * Rotate the displayed image 
+			 * 
+			 * @param angleDegrees The angle for rotation
+			 */
+			public function rotateImage(angleDegrees:Number):void {	
+				_iipzoom.rotateImage(angleDegrees);
 			}
 			
 			/**
