@@ -1,15 +1,13 @@
 package org.openscales.core.routing
 {
-	import org.openscales.core.routing.result.RouteDirection;
-	import org.openscales.core.routing.result.RouteResult;
-	
-	import com.adobe.serialization.json.JSON;
-	
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
+	import org.openscales.core.json.GENERICJSON;
 	import org.openscales.core.layer.VectorLayer;
 	import org.openscales.core.request.XMLRequest;
+	import org.openscales.core.routing.result.RouteDirection;
+	import org.openscales.core.routing.result.RouteResult;
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
@@ -155,7 +153,7 @@ package org.openscales.core.routing
 		
 		private function onSuccess(e:Event):void {
 			var loader:URLLoader = e.target as URLLoader;
-			var obj:Object = JSON.decode(loader.data as String) as Object;
+			var obj:Object = GENERICJSON.decode(loader.data as String) as Object;
 			
 			var result:RouteResult = new RouteResult();
 			result.statusCode = obj[ "statusCode" ];
