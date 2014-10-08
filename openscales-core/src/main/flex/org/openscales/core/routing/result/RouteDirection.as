@@ -1,4 +1,4 @@
-package br.com.delta.openscales.result
+package org.openscales.core.routing.result
 {
 	import org.openscales.geometry.basetypes.Location;
 
@@ -13,6 +13,11 @@ package br.com.delta.openscales.result
 		public var travelMode:String;
 		public var towardsRoadName:String;
 		public var maneuverPoint:Location;
+		
+		public function RouteDirection():void
+		{
+			
+		}
 		
 		//				{
 		//					"compassDirection": "northeast",

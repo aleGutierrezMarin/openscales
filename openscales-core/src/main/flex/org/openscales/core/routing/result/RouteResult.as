@@ -1,4 +1,4 @@
-package br.com.delta.openscales.result {
+package org.openscales.core.routing.result {
 	import org.openscales.geometry.LineString;
 	import org.openscales.geometry.basetypes.Bounds;
 	import org.openscales.geometry.basetypes.Location;
