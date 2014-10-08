@@ -1,8 +1,6 @@
 package org.openscales.fx.iipimage
 {
 
-import caurina.transitions.Tweener;
-
 import flash.display.Sprite;
 import flash.display.StageAlign;
 import flash.display.StageScaleMode;
@@ -10,14 +8,14 @@ import flash.events.Event;
 import flash.events.IOErrorEvent;
 import flash.events.MouseEvent;
 import flash.events.SecurityErrorEvent;
-import flash.filters.GlowFilter;
+import flash.geom.Matrix;
+import flash.geom.Point;
 import flash.geom.Rectangle;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 import flash.utils.setTimeout;
 
 import org.openzoom.flash.components.MultiScaleImage;
-import org.openzoom.flash.components.Spinner;
 import org.openzoom.flash.descriptors.IMultiScaleImageDescriptor;
 import org.openzoom.flash.descriptors.iip.IIPImageDescriptor;
 import org.openzoom.flash.utils.ExternalMouseWheel;
@@ -27,8 +25,6 @@ import org.openzoom.flash.viewport.constraints.CompositeConstraint;
 import org.openzoom.flash.viewport.constraints.ScaleConstraint;
 import org.openzoom.flash.viewport.constraints.VisibilityConstraint;
 import org.openzoom.flash.viewport.constraints.ZoomConstraint;
-import org.openzoom.flash.viewport.controllers.ContextMenuController;
-import org.openzoom.flash.viewport.controllers.KeyboardController;
 import org.openzoom.flash.viewport.controllers.MouseController;
 import org.openzoom.flash.viewport.transformers.TweenerTransformer;
 
@@ -134,7 +130,7 @@ public class IIPZoom extends Sprite
         
 		try
         {			
-		    var request:URLRequest = new URLRequest( IIPImageDescriptor.getMetaDataURL(_im,_server) )
+		    var request:URLRequest = new URLRequest(IIPImageDescriptor.getMetaDataURL(_im,_server));
 		    loader = new URLLoader();
 	
             try {
@@ -396,7 +392,34 @@ public class IIPZoom extends Sprite
     {
         layout()
     }
+	
+	/**
+	 * On close of image preview, reset the IIPZoom (may have been rotated)
+	 * 
+	 */
+	public function resetMatrix():void {
+		var identityMatrix:Matrix = new Matrix();
+		identityMatrix.identity();
+		this.transform.matrix = identityMatrix;
+		reset();	
+	}
 
+	/**
+	 * Rotate the displayed image 
+	 * 
+	 * @param angleDegrees The angle for rotation
+	 */
+	public function rotateImage(angleDegrees:Number):void{
+		var point:Point=new Point(this.x+this.width/2, this.y+this.height/2); 
+		var m:Matrix=this.transform.matrix; 
+		m.tx -= point.x; 
+		m.ty -= point.y; 
+		m.rotate (angleDegrees*(Math.PI/180)); 
+		m.tx += point.x; 
+		m.ty += point.y; 
+		this.transform.matrix=m;
+	}
+	
 	/**
 	 * Zoom in the displayed image
 	 * 
