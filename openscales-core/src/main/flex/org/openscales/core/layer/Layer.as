@@ -2,6 +2,7 @@ package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.filters.ColorMatrixFilter;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -97,7 +98,7 @@ package org.openscales.core.layer {
 		protected var _mapReload:Boolean = false;
 		private var _available:Boolean = false;
 		
-				
+		private var _grayScaleFilter:ColorMatrixFilter = null;
 		/**
 		 * Layer constructor
 		 * 
@@ -118,8 +119,16 @@ package org.openscales.core.layer {
 			this.generateResolutions();
 			
 			this._originators = new Vector.<DataOriginator>();
+			
+			// Build default grayscale matrix
+			var matrix:Array = new Array();
+			matrix=matrix.concat([0.21,0.72,0.125,0,0]);// red
+			matrix=matrix.concat([0.21,0.72,0.125,0,0]);// green
+			matrix=matrix.concat([0.21,0.72,0.125,0,0]);// blue
+			matrix=matrix.concat([0,0,0,1,0]);// alpha
+			this._grayScaleFilter = new ColorMatrixFilter(matrix);
 		}
-		
+
 		/**
 		 * This method tells if the layer is available for the specified bounds and resolution
 		 * @param Bounds Bounds to intersect the layers bboxes with
@@ -1177,7 +1186,40 @@ package org.openscales.core.layer {
 		{
 			_abstract = value;
 		}
-
+		
+		/**
+		 * Color filter of the Layer for grayscale mode
+		 * 
+		 * @defaut null
+		 */
+		public function get grayScaleFilter():ColorMatrixFilter
+		{
+			return _grayScaleFilter;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set grayScaleFilter(value:ColorMatrixFilter):void
+		{
+			_grayScaleFilter = value;
+		}
+		
+		public function toggleGrayScale():void {
+			this.setGrayScale(!this.getGrayScale());
+		}
+		
+		public function setGrayScale(active:Boolean):void {
+			if (active) {
+				this.filters = [this._grayScaleFilter];
+			} else {
+				this.filters = [];
+			}
+		}
+		
+		public function getGrayScale():Boolean {
+			return this.filters.length > 0;
+		}
 
 	}
 }
