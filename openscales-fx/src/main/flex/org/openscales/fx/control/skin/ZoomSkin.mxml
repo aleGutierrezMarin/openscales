@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Metadata>
+		[HostComponent("spark.components.VSlider")]
+	</fx:Metadata>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+		<s:State name="zoomout" />
+		<s:State name="zoomin" />
+	</s:states>
+	
+	<s:Group x="-19" y="63" mouseDown="currentState = 'zoomout'" mouseUp="currentState = 'normal'">
+		<s:Path data="M13.4 -67.3 13.4 -65.1 10.75 -65.1 10.75 -62.5 8.55 -62.5 8.55 -65.1 5.9 -65.1 5.9 -67.3 8.55 -67.3 8.55 -69.95 10.75 -69.95 10.75 -67.3 13.4 -67.3">
+			<s:fill>
+				<s:SolidColor color="#FFFF00"/>
+			</s:fill>
+		</s:Path>
+	</s:Group>
+	
+	<s:Group x="-19" y="63" mouseDown="currentState = 'zoomin'" mouseUp="currentState = 'normal'">
+		<s:Path data="M6.9 43.7 10.95 43.7 10.95 45.85 6.9 45.85 6.9 43.7">
+			<s:fill>
+				<s:SolidColor color="#FFFF00"/>
+			</s:fill>
+		</s:Path>
+	</s:Group>
+	
+
+	<s:Button id="track" skinClass="org.openscales.fx.control.skin.ZoomTrackSkin" x="0" y="0" height="105"/>
+	<s:Button id="thumb" skinClass="org.openscales.fx.control.skin.ZoomThumbSkin" x="4" />
+
+
+	
+</s:Skin>
