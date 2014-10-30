@@ -56,23 +56,6 @@ This control allows to display and browse an image served by an IIPImage server.
 			}
 			
 			/**
-			 * On close of image preview, reset the IIPZoom (may have been rotated)
-			 * 
-			 */
-			public function resetIIPZoom():void {
-				_iipzoom.resetMatrix();
-			}
-			
-			/**
-			 * Rotate the displayed image 
-			 * 
-			 * @param angleDegrees The angle for rotation
-			 */
-			public function rotateImage(angleDegrees:Number):void {	
-				_iipzoom.rotateImage(angleDegrees);
-			}
-			
-			/**
 			 * Zoom in the displayed image
 			 * 
 			 * @param coef The zoom in coefficient

@@ -398,52 +398,6 @@ package org.openscales.fx.iipimage
 		}
 		
 		/**
-		 * On close of image preview, reset the IIPZoom (may have been rotated)
-		 * 
-		 */
-		public function resetMatrix():void {
-			var identityMatrix:Matrix = new Matrix();
-			identityMatrix.identity();
-			this.transform.matrix = identityMatrix;
-			reset();	
-		}
-		
-		/**
-		 * Rotate the displayed image 
-		 * 
-		 * @param angleDegrees The angle for rotation
-		 */
-		public function rotateImage(angleDegrees:Number):void{
-			// reset zoom and reset pan immediately
-			showAll();
-			image.viewport.panTo(0,0,true);	
-			
-			// calculate center point
-			var point:Point=new Point(this.x+INITIAL_WIDTH/2, this.y+INITIAL_HEIGHT/2); 
-			
-			// prepare matrix for rotation around center
-			var m:Matrix=this.transform.matrix; 
-			m.tx -= point.x; 
-			m.ty -= point.y; 
-			
-			// rotate + apply
-			m.rotate(angleDegrees*(Math.PI/180)); 
-			this.transform.matrix=m;
-			
-			// if height of viewer (IIPZoom) is too high for the interface, scale down until it fits
-			while (this.height > INITIAL_HEIGHT)
-			{
-				m.scale(0.95,0.95);
-				this.transform.matrix=m;
-			}
-			
-			// put the image back at center
-			m.tx += point.x; 
-			m.ty += point.y; 
-			this.transform.matrix=m;
-		}
-		
-		/**
 		 * Zoom in the displayed image
 		 * 
 		 * @param coef Zooming coefficient
