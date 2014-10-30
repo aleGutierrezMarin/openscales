@@ -1210,15 +1210,20 @@ package org.openscales.core.layer {
 		}
 		
 		public function setGrayScale(active:Boolean):void {
+			if (active == this.getGrayScale() )
+				return;
+			
 			if (active) {
 				this.filters = [this._grayScaleFilter];
 			} else {
 				this.filters = [];
 			}
+			
+			this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED, this));
 		}
 		
 		public function getGrayScale():Boolean {
-			return this.filters.length > 0;
+			return this.filters && this.filters.length > 0;
 		}
 
 	}
