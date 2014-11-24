@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		xmlns:s="library://ns.adobe.com/flex/spark" 
+		xmlns:mx="library://ns.adobe.com/flex/mx"
+		width="314"
+		height="200"
+		contentBackgroundColor="#FFFFFF">
+	<!-- host component -->
+	<fx:Metadata>
+		[HostComponent("org.openscales.fx.control.search.Search")]
+	</fx:Metadata>
+	
+	<!-- SkinParts
+	name=searchText, type=spark.components.TextInput, required=true
+	name=searchResult, type=mx.collections.ArrayCollection, required=true
+	-->
+	
+	<s:Panel id="searchPannel"
+			 width="100%"
+			 title="Yahoo! PlaceFinder"
+			 mouseDown="handleDown(event);"
+			 mouseUp="handleUp(event);">
+		<s:ToggleButton right="10" y="-26" label="reverse" width="63" id="reverse" click="reverseToggle();"/>
+		<s:VGroup left="10" right="10" top="10" bottom="10" gap="5">
+			<s:TextInput id="searchText" width="100%"/>
+			<mx:DataGrid width="100%" dataProvider="{searchResult}" itemClick="onItemClick(event);">
+				<mx:columns>
+					<mx:DataGridColumn headerText="Adresse" dataField="formattedAddress"/>
+					<mx:DataGridColumn headerText="Code postal" dataField="postalCode"/>
+					<mx:DataGridColumn headerText="Ville" dataField="locality"/>
+					<mx:DataGridColumn headerText="Pays" dataField="countryRegion"/>
+				</mx:columns>
+			</mx:DataGrid>
+			<mx:Image source="http://l.yimg.com/a/i/yahoo.gif" right="0"/>
+		</s:VGroup>
+	</s:Panel>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.events.ListEvent;
+			
+			import org.openscales.core.handler.mouse.ClickHandler;
+			import org.openscales.core.search.result.Address;
+			import org.openscales.geometry.basetypes.Pixel;
+			
+			/**
+			 * Arraycollection containing search results
+			 */
+			[Bindable]
+			public var searchResult:ArrayCollection = new ArrayCollection();
+			
+			private var _handler:ClickHandler = new ClickHandler(null,false);
+
+			/**
+			 * @private
+			 * method called when user click on a result
+			 * 
+			 * @param e the ListEvent
+			 */
+			private function onItemClick( e:ListEvent ):void {
+				if((e.itemRenderer.data as Address).bbox)
+					this.hostComponent.map.zoomToExtent((e.itemRenderer.data as Address).bbox);
+				else if((e.itemRenderer.data as Address).location)
+					this.hostComponent.map.center = (e.itemRenderer.data as Address).location;
+			}
+			/**
+			 * @private
+			 * 
+			 * Change activation status of reverse geocoding tool
+			 */
+			private function reverseToggle():void {
+				_handler.map = this.hostComponent.map;
+				_handler.active = reverse.selected;
+				searchResult.removeAll();
+				if(_handler.click==null)
+					_handler.click = this.reverseGeocode;
+			}
+			/**
+			 * @private
+			 * 
+			 * Reverse geocode a map pixel
+			 * 
+			 * @param px the map pixel to geocode
+			 */
+			private function reverseGeocode(px:Pixel):void {
+				this.hostComponent.reverseGeocode( this.hostComponent.map.getLocationFromMapPx(px));
+			}
+			/**
+			 * @private
+			 * 
+			 * Enable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleDown(e:MouseEvent):void{
+				if(e.target == searchPannel.titleDisplay)
+					this.startDrag();
+			}
+			/**
+			 * @private
+			 * 
+			 * Disable draging
+			 * 
+			 * @param e the mouse event
+			 */
+			private function handleUp(e:MouseEvent):void{
+				this.stopDrag();
+			}
+		]]>
+	</fx:Script>
+</s:Skin>
