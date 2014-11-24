@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Capabilities version="1.0.0"
+				xmlns="http://www.opengis.net/wmts/1.0"
+				xmlns:ows="http://www.opengis.net/ows/1.1"
+				xmlns:xlink="http://www.w3.org/1999/xlink"
+				xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				xmlns:gml="http://www.opengis.net/gml"
+				xsi:schemaLocation="http://www.opengis.net/wmts/1.0 http://schemas.opengis.net/wmts/1.0/wmtsGetCapabilities_response.xsd">
+	<ows:ServiceIdentification>
+		<ows:Title>Service de visualisation WMS/WMTS</ows:Title>
+		<ows:Abstract>An abstract</ows:Abstract>
+		<ows:Keywords>
+			<ows:Keyword>WMS/WMTS</ows:Keyword>
+		</ows:Keywords>
+		<ows:ServiceType>OGC WMTS</ows:ServiceType>
+		<ows:ServiceTypeVersion>1.0.0</ows:ServiceTypeVersion>
+		<ows:Fees>none</ows:Fees>
+		<ows:AccessConstraints>none</ows:AccessConstraints>
+	</ows:ServiceIdentification>
+	<ows:OperationsMetadata>
+		<ows:Operation name="GetCapabilities">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="http://myserver.com/wmts?" />
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+		<ows:Operation name="GetTile">
+			<ows:DCP>
+				<ows:HTTP>
+					<ows:Get xlink:href="http://myserver.com/wmts?" />
+				</ows:HTTP>
+			</ows:DCP>
+		</ows:Operation>
+	</ows:OperationsMetadata>
+	<Contents>
+		<Layer>
+			<ows:Title>Scan50</ows:Title>
+			<ows:Abstract>Scan50</ows:Abstract>
+			<ows:Keywords>
+				<ows:Keyword>Scan50</ows:Keyword>
+			</ows:Keywords>
+			<ows:Identifier>SCAN50_PNG_LAMB93</ows:Identifier>
+			<Style isDefault="true">
+				<ows:Identifier>normal</ows:Identifier>
+			</Style>
+			<Format>image/png</Format>
+			<Format>image/tiff</Format>
+			<TileMatrixSetLink>
+				<TileMatrixSet>LAMB93_2.5m</TileMatrixSet>
+			</TileMatrixSetLink>
+		</Layer>
+<TileMatrixSet>
+<ows:Identifier>LAMB93_2.5m</ows:Identifier>
+<ows:SupportedCRS>IGNF:LAMB93</ows:SupportedCRS>
+<TileMatrix>
+<ows:Identifier>0</ows:Identifier>
+<ScaleDenominator>585142857</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1</MatrixWidth>
+<MatrixHeight>1</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>1</ows:Identifier>
+<ScaleDenominator>292571428</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1</MatrixWidth>
+<MatrixHeight>1</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>10</ows:Identifier>
+<ScaleDenominator>571428</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>32</MatrixWidth>
+<MatrixHeight>263</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>11</ows:Identifier>
+<ScaleDenominator>285714</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>63</MatrixWidth>
+<MatrixHeight>526</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>12</ows:Identifier>
+<ScaleDenominator>142857</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>126</MatrixWidth>
+<MatrixHeight>1051</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>13</ows:Identifier>
+<ScaleDenominator>71428</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>252</MatrixWidth>
+<MatrixHeight>2102</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>14</ows:Identifier>
+<ScaleDenominator>35714</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>504</MatrixWidth>
+<MatrixHeight>4204</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>15</ows:Identifier>
+<ScaleDenominator>17857</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1008</MatrixWidth>
+<MatrixHeight>8408</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>16</ows:Identifier>
+<ScaleDenominator>8928</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2016</MatrixWidth>
+<MatrixHeight>16816</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>2</ows:Identifier>
+<ScaleDenominator>146285714</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1</MatrixWidth>
+<MatrixHeight>2</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>3</ows:Identifier>
+<ScaleDenominator>73142857</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1</MatrixWidth>
+<MatrixHeight>3</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>4</ows:Identifier>
+<ScaleDenominator>36571428</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1</MatrixWidth>
+<MatrixHeight>5</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>5</ows:Identifier>
+<ScaleDenominator>18285714</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>1</MatrixWidth>
+<MatrixHeight>9</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>6</ows:Identifier>
+<ScaleDenominator>9142857</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>2</MatrixWidth>
+<MatrixHeight>17</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>7</ows:Identifier>
+<ScaleDenominator>4571428</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>4</MatrixWidth>
+<MatrixHeight>33</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>8</ows:Identifier>
+<ScaleDenominator>2285714</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>8</MatrixWidth>
+<MatrixHeight>66</MatrixHeight>
+</TileMatrix>
+<TileMatrix>
+<ows:Identifier>9</ows:Identifier>
+<ScaleDenominator>1142857</ScaleDenominator>
+<TopLeftCorner>0 12000000</TopLeftCorner>
+<TileWidth>256</TileWidth>
+<TileHeight>256</TileHeight>
+<MatrixWidth>16</MatrixWidth>
+<MatrixHeight>132</MatrixHeight>
+</TileMatrix>
+</TileMatrixSet>
+</Contents>
+</Capabilities>
