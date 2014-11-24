@@ -2,7 +2,9 @@ package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
 	import flash.filters.ColorMatrixFilter;
+	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -98,6 +100,7 @@ package org.openscales.core.layer {
 		protected var _mapReload:Boolean = false;
 		private var _available:Boolean = false;
 		
+		private var _grayScaleTimer:Timer = null;
 		private var _grayScaleFilter:ColorMatrixFilter = null;
 		/**
 		 * Layer constructor
@@ -452,7 +455,24 @@ package org.openscales.core.layer {
 		}
 		
 		protected function onMapMove(e:MapEvent):void {
+			if(this._grayScaleTimer != null || this.filters.length > 0)
+			{	
+				if(this._grayScaleTimer != null)
+					this._grayScaleTimer.removeEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
+				
+				this._grayScaleTimer = new Timer(1000,0);
+				// change the display when the delay is spent
+				this._grayScaleTimer.addEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
+				this._grayScaleTimer.start();
+				this.filters = [];
+				this.cacheAsBitmap = false;
+			}
+			
 			this.redraw(e.zoomChanged);
+		}
+		
+		private function onGrayScaleTimerEnd(e:TimerEvent):void {
+			this.setGrayScale(true);
 		}
 		
 		/**
@@ -1210,15 +1230,20 @@ package org.openscales.core.layer {
 		}
 		
 		public function setGrayScale(active:Boolean):void {
+			if (active == this.getGrayScale() )
+				return;
+			
 			if (active) {
 				this.filters = [this._grayScaleFilter];
 			} else {
 				this.filters = [];
 			}
+			
+			this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED, this));
 		}
 		
 		public function getGrayScale():Boolean {
-			return this.filters.length > 0;
+			return this.filters && this.filters.length > 0;
 		}
 
 	}
