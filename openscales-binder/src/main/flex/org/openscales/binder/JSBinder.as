@@ -386,6 +386,7 @@ package org.openscales.binder
 		 *		- eventName : the name of the event occured on the map ('layerchanged')
 		 *		- layerName : the name of the layer
 		 * 		- layerOpacity : the opacity value of the layer
+		 * 		- layerGrayMode : the grayMode value of the layer
 		 * 		- layerVisibility : true if the layer is visible, false otherwise
 		 * 		- layerMovedUp : true if the layer has been moved up, false otherwise
 		 * 		- layerMovedDown : true if the layer has been moved down, false otherwise
@@ -398,6 +399,7 @@ package org.openscales.binder
 			obj.eventName = "layerchanged";
 			obj.layerName = event.layer.identifier;
 			obj.layerOpacity = event.newOpacity;
+			obj.layerGrayMode = event.layer.getGrayScale();
 			obj.layerVisibility = event.layer.visible;
 			obj.layerMovedUp = (event.type.split(".")[1] == "layerMovedUp");
 			obj.layerMovedDown = (event.type.split(".")[1] == "layerMovedDown");
