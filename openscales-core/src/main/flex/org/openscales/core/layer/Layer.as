@@ -460,7 +460,7 @@ package org.openscales.core.layer {
 				if(this._grayScaleTimer != null)
 					this._grayScaleTimer.removeEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
 				
-				this._grayScaleTimer = new Timer(1000,0);
+				this._grayScaleTimer = new Timer(500,0);
 				// change the display when the delay is spent
 				this._grayScaleTimer.addEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
 				this._grayScaleTimer.start();
