@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- The example use the BorderPanHandler that pan the map based on distance between the cursor and the center of the map. -->
+<s:VGroup xmlns="http://openscales.org" xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:fx="http://ns.adobe.com/mxml/2009" width="100%" height="100%" xmlns:components="components.*">
+
+	<Map id="fxMap" width="100%" height="100%" resolution="0.1911274412400001" 
+		 center="14.311343736399992,1.4060134771999975" maxExtent="-180,-90,180,90">
+		<WMSC name="Nasa" url="http://openscales.org/geoserver/gwc/service/wms"
+				 layers="bluemarble" format="image/jpeg" maxExtent="-180,-90,180,90" version="1.1.1"/>
+		<DragHandler/>
+		<WheelHandler/>
+		
+		<Zoom x="{fxMap.width-135}" y="10" />
+	</Map>
+	<components:toolbar fxMap="{fxMap}" />
+	
+</s:VGroup>
