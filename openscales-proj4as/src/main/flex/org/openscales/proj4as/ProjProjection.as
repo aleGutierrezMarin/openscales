@@ -34,7 +34,16 @@ package org.openscales.proj4as {
 			'EPSG:32638': "+title=WGS 84 / UTM zone 38N +proj=utm +zone=38 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			'EPSG:32639': "+title=WGS 84 / UTM zone 39N +proj=utm +zone=39 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
 			'EPSG:32640': "+title=WGS 84 / UTM zone 40N +proj=utm +zone=40 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
-			'EPSG:32641': "+title=WGS 84 / UTM zone 41N +proj=utm +zone=41 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",			 
+			'EPSG:32641': "+title=WGS 84 / UTM zone 41N +proj=utm +zone=41 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+			'EPSG:32630': "+title=WGS 84 / UTM zone 30N +proj=utm +zone=30 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+			'EPSG:32631': "+title=WGS 84 / UTM zone 31N +proj=utm +zone=31 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+			'EPSG:32632': "+title=WGS 84 / UTM zone 32N +proj=utm +zone=32 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+			'EPSG:32620': "+title=WGS 84 / UTM zone 20N +proj=utm +zone=20 +ellps=WGS84 +datum=WGS84 +units=m +no_defs",
+			'EPSG:2972': "+title=RGFG95 / UTM zone 22N +proj=utm +zone=22 +ellps=GRS80 +towgs84=2,2,-2,0,0,0,0 +units=m +no_defs",
+			'EPSG:2975': "+title=RGR92 / UTM zone 40S +proj=utm +zone=40 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+			'EPSG:4467': "+title=RGSPM06 / UTM zone 21N +proj=utm +zone=21 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+			'EPSG:4467': "+title=RGM04 / UTM zone 38S +proj=utm +zone=38 +south +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs",
+			
 			
 			'EPSG:28991': "+title=RD +proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.9999079 +x_0=0 +y_0=0 +ellps=bessel +units=m +no_defs",
 			'EPSG:28992': "+title=RD2004 +proj=sterea +lat_0=52.15616055555555 +lon_0=5.38763888888889 +k=0.999908 +x_0=155000 +y_0=463000 +ellps=bessel +units=m +towgs84=565.2369,50.0087,465.658,-0.406857330322398,0.350732676542563,-1.8703473836068,4.0812 +no_defs",					 
