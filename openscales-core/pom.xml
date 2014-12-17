@@ -21,14 +21,14 @@
 			<artifactId>openscales-geometry</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
-			<scope>merged</scope>
+			<!--<scope>merged</scope>-->
 		</dependency>
 		<dependency>
 			<groupId>org.openscales</groupId>
 			<artifactId>openscales-proj4as</artifactId>
 			<version>${project.version}</version>
 			<type>swc</type>
-			<scope>merged</scope>
+			<!--<scope>merged</scope>-->
 		</dependency>
 	</dependencies>
 	
