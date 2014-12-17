@@ -93,6 +93,7 @@ package org.openscales.core.layer {
 		private var _constraints:Vector.<Constraint> = null;
 		private var _aggregate:Aggregate = null;
 		protected var _initialized:Boolean = false;
+		private var _version:String;
 		
 		protected var _resolutionChanged:Boolean = false;
 		protected var _centerChanged:Boolean = false;
@@ -472,7 +473,7 @@ package org.openscales.core.layer {
 		}
 		
 		private function onGrayScaleTimerEnd(e:TimerEvent):void {
-			this.setGrayScale(true);
+			this.filters = [this._grayScaleFilter];
 		}
 		
 		/**
@@ -1225,11 +1226,11 @@ package org.openscales.core.layer {
 			_grayScaleFilter = value;
 		}
 		
-		public function toggleGrayScale():void {
-			this.setGrayScale(!this.getGrayScale());
-		}
-		
 		public function setGrayScale(active:Boolean):void {
+			if(this._grayScaleTimer != null) {
+				this._grayScaleTimer.removeEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
+				this._grayScaleTimer = null;
+			}
 			if (active == this.getGrayScale() )
 				return;
 			
