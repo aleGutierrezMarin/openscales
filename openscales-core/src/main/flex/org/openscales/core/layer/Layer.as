@@ -93,7 +93,6 @@ package org.openscales.core.layer {
 		private var _constraints:Vector.<Constraint> = null;
 		private var _aggregate:Aggregate = null;
 		protected var _initialized:Boolean = false;
-		private var _version:String;
 		
 		protected var _resolutionChanged:Boolean = false;
 		protected var _centerChanged:Boolean = false;
