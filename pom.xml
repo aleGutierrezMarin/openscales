@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.openscales</groupId>
 	<artifactId>openscales</artifactId>
-	<version>3.0.0-2014-51-2</version>
+	<version>3.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>OpenScales</name>
 	<description>OpenScales is a RIA mapping framework natively designed to allow you to build mapping RIA (Rich Internet Applications) easily</description>
@@ -304,7 +304,8 @@
 		<connection>scm:hg:https://bitbucket.org/gis/openscales</connection>
 		<developerConnection>scm:hg:https://bitbucket.org/gis/openscales</developerConnection>
 		<url>http://bitbucket.org/gis/openscales/src/</url>
-	</scm>
+	  <tag>HEAD</tag>
+  </scm>
 	<ciManagement>
 		<system>jenkins</system>
 		<url>http://openscales.org/jenkins/job/openscales-develop</url>
