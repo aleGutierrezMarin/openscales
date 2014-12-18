@@ -105,8 +105,8 @@ package org.openscales.core.style.graphic
 				result = new Bitmap(_clip.bitmapData);
 				if (_xUnit == "fraction")
 				{
-					//result.x += -result.width*_xOffset;
-					result.x -= size / 2;
+					result.x += -result.width*_xOffset;
+					//result.x -= size / 2;
 				}else if (_xUnit == "pixels")
 				{
 					result.x += -_xOffset
@@ -114,15 +114,18 @@ package org.openscales.core.style.graphic
 				
 				if (_yUnit == "fraction")
 				{
-					//result.y += -result.height*_yOffset;
-					result.y -= size / 2;
+					result.y += -result.height*_yOffset;
+					//result.y -= size / 2;
 				}else if (_yUnit == "pixels")
 				{
 					result.y += -_yOffset
 				}
 				try {
-					result.width = size;
-					result.height = size;
+					if (result.width == result.height) // take size var into account only for square markers, else keep width and height we got from the DisplayObject
+					{
+						result.width = size;
+						result.height = size;
+					}
 				} catch(e:Error) {
 					
 				}
@@ -180,12 +183,15 @@ package org.openscales.core.style.graphic
 				var result:DisplayObject;
 				result = new Bitmap(_clip.bitmapData);
 				
-				result.width = size;
-				result.height = size;
+				if (result.width == result.height)
+				{
+					result.width = size;
+					result.height = size;
+				}
 				
 				if (_xUnit == "fraction")
 				{
-					result.x += -size*_xOffset;
+					result.x += -result.width*_xOffset;
 				}else if (_xUnit == "pixels")
 				{
 					result.x += -_xOffset
@@ -193,7 +199,7 @@ package org.openscales.core.style.graphic
 				
 				if (_yUnit == "fraction")
 				{
-					result.y += -size*_yOffset;
+					result.y += -result.height*_yOffset;
 				}else if (_yUnit == "pixels")
 				{
 					result.y += -_yOffset
@@ -224,8 +230,11 @@ package org.openscales.core.style.graphic
 				var sprite:Sprite = this._givenTemporaryMarker[i].sprite;
 				var size:Number = this._givenTemporaryMarker[i].size;
 				result = new Bitmap(_clip.bitmapData);
-				result.width = size;
-				result.height = size;
+				if (result.width == result.height)
+				{
+					result.width = size;
+					result.height = size;
+				}
 				result.x += - size/2;
 				result.y += - size;
 				sprite.addChild(result);
