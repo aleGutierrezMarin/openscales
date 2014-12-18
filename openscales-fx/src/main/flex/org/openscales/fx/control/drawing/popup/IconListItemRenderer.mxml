@@ -5,5 +5,5 @@
 	<fx:Declarations>
 		<!-- Placer ici les éléments non visuels (services et objets de valeur, par exemple). -->
 	</fx:Declarations>
-	<mx:Image source="{this.data}" height="20" width="20"/>
+	<s:Image source="{this.data}" width="25" height="25" fillMode="clip"/>
 </s:ItemRenderer>
