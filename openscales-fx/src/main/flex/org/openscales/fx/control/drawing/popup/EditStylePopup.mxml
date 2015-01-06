@@ -553,12 +553,13 @@
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
 				ptsym.graphic.graphics.pop();
 				var mark:ExternalGraphic = new ExternalGraphic(url);
-				mark.xOffset = 0.5;
 				mark.xUnit = "fraction";
-				mark.yOffset = 0.5;
 				mark.yUnit = "fraction";
+ 				mark.xOffset = 0.5;
+				mark.yOffset = 0.5;
 				mark.proxy = this.editStyleHandler.map.getProxy(url);
 				ptsym.graphic.graphics.push(mark);
+				ptsym.graphic.size = 10;
 				
 				this.editStyleHandler.actualizeFeature();
 			}
@@ -1014,28 +1015,28 @@
 						
 						<s:Group>
 							<s:layout >
-								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
-							</s:layout>
-							<s:RadioButton focusColor="{this.formFocusColor}" id="dropdownPointModeRB" selected="@{this._pointIconMode}" groupName="pointIconMode" />
-							<s:DropDownList focusColor="{this.formFocusColor}" enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
-						</s:Group>
-						
-						<s:Group>
-							<s:layout >
-								<s:HorizontalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+								<s:VerticalLayout paddingLeft="15" paddingTop="5" gap="10"/>
 							</s:layout>
 							<s:RadioButton focusColor="{this.formFocusColor}" id="colorPointModeRB" selected="@{this._pointColorMode}" groupName="pointIconMode" />
 							<s:Group>
 								<s:layout >
-									<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
+									<s:HorizontalLayout paddingLeft="15" paddingTop="5" gap="10"/>
 								</s:layout>
-								
 								<s:Graphic x="0" y="0">
 									<mx:ColorPicker focusColor="{this.formFocusColor}" id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
 								</s:Graphic>
 								<s:HSlider focusColor="{this.formFocusColor}" id="pointFillOpacity" enabled="{this._pointColorMode}"  value="@{this._pointOpacity}" dataTipFormatFunction="percentageTipFunc" change="onPointOpacityChanged()" height="11" width="70" minimum="0" maximum="100"/>
 							</s:Group>
 						</s:Group>
+						
+						<s:Group>
+							<s:layout >
+								<s:HorizontalLayout paddingLeft="15" paddingTop="5" gap="10"/>
+							</s:layout>
+							<s:RadioButton focusColor="{this.formFocusColor}" id="dropdownPointModeRB" selected="@{this._pointIconMode}" groupName="pointIconMode" />
+							<s:DropDownList focusColor="{this.formFocusColor}" enabled="{this._pointIconMode}" id="iconDropDownList" skinClass="org.openscales.fx.control.drawing.popup.skin.CustomDropDownListSkin" itemRenderer="org.openscales.fx.control.drawing.popup.IconListItemRenderer" dataProvider="{this.iconURLArray}"  selectedIndex="@{this._iconSelectedIndex}" change="onIconChanged()" top="1" left="1" width="40"/>
+						</s:Group>
+						
 					</s:Group>
 					<mx:Image left="5" source="{Line}"/>
 				</s:Group>
