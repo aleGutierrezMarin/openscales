@@ -2,6 +2,9 @@ package org.openscales.core.layer {
 	
 	import flash.display.Sprite;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.filters.ColorMatrixFilter;
+	import flash.utils.Timer;
 	
 	import org.openscales.core.Map;
 	import org.openscales.core.basetypes.Resolution;
@@ -97,7 +100,8 @@ package org.openscales.core.layer {
 		protected var _mapReload:Boolean = false;
 		private var _available:Boolean = false;
 		
-				
+		private var _grayScaleTimer:Timer = null;
+		private var _grayScaleFilter:ColorMatrixFilter = null;
 		/**
 		 * Layer constructor
 		 * 
@@ -118,8 +122,16 @@ package org.openscales.core.layer {
 			this.generateResolutions();
 			
 			this._originators = new Vector.<DataOriginator>();
+			
+			// Build default grayscale matrix
+			var matrix:Array = new Array();
+			matrix=matrix.concat([0.21,0.72,0.125,0,0]);// red
+			matrix=matrix.concat([0.21,0.72,0.125,0,0]);// green
+			matrix=matrix.concat([0.21,0.72,0.125,0,0]);// blue
+			matrix=matrix.concat([0,0,0,1,0]);// alpha
+			this._grayScaleFilter = new ColorMatrixFilter(matrix);
 		}
-		
+
 		/**
 		 * This method tells if the layer is available for the specified bounds and resolution
 		 * @param Bounds Bounds to intersect the layers bboxes with
@@ -443,7 +455,24 @@ package org.openscales.core.layer {
 		}
 		
 		protected function onMapMove(e:MapEvent):void {
+			if(this._grayScaleTimer != null || this.filters.length > 0)
+			{	
+				if(this._grayScaleTimer != null)
+					this._grayScaleTimer.removeEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
+				
+				this._grayScaleTimer = new Timer(500,0);
+				// change the display when the delay is spent
+				this._grayScaleTimer.addEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
+				this._grayScaleTimer.start();
+				this.filters = [];
+				this.cacheAsBitmap = false;
+			}
+			
 			this.redraw(e.zoomChanged);
+		}
+		
+		private function onGrayScaleTimerEnd(e:TimerEvent):void {
+			this.filters = [this._grayScaleFilter];
 		}
 		
 		/**
@@ -1177,7 +1206,45 @@ package org.openscales.core.layer {
 		{
 			_abstract = value;
 		}
-
+		
+		/**
+		 * Color filter of the Layer for grayscale mode
+		 * 
+		 * @defaut null
+		 */
+		public function get grayScaleFilter():ColorMatrixFilter
+		{
+			return _grayScaleFilter;
+		}
+		
+		/**
+		 * @private
+		 */
+		public function set grayScaleFilter(value:ColorMatrixFilter):void
+		{
+			_grayScaleFilter = value;
+		}
+		
+		public function setGrayScale(active:Boolean):void {
+			if(this._grayScaleTimer != null) {
+				this._grayScaleTimer.removeEventListener(TimerEvent.TIMER, this.onGrayScaleTimerEnd);
+				this._grayScaleTimer = null;
+			}
+			if (active == this.getGrayScale() )
+				return;
+			
+			if (active) {
+				this.filters = [this._grayScaleFilter];
+			} else {
+				this.filters = [];
+			}
+			
+			this._map.dispatchEvent(new LayerEvent(LayerEvent.LAYER_CHANGED, this));
+		}
+		
+		public function getGrayScale():Boolean {
+			return this.filters && this.filters.length > 0;
+		}
 
 	}
 }

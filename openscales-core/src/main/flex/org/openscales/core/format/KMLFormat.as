@@ -49,7 +49,7 @@ package org.openscales.core.format
 	import org.openscales.geometry.Point;
 	import org.openscales.geometry.Polygon;
 	import org.openscales.geometry.basetypes.Location;
-
+	
 	
 	use namespace os_internal;
 	
@@ -66,10 +66,11 @@ package org.openscales.core.format
 		//private namespace google="http://earth.google.com/kml/2.0";
 		private var _proxy:String;
 		private var _kmlns:Namespace = new Namespace("http://earth.google.com/kml/2.0");
-                private var _internalns:Namespace = null;
+		private var _internalns:Namespace = null;
 		private var _externalImages:Object = {};
 		private var _images:Object = {};
 		
+		private var _featureNames:Vector.<String> = new Vector.<String>();
 		// features
 		private var iconsfeatures:Vector.<Feature> = new Vector.<Feature>();
 		private var linesfeatures:Vector.<Feature> = new Vector.<Feature>();
@@ -181,20 +182,20 @@ package org.openscales.core.format
 			
 			var name:String = "";
 			if (dataXML && dataXML.*::name[0])
-                                name = dataXML.*::name[0].toString();
-                        else {
-                                if (dataXML && dataXML.*::Document[0])
-                                {
-                                        var document:XML = dataXML.*::Document[0];
-                                        if (document.*::name[0])
-                                                name = dataXML.*::Document[0].*::name[0].toString();
-                                }
-                        }
+				name = dataXML.*::name[0].toString();
+			else {
+				if (dataXML && dataXML.*::Document[0])
+				{
+					var document:XML = dataXML.*::Document[0];
+					if (document.*::name[0])
+						name = dataXML.*::Document[0].*::name[0].toString();
+				}
+			}
 			
 			return name;
 			
 		}
-			
+		
 		/**
 		 * Read data
 		 *
@@ -217,7 +218,7 @@ package org.openscales.core.format
 			
 			var placemarks:XMLList = dataXML..*::Placemark;
 			return readPlacemarks(placemarks);
-	
+			
 		}
 		
 		/**
@@ -254,7 +255,7 @@ package org.openscales.core.format
 				if(style.@*::id=="")
 					continue;
 				id = "#"+style.@*::id.toString();
-
+				
 				_styleList.put(id, getStyle(style));		
 			}
 		}
@@ -337,7 +338,7 @@ package org.openscales.core.format
 						iconFill.color = iconColor;
 						var scaleStyle:XMLList = styleList[i]..*::scale;
 						/*if(scaleStyle.length() > 0)
-							obj["scale"] = Number(scaleStyle[0].toString());
+						obj["scale"] = Number(scaleStyle[0].toString());
 						*/
 						var headingStyle:XMLList = styleList[i]..*::heading;
 						if(headingStyle.length() > 0) //0 to 360°
@@ -428,7 +429,7 @@ package org.openscales.core.format
 					ts.font = new Font();
 					ts.halo = new Halo();
 					ts.halo.radius = 0;
-
+					
 					var _Lwidth:Number = 1;
 					
 					var subNode:XMLList = styleList[i]..*::color;
@@ -529,7 +530,7 @@ package org.openscales.core.format
 		{
 			//use namespace google;
 			//use namespace opengis;
-			
+			this._featureNames = new Vector.<String>;
 			for each(var placemark:XML in placemarks) {
 				var coordinates:Array;
 				var point:Point;
@@ -546,14 +547,18 @@ package org.openscales.core.format
 				if (localStyles.length()== 1) {
 					localStyle = this.getStyle(localStyles[0]);
 				}
-		
+				
 				var name:String = null;
 				if (placemark.name != null && placemark.*::name[0] != null) {
 					name = placemark.*::name[0].text();
 					//attributes["name"] = placemark.*::name.text();
 				}
-				//We need a name wich is not null
-				name = (name == null) ? UID.gen_uid() : name;
+				
+				//We need a name wich is uique and not null
+				if(name == null || this._featureNames.indexOf(name) != -1) {
+					name = UID.gen_uid();
+				}
+				this._featureNames.push(name);
 				attributes["name"] = name;
 				htmlContent = htmlContent + "<b>" + placemark.*::name.text() + "</b><br />";
 				
@@ -656,8 +661,8 @@ package org.openscales.core.format
 							var circleFeature:DiscreteCircleFeature = new DiscreteCircleFeature(
 								new Location(coords[0],coords[1],"EPSG:4326"),
 								r,attributes,_pStyle);
-							circleFeature.name = name;
-							polygonsfeatures.push(circleFeature);
+						circleFeature.name = name;
+						polygonsfeatures.push(circleFeature);
 					} else {
 						var polyFeature:PolygonFeature = new PolygonFeature(this.loadPolygon(placemark),attributes,_pStyle);
 						polyFeature.name = name;
@@ -700,7 +705,7 @@ package org.openscales.core.format
 						multiLineFeature.name = name;
 						linesfeatures.push(multiLineFeature);
 					}
-
+					
 					//multiPolygon
 					if(polygons.length() > 0) {
 						numberOfGeom = polygons.length();
@@ -910,13 +915,13 @@ package org.openscales.core.format
 			var point:Point;
 			
 			var localns:Namespace = this._internalns;
-			 
+			
 			var lineNode:XML= placemark..localns::LineString[0];
 			XML.ignoreWhitespace = true;
 			var lineData:String = lineNode..localns::coordinates[0].toString();
 			
-			lineData = lineData.split("\n").join("");
-			lineData = lineData.split("\t").join("");
+			lineData = lineData.split("\n").join(" ");
+			lineData = lineData.split("\t").join(" ");
 			
 			lineData = lineData.replace(/^\s*(.*?)\s*$/g, "$1");
 			coordinates = lineData.split(" ");
@@ -948,7 +953,7 @@ package org.openscales.core.format
 		 */ 
 		private function loadPolygon(placemark:XML):Polygon
 		{
-            var localns:Namespace = this._internalns;
+			var localns:Namespace = this._internalns;
 			var polygon:XML = placemark..localns::Polygon[0];
 			
 			//exterior ring
@@ -1012,7 +1017,7 @@ package org.openscales.core.format
 		{
 			var kmlns:Namespace = new Namespace("","http://www.opengis.net/kml/2.2");
 			var kmlFile:XML = new XML("<kml></kml>");
-			kmlFile.addNamespace(kmlns);
+			kmlFile.setNamespace(kmlns);
 			
 			var doc:XML = new XML("<Document></Document>"); 
 			kmlFile.appendChild(doc);
@@ -1037,7 +1042,7 @@ package org.openscales.core.format
 			var i:uint;
 			var kmlns:Namespace = new Namespace("","http://www.opengis.net/kml/2.2");
 			var kmlFile:XML = new XML("<kml></kml>");
-			kmlFile.addNamespace(kmlns);
+			kmlFile.setNamespace(kmlns);
 			
 			var doc:XML = new XML("<Document></Document>"); 
 			kmlFile.appendChild(doc);
@@ -1300,7 +1305,7 @@ package org.openscales.core.format
 			{
 				symbolizers = rules[0].symbolizers;
 			}
-		
+			
 			//global style; can contain multiple Style types (Poly, Line, Icon)
 			var placemarkStyle:XML = new XML("<Style></Style>");
 			
@@ -1517,8 +1522,8 @@ package org.openscales.core.format
 			colorNode.appendChild(KMLcolor);
 			return colorNode;
 		}
-
+		
 	}
 }
-	
+
 
