@@ -325,7 +325,7 @@
 			/**
 			 * Method to handle the icon mode change on pointEdition
 			 */
-			private function changePointMode():void
+			protected function changePointMode():void
 			{
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
 				ptsym.graphic.graphics.pop();
@@ -564,7 +564,7 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
-			private function onPointColorChanged():void
+			protected function onPointColorChanged():void
 			{
 				var fill:SolidFill = new SolidFill();
 				fill.color = this._pointColor;
@@ -581,7 +581,7 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
-			private function onPointOpacityChanged():void
+			protected function onPointOpacityChanged():void
 			{
 				var fill:SolidFill = new SolidFill();
 				fill.color = this._pointColor;
