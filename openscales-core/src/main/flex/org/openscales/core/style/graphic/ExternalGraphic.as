@@ -68,17 +68,20 @@ package org.openscales.core.style.graphic
 		
 		private var _proxy:String = null;
 		
+		private var _alpha:Number = 1;
+		
 		/**
 		 * Default image applied when waiting for the request response
 		 */
 		[Embed(source="/assets/images/marker-blue.png")]
 		private var _defaultImage:Class;
 		
-		public function ExternalGraphic(onlineResource:String=null,format:String="image/png",proxy:String = null)
+		public function ExternalGraphic(onlineResource:String=null,format:String="image/png",proxy:String = null, alpha:Number = 1)
 		{
 			this._onlineResource = onlineResource;
 			this._format = format;
 			this._proxy = proxy;
+			this._alpha = alpha;
 			if (this._onlineResource)
 			{
 				this.load();
@@ -93,7 +96,10 @@ package org.openscales.core.style.graphic
 			res.xUnit = this._xUnit;
 			res.proxy = this._proxy;
 			if (this._clip)
+			{
 				res.clip = new Bitmap(_clip.bitmapData);
+				res.clip.alpha = _alpha;
+			}
 			return res;
 		}
 		
@@ -204,12 +210,15 @@ package org.openscales.core.style.graphic
 				{
 					result.y += -_yOffset
 				}
+				
+				result.alpha = _alpha;
+				
 				sprite.addChild(result);
 				result.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			}
 			this._givenTemporaryMarker = new Vector.<WaitingRendering>();
 			
-			this.dispatchEvent(new StyleEvent(StyleEvent.EXTERNAL_GRAPHIC_LOADED));
+			this.dispatchEvent(new StyleEvent(StyleEvent.EXTERNAL_GRAPHIC_LOADED,true));
 		}
 		
 		/**
@@ -237,6 +246,9 @@ package org.openscales.core.style.graphic
 				}
 				result.x += - size/2;
 				result.y += - size;
+				
+				result.alpha = _alpha;
+				
 				sprite.addChild(result);
 				result.addEventListener(MouseEvent.CLICK, onMarkerClick);
 			}
