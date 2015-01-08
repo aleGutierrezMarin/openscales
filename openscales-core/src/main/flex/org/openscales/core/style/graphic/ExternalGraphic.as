@@ -138,15 +138,7 @@ package org.openscales.core.style.graphic
 				{
 					result.y += -_yOffset
 				}
-				try {
-					if (result.width == result.height) // take size var into account only for square markers, else keep width and height we got from the DisplayObject
-					{
-						result.width = size;
-						result.height = size;
-					}
-				} catch(e:Error) {
-					
-				}
+
 				resultContainer.addChild(result);
 			}else
 			{
