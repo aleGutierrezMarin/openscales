@@ -68,6 +68,9 @@ package org.openscales.core.style.graphic
 		
 		private var _proxy:String = null;
 		
+		// Size of graphics for which we need specific behaviour (ex: markers)
+		private const specificSize:Number = 25;
+		
 		/**
 		 * Default image applied when waiting for the request response
 		 */
@@ -103,6 +106,21 @@ package org.openscales.core.style.graphic
 			if (this._clip)
 			{
 				result = new Bitmap(_clip.bitmapData);
+				
+				if (result.width == specificSize && result.height == specificSize) {
+					_xUnit = "fraction";
+					_yUnit = "fraction";
+					_xOffset = 0.5;
+					_yOffset = 1;
+				} else {
+					try {
+						result.width = size;
+						result.height = size;
+					} catch(e:Error) {
+						
+					}
+				}
+				
 				if (_xUnit == "fraction")
 				{
 					result.x += -result.width*_xOffset;
@@ -183,8 +201,13 @@ package org.openscales.core.style.graphic
 				var result:DisplayObject;
 				result = new Bitmap(_clip.bitmapData);
 				
-				if (result.width == result.height)
-				{
+				if (result.width == specificSize && result.height == specificSize) {
+					_xUnit = "fraction";
+					_yUnit = "fraction";
+					_xOffset = 0.5;
+					_yOffset = 1;
+				}
+				else {
 					result.width = size;
 					result.height = size;
 				}
@@ -230,8 +253,7 @@ package org.openscales.core.style.graphic
 				var sprite:Sprite = this._givenTemporaryMarker[i].sprite;
 				var size:Number = this._givenTemporaryMarker[i].size;
 				result = new Bitmap(_clip.bitmapData);
-				if (result.width == result.height)
-				{
+				if (result.width == result.height && result.width != specificSize) {
 					result.width = size;
 					result.height = size;
 				}
