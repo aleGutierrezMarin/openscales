@@ -1,10 +1,9 @@
 package org.openscales.core.search.engine
-{
-	import com.adobe.serialization.json.JSON;
-	
+{	
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	
+	import org.openscales.core.json.GENERICJSON;
 	import org.openscales.core.request.XMLRequest;
 	import org.openscales.core.search.result.Address;
 	import org.openscales.geometry.basetypes.Location;
@@ -58,7 +57,7 @@ package org.openscales.core.search.engine
 		
 		private function onSuccess(e:Event):void {
 			var loader:URLLoader = e.target as URLLoader;
-			var obj:Object = JSON.decode(loader.data as String) as Object;
+			var obj:Object = GENERICJSON.parse(loader.data as String) as Object;
 			
 			if ( obj[ "statusCode" ] == 200 ) {
 		
