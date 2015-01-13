@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" xmlns:georss="http://www.georss.org/georss" version="2.0" xmlns:gml="http://www.opengis.net/gml">
+<channel>
+   <title>Earthquakes</title>
+	<description>External GML Content </description>
+	<link>http://serverName.net</link>
+   <item>
+      <title>This is a point</title>
+	  <link>http://point</link>
+      <guid>Point001</guid>
+      <georss:where>
+         <gml:Point>
+            <gml:pos>45.256 -71.92</gml:pos>
+         </gml:Point>
+      </georss:where>
+   </item>
+   <item>
+   <title>This is a line</title>
+	<link>http://line</link>
+    <guid>Line001</guid>
+   <georss:where>
+      <gml:LineString>
+         <gml:posList>
+            45.256 -110.45 46.46 -109.48 43.84 -109.86
+         </gml:posList>
+      </gml:LineString>
+   </georss:where>
+  </item>
+  <item>
+  <title>This is a polygon</title>
+  <link>http://polygon</link>
+  <guid>Polygon001</guid>
+    <georss:where>
+       <gml:Polygon>
+          <gml:exterior>
+             <gml:LinearRing>
+                <gml:posList>
+             45.256 -110.45 46.46 -109.48 43.84 -109.86 45.256 -110.45
+                </gml:posList>
+             </gml:LinearRing>
+          </gml:exterior>
+       </gml:Polygon>
+    </georss:where>
+ </item>
+</channel>
+</rss>
