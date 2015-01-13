@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" version="3">
+  <includeClasses>
+    <classEntry path="skin.PanEastSkin"/>
+    <classEntry path="skin.PanNorthSkin"/>
+    <classEntry path="skin.PanSkin"/>
+    <classEntry path="skin.PanSouthSkin"/>
+    <classEntry path="skin.PanWestSkin"/>
+    <classEntry path="skin.ZoomInSkin"/>
+    <classEntry path="skin.ZoomOutSkin"/>
+    <classEntry path="skin.ZoomSkin"/>
+    <classEntry path="skin.ZoomThumbSkin"/>
+    <classEntry path="skin.ZoomTrackSkin"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>

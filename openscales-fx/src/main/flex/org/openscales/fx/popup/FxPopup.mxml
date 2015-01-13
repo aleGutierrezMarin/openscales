@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--- Popup displayed when a user intercept a feature click event and create a popup -->
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 xmlns:openscales="http://openscales.org"
+		 xmlns:d="http://ns.adobe.com/fxg/2008/dt"
+		 xmlns:control="net.awl.openscales.fx.control.*"
+		 contentBackgroundAlpha="0">
+	<fx:Declarations>
+	</fx:Declarations>
+	
+	<fx:Script>
+		<![CDATA[
+			import mx.events.FlexEvent;
+			
+			import org.openscales.core.feature.Feature;
+			import org.openscales.fx.FxMap;
+			import org.openscales.fx.popup.renderer.IFxPopupRenderer;
+			import org.openscales.geometry.basetypes.Bounds;
+			import org.openscales.geometry.basetypes.Location;
+			import org.openscales.geometry.basetypes.Pixel;
+			import org.openscales.geometry.basetypes.Size;
+			
+			private var _fxmap:FxMap;
+			
+			/**
+			 * Popup size
+			 */			
+			[Bindable] public var WIDTH:Number = 300;
+			[Bindable] public var HEIGHT:Number = 300;
+			
+			/**
+			 * Feature linked to the popup
+			 */
+			private var _feature:Feature = null;
+			
+			/**
+			 * Popup location, corresponding to the location of the feature
+			 */
+			private var _loc:Location = null;
+			
+			/**
+			 * Popup relative position
+			 * br: bottom right
+			 * tr: top right
+			 * tl: top left
+			 * bl: bottom left
+			 */
+			private var _relativePosition:String = "";		
+			static public var BR:String = "br";
+			static public var TR:String = "tr";
+			static public var TL:String = "tl";
+			static public var BL:String = "bl";
+			
+			/**
+			 * Popup renderer class, used to set the organization of the popup content (text Area, etc)
+			 */
+			private var _popupRenderer:IFxPopupRenderer=null;
+			
+			/**
+			 * destroy the popup and all its elements
+			 */	 
+			public function destroy(event:Event=null):void {
+				var i:uint = this.numElements;
+				for (i;i>0;--i) {
+					this.removeElementAt(0);
+				}
+				if (this.fxmap != null) {
+					this.fxmap.removeFxPopup(this);
+				}
+			}
+			
+			/**
+			 * Determine the relative position of the popup with regard to the feature
+			 * 
+			 * @param px Pixel
+			 */
+			public function calculateRelativePosition(px:Pixel):String {
+				var lonlat:Location = fxmap.map.getLocationFromMapPx(px);
+				
+				var extent:Bounds = fxmap.map.extent;
+				var quadrant:String = extent.determineQuadrant(lonlat);
+				
+				return Bounds.oppositeQuadrant(quadrant);
+			}
+			
+			/**
+			 * Set the adequat ofsets to place the popup regarding the relative position
+			 * 
+			 * @param px Pixel
+			 */
+			public function calculateNewPx(px:Pixel):Pixel {
+				var newPx:Pixel = px;
+				
+				if (_relativePosition == BL){
+					newPx.x = newPx.x - WIDTH;
+				}
+				else if (_relativePosition == TR){
+					newPx.y = newPx.y - HEIGHT;
+				}
+				else if (_relativePosition == TL){
+					newPx.x = newPx.x - WIDTH;
+					newPx.y = newPx.y - HEIGHT;
+				}
+				return newPx;
+			}
+			
+			public function get popupRenderer():IFxPopupRenderer{
+				return this._popupRenderer;
+			}
+			
+			public function set popupRenderer(value:IFxPopupRenderer):void{
+				_popupRenderer = value;
+				_popupRenderer.fxpopup = this;
+			}
+			
+			public function get fxmap():FxMap {
+				return this._fxmap;
+			}
+			
+			public function set fxmap(value:FxMap):void {
+				this._fxmap = value;
+			}
+			
+			public function get relativePosition():String{
+				return this._relativePosition;
+			}
+			
+			public function set relativePosition(value:String):void {
+				this._relativePosition = value;
+				setCurrentState(_relativePosition,false);
+			}
+			
+			public function get loc():Location{
+				return this._loc;
+			}
+			
+			public function set loc(value:Location):void {
+				this._loc = value;
+			}
+			
+			public function get feature():Feature{
+				return this._feature;
+			}
+			
+			public function set feature(value:Feature):void {
+				this._feature = value;
+				
+				if(!this.feature)
+					return;
+				if(this._loc == null){
+					this._loc = this.feature.lonlat;
+				}
+			}
+			
+			/**
+			 * The position of the popup. You can either give a pixel to set the position
+			 * or a Location.
+			 * If you set a location, the position pixel is automaticaly computed
+			 */
+			public function set position(value:*):void {
+				if (value is Location)
+				{
+					value = fxmap.map.getMapPxFromLocation(value);
+					this.relativePosition = this.calculateRelativePosition(value);
+				}
+				if (value is Pixel)
+				{
+					var newPx:Pixel = this.calculateNewPx(value as Pixel);
+					if (newPx != null) {
+						x = newPx.x;
+						y = newPx.y;
+					}
+				}
+			}
+			
+			public function get position():Pixel {
+				return new Pixel(x, y);
+			}
+			
+		]]>
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="tr"/>
+		<s:State name="tl"/>
+		<s:State name="br"/>
+		<s:State name="bl"/>
+	</s:states>
+	
+	<s:Panel id="panel"
+			 width="{WIDTH}"
+			 height="{HEIGHT}"
+			 backgroundAlpha="0"
+			 skinClass.tr="org.openscales.fx.popup.skin.PopupPanelSkinTR"
+			 skinClass.tl="org.openscales.fx.popup.skin.PopupPanelSkinTL"
+			 skinClass.br="org.openscales.fx.popup.skin.PopupPanelSkinBR"
+			 skinClass.bl="org.openscales.fx.popup.skin.PopupPanelSkinBL">
+		<s:Group id="popupContentGroup"
+				 contentBackgroundAlpha="0"
+				 width="{WIDTH}"
+				 height="{HEIGHT}"
+				 clipAndEnableScrolling="true"
+				 creationComplete="{_popupRenderer.draw()}"/>
+	</s:Panel>
+		
+	
+</s:Group>
