@@ -84,6 +84,8 @@ package org.openscales.core.format
 		//items to exclude from extendedData
 		private var _excludeFromExtendedData:Array = new Array("id", "name", "description", "popupContentHTML", "label");
 		
+		private var _defaultPointStyleFunction:Function = Style.getDefaultPointStyle;
+		
 		public function KMLFormat() {}
 		
 		/**
@@ -313,7 +315,7 @@ package org.openscales.core.format
 						}
 						var psym:PointSymbolizer = new PointSymbolizer(new Graphic(-1));
 						var link:String = href.toString();
-						var extGraph:ExternalGraphic = new ExternalGraphic(link,"image/png",_proxy);
+						var extGraph:ExternalGraphic = new ExternalGraphic(link,"image/png");
 						if(link.indexOf(".jpg",link.length-5) || link.indexOf(".jpeg",link.length-6))
 							extGraph.format = "image/jpg";
 						extGraph.xOffset = xOffSet;
@@ -757,10 +759,10 @@ package org.openscales.core.format
 							if(_styleList.getValue(_id)) {
 								style = _styleList.getValue(_id);
 							} else {
-								style = Style.getDefaultPointStyle();
+								style = this.defaultPointStyleFunction.call();
 							}
 						} else {
-							style = Style.getDefaultPointStyle();
+							style = this.defaultPointStyleFunction.call();
 						}
 						multiPointFeature = new MultiPointFeature(multiPoint,attributes,style);
 						multiPointFeature.name = name;	
@@ -847,13 +849,15 @@ package org.openscales.core.format
 								iconsfeatures.push(pointFeature);
 							}
 							else {// no matching style
-								pointFeature =new PointFeature(point, attributes, Style.getDefaultPointStyle());
+								var pointStyle:Style = this.defaultPointStyleFunction.call()
+								pointFeature =new PointFeature(point, attributes, pointStyle);
 								pointFeature.name = name;
 								iconsfeatures.push(pointFeature);
 							}
 						}
 						else {// no style
-							pointFeature =new PointFeature(point, attributes, Style.getDefaultPointStyle());
+							var pointStyle:Style = this.defaultPointStyleFunction.call();
+							pointFeature =new PointFeature(point, attributes, pointStyle);
 							pointFeature.name = name;
 							iconsfeatures.push(pointFeature);
 						}	
@@ -1521,6 +1525,16 @@ package org.openscales.core.format
 				+ stringColor.substr(2,2)+stringColor.substr(0,2);
 			colorNode.appendChild(KMLcolor);
 			return colorNode;
+		}
+		
+		public function get defaultPointStyleFunction():Function
+		{
+			return _defaultPointStyleFunction;
+		}
+		
+		public function set defaultPointStyleFunction(value:Function):void
+		{
+			_defaultPointStyleFunction = value;
 		}
 		
 	}

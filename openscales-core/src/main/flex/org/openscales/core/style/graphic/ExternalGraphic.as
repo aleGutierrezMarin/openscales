@@ -68,6 +68,9 @@ package org.openscales.core.style.graphic
 		
 		private var _proxy:String = null;
 		
+		// Size of graphics for which we need specific behaviour (ex: markers)
+		private const specificSize:Number = 25;
+		
 		/**
 		 * Default image applied when waiting for the request response
 		 */
@@ -103,10 +106,25 @@ package org.openscales.core.style.graphic
 			if (this._clip)
 			{
 				result = new Bitmap(_clip.bitmapData);
+				
+				if (result.width == specificSize && result.height == specificSize) {
+					_xUnit = "fraction";
+					_yUnit = "fraction";
+					_xOffset = 0.5;
+					_yOffset = 1;
+				} else {
+					try {
+						result.width = size;
+						result.height = size;
+					} catch(e:Error) {
+						
+					}
+				}
+				
 				if (_xUnit == "fraction")
 				{
-					//result.x += -result.width*_xOffset;
-					result.x -= size / 2;
+					result.x += -result.width*_xOffset;
+					//result.x -= size / 2;
 				}else if (_xUnit == "pixels")
 				{
 					result.x += -_xOffset
@@ -114,18 +132,13 @@ package org.openscales.core.style.graphic
 				
 				if (_yUnit == "fraction")
 				{
-					//result.y += -result.height*_yOffset;
-					result.y -= size / 2;
+					result.y += -result.height*_yOffset;
+					//result.y -= size / 2;
 				}else if (_yUnit == "pixels")
 				{
 					result.y += -_yOffset
 				}
-				try {
-					result.width = size;
-					result.height = size;
-				} catch(e:Error) {
-					
-				}
+
 				resultContainer.addChild(result);
 			}else
 			{
@@ -180,12 +193,20 @@ package org.openscales.core.style.graphic
 				var result:DisplayObject;
 				result = new Bitmap(_clip.bitmapData);
 				
-				result.width = size;
-				result.height = size;
+				if (result.width == specificSize && result.height == specificSize) {
+					_xUnit = "fraction";
+					_yUnit = "fraction";
+					_xOffset = 0.5;
+					_yOffset = 1;
+				}
+				else {
+					result.width = size;
+					result.height = size;
+				}
 				
 				if (_xUnit == "fraction")
 				{
-					result.x += -size*_xOffset;
+					result.x += -result.width*_xOffset;
 				}else if (_xUnit == "pixels")
 				{
 					result.x += -_xOffset
@@ -193,7 +214,7 @@ package org.openscales.core.style.graphic
 				
 				if (_yUnit == "fraction")
 				{
-					result.y += -size*_yOffset;
+					result.y += -result.height*_yOffset;
 				}else if (_yUnit == "pixels")
 				{
 					result.y += -_yOffset
@@ -224,8 +245,10 @@ package org.openscales.core.style.graphic
 				var sprite:Sprite = this._givenTemporaryMarker[i].sprite;
 				var size:Number = this._givenTemporaryMarker[i].size;
 				result = new Bitmap(_clip.bitmapData);
-				result.width = size;
-				result.height = size;
+				if (result.width == result.height && result.width != specificSize) {
+					result.width = size;
+					result.height = size;
+				}
 				result.x += - size/2;
 				result.y += - size;
 				sprite.addChild(result);
