@@ -1022,8 +1022,8 @@
 								<s:layout >
 									<s:HorizontalLayout paddingLeft="15" paddingTop="5" gap="10"/>
 								</s:layout>
-								<s:Graphic x="0" y="0">
-									<mx:ColorPicker focusColor="{this.formFocusColor}" id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
+								<s:Graphic>
+									<mx:ColorPicker top="-5" focusColor="{this.formFocusColor}" id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
 								</s:Graphic>
 								<s:HSlider focusColor="{this.formFocusColor}" id="pointFillOpacity" enabled="{this._pointColorMode}"  value="@{this._pointOpacity}" dataTipFormatFunction="percentageTipFunc" change="onPointOpacityChanged()" height="11" width="70" minimum="0" maximum="100"/>
 							</s:Group>
