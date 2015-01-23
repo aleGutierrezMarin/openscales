@@ -63,27 +63,27 @@
 			[Bindable]
 			private var _fonts:ArrayCollection = new ArrayCollection (["Times New Roman","Arial","Verdana","Tahoma"]);
 
-			private var _targetFeature:Feature;
+			protected var _targetFeature:Feature;
 			
-			private var _editedSymbolize:Symbolizer;
+			protected var _editedSymbolize:Symbolizer;
 			
 			[Bindable]
 			public var formFocusColor:uint = 0x6699FF; 
 				
 			[Bindable]
-			private var _isPoint:Boolean = false;
+			protected var _isPoint:Boolean = false;
 			
 			[Bindable]
-			private var _isPolygon:Boolean = false;
+			protected var _isPolygon:Boolean = false;
 			
 			[Bindable]
-			private var _isLine:Boolean = false;
+			protected var _isLine:Boolean = false;
 			
 			[Bindable]
-			private var _isArrow:Boolean = false;
+			protected var _isArrow:Boolean = false;
 			
 			[Bindable]
-			private var _isLabelPoint:Boolean = false;
+			protected var _isLabelPoint:Boolean = false;
 			
 			[Bindable]
 			private var _allMode:Boolean = false;
@@ -94,7 +94,7 @@
 			[Bindable]
 			private var _typeSelectedMode:Boolean = false;
 			
-			private var _editStyleHandler:EditKMLStyleHandler;
+			protected var _editStyleHandler:EditKMLStyleHandler;
 			
 			[Bindable]
 			private var _lineColor:uint = 0x000000;
@@ -121,28 +121,28 @@
 			private var _polygonFillOpacity:int = 100;
 			
 			[Bindable]
-			private var _pointColorMode:Boolean = false;
+			protected var _pointColorMode:Boolean = false;
 			
 			[Bindable]
-			private var _pointIconMode:Boolean = true;
+			protected var _pointIconMode:Boolean = true;
 			
 			[Bindable]
-			private var _pointColor:uint = 0x000000;
+			protected var _pointColor:uint = 0x000000;
 			
 			[Bindable]
-			private var _pointOpacity:int = 100;
+			protected var _pointOpacity:int = 100;
 			
 			[Bindable]
-			private var _iconSelectedIndex:int = -1;
+			protected var _iconSelectedIndex:int = -1;
 
 			[Bindable]
 			private var _cancelPushed:Boolean = false;
 			
 			[Bindable]
-			private var _pickingAlpha:Number = 1;
+			protected var _pickingAlpha:Number = 1;
 			
 			[Bindable]
-			private var _paintingAlpha:Number = 1;
+			protected var _paintingAlpha:Number = 1;
 			
 			private var _arrowMarkerType:String = Mark.CARROW;
 			
@@ -325,7 +325,7 @@
 			/**
 			 * Method to handle the icon mode change on pointEdition
 			 */
-			private function changePointMode():void
+			protected function changePointMode():void
 			{
 				var ptsym:PointSymbolizer = this._editedSymbolize as PointSymbolizer;
 				ptsym.graphic.graphics.pop();
@@ -564,7 +564,7 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
-			private function onPointColorChanged():void
+			protected function onPointColorChanged():void
 			{
 				var fill:SolidFill = new SolidFill();
 				fill.color = this._pointColor;
@@ -581,7 +581,7 @@
 				this.editStyleHandler.actualizeFeature();
 			}
 			
-			private function onPointOpacityChanged():void
+			protected function onPointOpacityChanged():void
 			{
 				var fill:SolidFill = new SolidFill();
 				fill.color = this._pointColor;
@@ -1022,8 +1022,8 @@
 								<s:layout >
 									<s:HorizontalLayout paddingLeft="15" paddingTop="5" gap="10"/>
 								</s:layout>
-								<s:Graphic x="0" y="0">
-									<mx:ColorPicker focusColor="{this.formFocusColor}" id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
+								<s:Graphic>
+									<mx:ColorPicker top="-5" focusColor="{this.formFocusColor}" id="pointColorPicker" enabled="{this._pointColorMode}" selectedColor="@{this._pointColor}" change="onPointColorChanged()"/>
 								</s:Graphic>
 								<s:HSlider focusColor="{this.formFocusColor}" id="pointFillOpacity" enabled="{this._pointColorMode}"  value="@{this._pointOpacity}" dataTipFormatFunction="percentageTipFunc" change="onPointOpacityChanged()" height="11" width="70" minimum="0" maximum="100"/>
 							</s:Group>
