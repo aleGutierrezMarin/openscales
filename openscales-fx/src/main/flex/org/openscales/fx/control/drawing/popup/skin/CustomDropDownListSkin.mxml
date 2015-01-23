@@ -156,6 +156,7 @@
         skinClass="spark.skins.spark.DropDownListButtonSkin" />  
         
     <!--- @copy spark.components.DropDownList#labelDisplay -->
-	<mx:Image source="{hostComponent.selectedItem}"
-			  				   left="2" right="12" top="2" bottom="2" width="20" height="20" smoothBitmapContent="true"/>
+	<s:Image source="{hostComponent.selectedItem}"
+			 left="0" top="1" bottom="1" width="23" height="23" fillMode="clip"/>
+
 </s:SparkSkin>
