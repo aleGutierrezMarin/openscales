@@ -183,7 +183,7 @@
    "editStyle.stylePicking.tooltip" : "Pick feature style",
    "editStyle.stylePainting.tooltip" : "Apply style to feature",
    "editStyle.pointStyleEdition.dropDownMode" : "Icon :",
-   "editStyle.pointStyleEdition.colorMode" : "Marker Color :",
+   "editStyle.pointStyleEdition.colorMode" : "Color :",
    "editStyle.pointStyleEdition.labelText" : "Apply to : ",
    "editStyle.pointStyleEdition.previewModeAll" : "Points with same style",
    "editStyle.pointStyleEdition.previewModeSelected" : "This point only",
