@@ -1013,7 +1013,7 @@
 							<s:VerticalLayout paddingLeft="5" paddingTop="5" gap="10"/>
 						</s:layout>
 						
-						<s:Group>
+						<s:Group id="pointColorGroup">
 							<s:layout >
 								<s:VerticalLayout paddingLeft="15" paddingTop="5" gap="10"/>
 							</s:layout>
@@ -1029,7 +1029,7 @@
 							</s:Group>
 						</s:Group>
 						
-						<s:Group id="pointColorGroup">
+						<s:Group>
 							<s:layout >
 								<s:HorizontalLayout paddingLeft="15" paddingTop="5" gap="10"/>
 							</s:layout>
