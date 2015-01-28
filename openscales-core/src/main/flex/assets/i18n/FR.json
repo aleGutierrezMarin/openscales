@@ -185,7 +185,7 @@
    "editStyle.stylePicking.tooltip" : "Récupérer le style",
    "editStyle.stylePainting.tooltip" : "Appliquer le style",
    "editStyle.pointStyleEdition.dropDownMode" : "Autre icône :",
-   "editStyle.pointStyleEdition.colorMode" : "Couleur du pointeur :",
+   "editStyle.pointStyleEdition.colorMode" : "Couleur :",
    "editStyle.pointStyleEdition.labelText" : "Appliquer à : ",
    "editStyle.pointStyleEdition.previewModeAll" : "Les points de même style",
    "editStyle.pointStyleEdition.previewModeSelected" : "Ce point seulement",
