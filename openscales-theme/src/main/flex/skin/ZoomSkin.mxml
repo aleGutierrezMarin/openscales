@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Skin xmlns:fx="http://ns.adobe.com/mxml/2009"
+		xmlns:s="library://ns.adobe.com/flex/spark"
+		xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Metadata>
+		[HostComponent("spark.components.VSlider")]
+	</fx:Metadata>
+	
+	<s:states>
+		<s:State name="normal" />
+		<s:State name="disabled" />
+	</s:states>
+
+	<s:Button id="track" skinClass="skin.ZoomTrackSkin" x="-26" y="0" height="105"/>
+	<s:Button id="thumb" skinClass="skin.ZoomThumbSkin" x="-22" />
+
+</s:Skin>
