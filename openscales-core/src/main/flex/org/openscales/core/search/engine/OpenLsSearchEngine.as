@@ -113,6 +113,11 @@ package org.openscales.core.search.engine
 							addr.locality = resultsAc[i].municipality;
 							addr.postalCode = resultsAc[i].postalCode;
 							addr.addressLine = resultsAc[i].number+" "+resultsAc[i].street;
+							
+							if (resultsAc[i].INSEE)
+								addr.INSEE = resultsAc[i].INSEE;
+							
+							addr.matchType = resultsAc[i].matchType;
 						}
 					}
 				}

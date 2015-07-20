@@ -20,7 +20,9 @@ package org.openscales.core.search.result
 		private var _postalCode:String = null;
 		private var _state:String = null;
 		private var _countryRegion:String = null;
+		private var _INSEE:String = null;
 		private var _formattedAddress:String = null;
+		private var _matchType:String = null;
 		
 		/**
 		 * constructor
@@ -170,6 +172,21 @@ package org.openscales.core.search.result
 			_countryRegion = value;
 		}
 		/**
+		 * the INSEE code
+		 */
+		public function get INSEE():String
+		{
+			return _INSEE;
+		}
+		/**
+		 * @private
+		 */
+		public function set INSEE(value:String):void
+		{
+			_INSEE = value;
+		}
+		
+		/**
 		 * the formated address
 		 */
 		public function get formattedAddress():String
@@ -183,5 +200,23 @@ package org.openscales.core.search.result
 		{
 			_formattedAddress = value;
 		}
+
+		/**
+		 * match type of the address we got from the result
+		 */
+		public function get matchType():String
+		{
+			return _matchType;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set matchType(value:String):void
+		{
+			_matchType = value;
+		}
+
+
 	}
 }
