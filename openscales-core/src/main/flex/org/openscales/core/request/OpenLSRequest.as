@@ -732,9 +732,13 @@ package org.openscales.core.request
 					if(node.@type=="Commune") {
 						result.cityName = node.toString();
 					}
+					if(node.@type=="INSEE") {
+						result.INSEE = node.toString();
+					}
 				}
 				result.postalCode = gr.xls::Address.xls::PostalCode.toString();
 				result.accuracy = Number(gr.xls::GeocodeMatchCode.@accuracy.toString());
+				result.matchType = gr.xls::GeocodeMatchCode.@matchType.toString();
 				results.push(result);
 			}
 			
