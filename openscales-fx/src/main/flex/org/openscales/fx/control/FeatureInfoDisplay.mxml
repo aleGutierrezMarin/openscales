@@ -78,7 +78,7 @@
 				var resultsLength:Number = results.length;
 				
 				if(resultsLength>0){
-					for (var i:Number=0; i<length; ++i){
+					for (var i:Number=0; i<resultsLength; ++i){
 						var feat:Feature = results[i];
 						this._data.addItemAt(feat.name,0);
 						

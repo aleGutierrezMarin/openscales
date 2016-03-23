@@ -26,34 +26,34 @@ package org.openscales.core.style {
 	 */
 	public class Style {
 		
-		private namespace sldns="http://www.opengis.net/sld";
-		private namespace ogcns="http://www.opengis.net/ogc";
+		protected namespace sldns="http://www.opengis.net/sld";
+		protected namespace ogcns="http://www.opengis.net/ogc";
 		
-		private var _name:String = "Default";
+		protected var _name:String = "Default";
 		
 		/**
 		 * The list of rules of the style
 		 */
-		private var _rules:Vector.<Rule> = new Vector.<Rule>();
+		protected var _rules:Vector.<Rule> = new Vector.<Rule>();
 		
-		private var _fillColor:uint;
-		private var _fillOpacity:Number;
-		private var _strokeColor:uint;
-		private var _strokeOpacity:Number;
-		private var _strokeWidth:Number;
-		private var _strokeLinecap:String;
-		private var _pointRadius:Number;
-		private var _hoverFillColor:uint;
-		private var _hoverFillOpacity:Number;
-		private var _hoverStrokeColor:uint;
-		private var _hoverStrokeOpacity:Number;
-		private var _hoverStrokeWidth:Number;
-		private var _hoverPointRadius:Number;
-		private var _textFormat:TextFormat;
+		protected var _fillColor:uint;
+		protected var _fillOpacity:Number;
+		protected var _strokeColor:uint;
+		protected var _strokeOpacity:Number;
+		protected var _strokeWidth:Number;
+		protected var _strokeLinecap:String;
+		protected var _pointRadius:Number;
+		protected var _hoverFillColor:uint;
+		protected var _hoverFillOpacity:Number;
+		protected var _hoverStrokeColor:uint;
+		protected var _hoverStrokeOpacity:Number;
+		protected var _hoverStrokeWidth:Number;
+		protected var _hoverPointRadius:Number;
+		protected var _textFormat:TextFormat;
 		
-		private var _isFilled:Boolean;
-		private var _isStroked:Boolean;
-		private var _isSelectedStyle:Boolean = false;
+		protected var _isFilled:Boolean;
+		protected var _isStroked:Boolean;
+		protected var _isSelectedStyle:Boolean = false;
 		public static var defaultPointPictoURL:String = "http://openscales.org/img/pictos/openscalesDefaultPicto.png";
 		
 
