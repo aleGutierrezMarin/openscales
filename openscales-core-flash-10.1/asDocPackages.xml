@@ -1,0 +1,1 @@
+<overviews>     <packages> 		<package name="org.openscales.core.handler.multitouch">             <shortDescription>                 <![CDATA[                     Handlers for multitouch and gesture control, used on tablets and smartphones                ]]>             </shortDescription>        </package>     </packages> </overviews>
